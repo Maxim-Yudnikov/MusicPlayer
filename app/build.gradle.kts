@@ -40,6 +40,9 @@ android {
 
 dependencies {
 
+    implementation("com.lazygeniouz:dfc:1.0.8")
+    implementation("com.anggrayudi:storage:1.5.5")
+
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.11.0")

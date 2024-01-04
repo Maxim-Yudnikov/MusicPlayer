@@ -13,7 +13,8 @@ class AudioListAdapter : RecyclerView.Adapter<AudioListAdapter.ItemViewHolder>()
     class ItemViewHolder(private val binding: AudioLayoutBinding) : ViewHolder(binding.root) {
         fun bind(item: AudioUi) {
             item.showTitle(binding.titleTextView)
-            item.showArtistAndAlbum(binding.descriptionTextView)
+            item.showDescription(binding.descriptionTextView)
+            item.showArt(binding.artImageView)
         }
     }
 

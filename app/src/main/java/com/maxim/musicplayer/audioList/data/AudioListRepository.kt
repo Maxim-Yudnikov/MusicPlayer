@@ -2,6 +2,7 @@ package com.maxim.musicplayer.audioList.data
 
 import android.content.ContentResolver
 import android.content.ContentUris
+import android.net.Uri
 import android.provider.MediaStore
 import com.maxim.musicplayer.audioList.domain.AudioDomain
 
@@ -39,13 +40,14 @@ interface AudioListRepository {
                     val id = cursor.getLong(idIndex)
                     val title = cursor.getString(titleIndex)
                     val artist = cursor.getString(artistIndex)
-                    val duration = cursor.getString(durationIndex)
+                    val duration = cursor.getString(durationIndex).toInt() / 1000
                     val album = cursor.getString(albumIndex)
-                    val uri = ContentUris.withAppendedId(
-                        MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
-                        id
-                    )
-                    result.add(AudioData(id, title, artist, duration, album, uri))
+                    val albumArt = Uri.parse("content://media/external/audio/media/$id/albumart")
+                    val uri =
+                        ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, id)
+
+
+                    result.add(AudioData(id, title, artist, duration, album, albumArt, uri))
                 }
             }
 
