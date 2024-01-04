@@ -2,12 +2,15 @@ package com.maxim.musicplayer.audioList.data
 
 import android.content.ContentResolver
 import android.content.ContentUris
+import android.graphics.ImageDecoder
 import android.net.Uri
+import android.os.Build
 import android.provider.MediaStore
 import com.maxim.musicplayer.audioList.domain.AudioDomain
 
 interface AudioListRepository {
     fun data(): List<AudioDomain>
+
     class Base( //todo contextResolverWrapper
         private val contentResolver: ContentResolver,
         private val mapper: AudioData.Mapper<AudioDomain>
@@ -40,14 +43,36 @@ interface AudioListRepository {
                     val id = cursor.getLong(idIndex)
                     val title = cursor.getString(titleIndex)
                     val artist = cursor.getString(artistIndex)
-                    val duration = cursor.getString(durationIndex).toInt() / 1000
+                    val duration = try {
+                        cursor.getString(durationIndex).toInt() / 1000
+                    } catch (e: Exception) {
+                        -1
+                    }
                     val album = cursor.getString(albumIndex)
-                    val albumArt = Uri.parse("content://media/external/audio/media/$id/albumart")
+                    val albumArtUri = Uri.parse("content://media/external/audio/media/$id/albumart")
+                    val bitmap = try {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) ImageDecoder.decodeBitmap(
+                            ImageDecoder.createSource(
+                                contentResolver,
+                                albumArtUri
+                            )
+                        ) else MediaStore.Images.Media.getBitmap(contentResolver, albumArtUri)
+                    } catch (e: Exception) { null }
                     val uri =
                         ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, id)
 
 
-                    result.add(AudioData(id, title, artist, duration, album, albumArt, uri))
+                    result.add(
+                        AudioData(
+                            id,
+                            title,
+                            artist,
+                            duration,
+                            album,
+                            bitmap,
+                            uri
+                        )
+                    )
                 }
             }
 

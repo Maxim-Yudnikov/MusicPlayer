@@ -1,5 +1,6 @@
 package com.maxim.musicplayer.audioList.domain
 
+import android.graphics.Bitmap
 import android.net.Uri
 import com.maxim.musicplayer.audioList.presentation.AudioUi
 
@@ -10,7 +11,7 @@ class MapperDomainToUi : AudioDomain.Mapper<AudioUi> {
         artist: String,
         duration: Int,
         album: String,
-        art: Uri,
+        artBitmap: Bitmap?,
         uri: Uri
-    ): AudioUi = AudioUi.Base(id, title, artist, duration, album, art, uri)
+    ): AudioUi = AudioUi.Base(id, title, artist, duration, album, artBitmap, uri)
 }

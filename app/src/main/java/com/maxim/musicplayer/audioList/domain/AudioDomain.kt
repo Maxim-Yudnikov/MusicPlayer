@@ -1,5 +1,6 @@
 package com.maxim.musicplayer.audioList.domain
 
+import android.graphics.Bitmap
 import android.net.Uri
 
 interface AudioDomain {
@@ -11,7 +12,7 @@ interface AudioDomain {
             artist: String,
             duration: Int,
             album: String,
-            art: Uri,
+            artBitmap: Bitmap?,
             uri: Uri
         ): T
     }
@@ -22,10 +23,10 @@ interface AudioDomain {
         private val artist: String,
         private val duration: Int,
         private val album: String,
-        private val art: Uri,
+        private val artBitmap: Bitmap?,
         private val uri: Uri
     ) : AudioDomain {
         override fun <T> map(mapper: Mapper<T>) =
-            mapper.map(id, title, artist, duration, album, art, uri)
+            mapper.map(id, title, artist, duration, album, artBitmap, uri)
     }
 }

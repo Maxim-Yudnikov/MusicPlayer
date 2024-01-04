@@ -12,11 +12,12 @@ import com.maxim.musicplayer.R
 import com.maxim.musicplayer.cope.ProvideModule
 
 class MainActivity : AppCompatActivity(), ProvideModule {
+    private lateinit var viewModel: MainViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val viewModel = module(MainViewModel::class.java).viewModel()
+        viewModel = module(MainViewModel::class.java).viewModel()
         viewModel.observe(this) {
             it.show(supportFragmentManager, R.id.container)
         }
@@ -55,7 +56,8 @@ class MainActivity : AppCompatActivity(), ProvideModule {
                     Toast.LENGTH_LONG
                 ).show()
                 finish()
-            }
+            } else
+                viewModel.init(true)
         }
     }
 

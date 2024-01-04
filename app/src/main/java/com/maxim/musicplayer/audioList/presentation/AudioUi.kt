@@ -1,10 +1,9 @@
 package com.maxim.musicplayer.audioList.presentation
 
-import android.media.MediaMetadataRetriever
+import android.graphics.Bitmap
 import android.net.Uri
 import android.widget.ImageView
 import android.widget.TextView
-import com.anggrayudi.storage.media.MediaFile
 import com.maxim.musicplayer.R
 
 abstract class AudioUi {
@@ -18,7 +17,7 @@ abstract class AudioUi {
         private val artist: String,
         private val duration: Int,
         private val album: String,
-        private val art: Uri,
+        private val artBitmap: Bitmap?,
         private val uri: Uri
     ) : AudioUi() {
         override fun same(item: AudioUi) = item is Base && item.id == id
@@ -35,14 +34,8 @@ abstract class AudioUi {
         }
 
         override fun showArt(imageView: ImageView) {
-            val file = MediaFile(imageView.context, uri)
-            val retriever = MediaMetadataRetriever()
-            retriever.setDataSource(file.absolutePath)
-
-            if (retriever.embeddedPicture != null)
-                imageView.setImageURI(art)
-            else
-                imageView.setImageResource(R.drawable.baseline_audiotrack_24)
+            artBitmap?.let { imageView.setImageBitmap(artBitmap) }
+                ?: imageView.setImageResource(R.drawable.baseline_audiotrack_24)
         }
     }
 }
