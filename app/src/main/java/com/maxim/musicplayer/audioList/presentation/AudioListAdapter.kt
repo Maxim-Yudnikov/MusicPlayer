@@ -7,14 +7,19 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.maxim.musicplayer.databinding.AudioLayoutBinding
 
-class AudioListAdapter : RecyclerView.Adapter<AudioListAdapter.ItemViewHolder>() {
+class AudioListAdapter(
+    private val listener: Listener
+) : RecyclerView.Adapter<AudioListAdapter.ItemViewHolder>() {
     private val list = mutableListOf<AudioUi>()
 
     class ItemViewHolder(private val binding: AudioLayoutBinding) : ViewHolder(binding.root) {
-        fun bind(item: AudioUi) {
+        fun bind(item: AudioUi, listener: Listener) {
             item.showTitle(binding.titleTextView)
             item.showDescription(binding.descriptionTextView)
             item.showArt(binding.artImageView)
+            itemView.setOnClickListener {
+                listener.open(item)
+            }
         }
     }
 
@@ -31,7 +36,7 @@ class AudioListAdapter : RecyclerView.Adapter<AudioListAdapter.ItemViewHolder>()
     override fun getItemCount() = list.size
 
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
-        holder.bind(list[position])
+        holder.bind(list[position], listener)
     }
 
     fun update(newList: List<AudioUi>) {
@@ -40,6 +45,10 @@ class AudioListAdapter : RecyclerView.Adapter<AudioListAdapter.ItemViewHolder>()
         list.clear()
         list.addAll(newList)
         result.dispatchUpdatesTo(this)
+    }
+
+    interface Listener {
+        fun open(audioUi: AudioUi)
     }
 }
 

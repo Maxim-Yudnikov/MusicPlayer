@@ -10,6 +10,7 @@ abstract class AudioUi {
     abstract fun same(item: AudioUi): Boolean
     abstract fun showTitle(textView: TextView)
     abstract fun showDescription(textView: TextView)
+    abstract fun showArtist(textView: TextView)
     abstract fun showArt(imageView: ImageView)
     data class Base(
         private val id: Long,
@@ -31,6 +32,10 @@ abstract class AudioUi {
             val timeUi = "$minutes:${if (second < 10) "0$second" else second}"
             val s = "$artist - $timeUi"
             textView.text = s
+        }
+
+        override fun showArtist(textView: TextView) {
+            textView.text = artist
         }
 
         override fun showArt(imageView: ImageView) {
