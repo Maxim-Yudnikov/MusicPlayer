@@ -14,7 +14,7 @@ interface PlayerState {
         playButton: ImageButton
     )
 
-    data class Running(private val audio: AudioUi) : PlayerState {
+    data class Initial(private val audio: AudioUi) : PlayerState {
         override fun show(
             artImageView: ImageView,
             titleTextView: TextView,
@@ -25,6 +25,28 @@ interface PlayerState {
             audio.showTitle(titleTextView)
             audio.showArtist(artistTextView)
             playButton.setImageResource(R.drawable.pause_24)
+        }
+    }
+
+    object Running: PlayerState {
+        override fun show(
+            artImageView: ImageView,
+            titleTextView: TextView,
+            artistTextView: TextView,
+            playButton: ImageButton
+        ) {
+            playButton.setImageResource(R.drawable.pause_24)
+        }
+    }
+
+    object OnPause : PlayerState {
+        override fun show(
+            artImageView: ImageView,
+            titleTextView: TextView,
+            artistTextView: TextView,
+            playButton: ImageButton
+        ) {
+            playButton.setImageResource(R.drawable.play_24)
         }
     }
 }

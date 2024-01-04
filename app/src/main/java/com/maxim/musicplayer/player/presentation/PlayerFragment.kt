@@ -24,6 +24,10 @@ class PlayerFragment : BaseFragment<FragmentPlayerBinding, PlayerViewModel>() {
             )
         }
 
+        binding.playButton.setOnClickListener {
+            viewModel.play()
+        }
+
         viewModel.init(savedInstanceState == null)
     }
 }

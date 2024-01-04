@@ -5,6 +5,7 @@ import android.net.Uri
 import android.widget.ImageView
 import android.widget.TextView
 import com.maxim.musicplayer.R
+import com.maxim.musicplayer.player.media.StartAudio
 
 abstract class AudioUi {
     abstract fun same(item: AudioUi): Boolean
@@ -12,6 +13,7 @@ abstract class AudioUi {
     abstract fun showDescription(textView: TextView)
     abstract fun showArtist(textView: TextView)
     abstract fun showArt(imageView: ImageView)
+    abstract fun start(startAudio: StartAudio)
     data class Base(
         private val id: Long,
         private val title: String,
@@ -41,6 +43,10 @@ abstract class AudioUi {
         override fun showArt(imageView: ImageView) {
             artBitmap?.let { imageView.setImageBitmap(artBitmap) }
                 ?: imageView.setImageResource(R.drawable.baseline_audiotrack_24)
+        }
+
+        override fun start(startAudio: StartAudio) {
+            startAudio.start(uri)
         }
     }
 }

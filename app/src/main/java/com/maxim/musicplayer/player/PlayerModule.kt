@@ -5,9 +5,10 @@ import com.maxim.musicplayer.cope.Module
 import com.maxim.musicplayer.player.presentation.PlayerCommunication
 import com.maxim.musicplayer.player.presentation.PlayerViewModel
 
-class PlayerModule(private val core: Core): Module<PlayerViewModel> {
+class PlayerModule(private val core: Core) : Module<PlayerViewModel> {
     override fun viewModel() = PlayerViewModel(
         core.sharedStorage(),
-        PlayerCommunication.Base()
+        PlayerCommunication.Base(),
+        core.mediaPlayerWrapper()
     )
 }
