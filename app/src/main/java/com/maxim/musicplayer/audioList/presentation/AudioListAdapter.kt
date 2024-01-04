@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.maxim.musicplayer.databinding.AudioLayoutBinding
 
-class AudioAdapter : RecyclerView.Adapter<AudioAdapter.ItemViewHolder>() {
+class AudioListAdapter : RecyclerView.Adapter<AudioListAdapter.ItemViewHolder>() {
     private val list = mutableListOf<AudioUi>()
 
     class ItemViewHolder(private val binding: AudioLayoutBinding) : ViewHolder(binding.root) {
