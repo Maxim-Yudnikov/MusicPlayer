@@ -25,7 +25,7 @@ interface AudioUi {
         private val duration: Int,
         private val album: String,
         private val artBitmap: Bitmap?,
-        private val uri: Uri
+        private val uri: Uri?
     ) : AudioUi {
         override fun same(item: AudioUi) = item is Base && item.id == id
         override fun showTitle(textView: TextView) {
@@ -47,11 +47,11 @@ interface AudioUi {
         }
 
         override fun start(startAudio: StartAudio) {
-            startAudio.start(title, artist, uri)
+            startAudio.start(title, artist, uri!!)
         }
 
         override fun startAgain(startAudio: StartAudio) {
-            startAudio.start(title, artist, uri, true)
+            startAudio.start(title, artist, uri!!, true)
         }
 
         override fun showDuration(textView: TextView) {

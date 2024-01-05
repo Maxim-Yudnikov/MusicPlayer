@@ -6,6 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.SeekBar
+import androidx.core.content.ContextCompat
+import com.maxim.musicplayer.R
 import com.maxim.musicplayer.cope.BaseFragment
 import com.maxim.musicplayer.cope.ProvideMediaService
 import com.maxim.musicplayer.databinding.FragmentPlayerBinding
@@ -28,6 +30,8 @@ class PlayerFragment : BaseFragment<FragmentPlayerBinding, PlayerViewModel>() {
                 binding.titleTextView,
                 binding.artistTextView,
                 binding.playButton,
+                binding.randomOrderButton,
+                binding.loopOrderButton,
                 binding.seekBar,
                 binding.actualTimeTextView,
                 binding.durationTextView
@@ -46,6 +50,24 @@ class PlayerFragment : BaseFragment<FragmentPlayerBinding, PlayerViewModel>() {
 
         binding.previousButton.setOnClickListener {
             viewModel.previous(mediaService)
+        }
+
+        binding.loopOrderButton.setOnClickListener {
+            binding.loopOrderButton.setBackgroundColor(
+                ContextCompat.getColor(
+                    requireContext(),
+                    if (viewModel.changeLoop()) R.color.green else R.color.white
+                )
+            )
+        }
+
+        binding.randomOrderButton.setOnClickListener {
+            binding.randomOrderButton.setBackgroundColor(
+                ContextCompat.getColor(
+                    requireContext(),
+                    if (viewModel.changeRandom()) R.color.green else R.color.white
+                )
+            )
         }
 
         binding.seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {

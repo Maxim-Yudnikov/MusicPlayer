@@ -1,6 +1,7 @@
 package com.maxim.musicplayer.cope
 
 import android.content.Context
+import com.maxim.musicplayer.player.media.ManageOrder
 import com.maxim.musicplayer.player.presentation.OpenPlayerStorage
 
 class Core(private val context: Context) {
@@ -9,5 +10,16 @@ class Core(private val context: Context) {
     fun contentResolverWrapper() = ContentResolverWrapper.Base(context.contentResolver)
     private val sharedStorage = OpenPlayerStorage.Base()
     fun sharedStorage() = sharedStorage
-    fun manageOrder() = (context.applicationContext as ManageOrder)
+    private val manageOrder = ManageOrder.Base(
+        SimpleStorage.Base(
+            context.getSharedPreferences(
+                STORAGE_NAME, Context.MODE_PRIVATE
+            )
+        )
+    )
+    fun manageOrder() = manageOrder
+
+    companion object {
+        private const val STORAGE_NAME = "MUSIC_PLAYER_STORAGE"
+    }
 }

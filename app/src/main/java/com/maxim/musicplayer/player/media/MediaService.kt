@@ -100,6 +100,8 @@ interface MediaService: StartAudio {
             mediaPlayer?.release()
         }
 
+        private var mediaSessionCompat: MediaSessionCompat? = null
+
         private fun makeNotification(title: String, text: String, isPause: Boolean): Notification {
             val intentPlay = Intent(applicationContext, NotificationActionService::class.java).apply {
                 action = "PLAY"
@@ -126,7 +128,8 @@ interface MediaService: StartAudio {
                 PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
             )
 
-            val mediaSessionCompat = MediaSessionCompat(this, "tag")
+            mediaSessionCompat?.release()
+            mediaSessionCompat = MediaSessionCompat(this, "tag")
             return NotificationCompat.Builder(applicationContext, CHANNEL_ID)
                 .setContentTitle(title)
                 .setTicker(title)
@@ -145,7 +148,7 @@ interface MediaService: StartAudio {
                 .setStyle(
                     androidx.media.app.NotificationCompat.MediaStyle()
                         .setShowActionsInCompactView(0, 1, 2)
-                        .setMediaSession(mediaSessionCompat.sessionToken)
+                        .setMediaSession(mediaSessionCompat!!.sessionToken)
                 )
                 .build()
         }
@@ -165,8 +168,4 @@ interface MediaService: StartAudio {
             private const val CHANNEL_ID = "Player"
         }
     }
-}
-
-interface StartAudio {
-    fun start(title: String, artist: String, uri: Uri, ignoreSame: Boolean = false)
 }

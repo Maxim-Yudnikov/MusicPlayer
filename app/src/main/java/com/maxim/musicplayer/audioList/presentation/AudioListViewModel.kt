@@ -6,9 +6,9 @@ import androidx.lifecycle.ViewModel
 import com.maxim.musicplayer.audioList.domain.AudioDomain
 import com.maxim.musicplayer.audioList.domain.AudioListInteractor
 import com.maxim.musicplayer.cope.Communication
-import com.maxim.musicplayer.cope.ManageOrder
 import com.maxim.musicplayer.cope.Init
 import com.maxim.musicplayer.cope.Navigation
+import com.maxim.musicplayer.player.media.ManageOrder
 import com.maxim.musicplayer.player.presentation.OpenPlayerStorage
 import com.maxim.musicplayer.player.presentation.PlayerScreen
 
