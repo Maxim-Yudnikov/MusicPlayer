@@ -32,7 +32,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <service android:name="com.maxim.musicplayer.player.media.MediaService" />
+        <service android:name="com.maxim.musicplayer.player.media.MediaService$Base" />
     </application>
 
 </manifest>

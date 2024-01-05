@@ -16,17 +16,16 @@ class App : Application(), ProvideViewModel, ProvideMediaService, ManageOrder {
         super.onCreate()
         factory = ModuleFactory.Base(ProvideModule.Base(Core(this)))
 
-        val intent = Intent(this, MediaService::class.java)
-        startService(intent)
+        val intent = Intent(this, MediaService.Base::class.java)
         bindService(intent, connection, Context.BIND_AUTO_CREATE)
     }
 
     private var isBound = false
-    private var mediaService: MediaService? = null
+    private var mediaService: MediaService.Base? = null
 
     private val connection = object : ServiceConnection {
         override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
-            val binder = service as MediaService.MusicBinder
+            val binder = service as MediaService.Base.MusicBinder
             mediaService = binder.getService()
             isBound = true
         }
