@@ -28,14 +28,14 @@ interface ManageOrder {
             set(value) {
                 storage.save(RANDOM_KEY, value)
                 field = value
-                actualPosition = if (value)
+                regenerate()
+                actualPosition = if (value) {
                     0
-                else try {
+                } else try {
                     cachedOrder.indexOf(actualTrack)
                 } catch (e: Exception) {
                     0
                 }
-                regenerate()
             }
 
         override fun isLast() = actualPosition == actualOrder.lastIndex
@@ -49,17 +49,32 @@ interface ManageOrder {
             cachedOrder.addAll(tracks)
 
             actualOrder.clear()
-            actualOrder.addAll(if (isRandom) cachedOrder.shuffled() else cachedOrder)
+            if (isRandom) {
+                val newOrder = ArrayList(cachedOrder)
+                val actual = newOrder.removeAt(position)
+                newOrder.shuffle()
+                newOrder.add(0, actual)
+                actualOrder.addAll(newOrder)
+            } else {
+                actualOrder.addAll(cachedOrder)
+            }
             actualPosition = if (isRandom) 0 else position
             actualTrack = actualOrder[position]
         }
 
         override fun regenerate() {
+            if (cachedOrder.isEmpty()) return
             actualOrder.clear()
-            if (isRandom) {
-                actualOrder.addAll(cachedOrder.shuffled())
+            actualPosition = if (isRandom) {
+                val newOrder = ArrayList(cachedOrder)
+                val actual = newOrder.removeAt(actualPosition)
+                newOrder.shuffle()
+                newOrder.add(0, actual)
+                actualOrder.addAll(newOrder)
+                0
             } else {
                 actualOrder.addAll(cachedOrder)
+                cachedOrder.indexOf(actualTrack)
             }
         }
 
@@ -80,14 +95,6 @@ interface ManageOrder {
                 actualOrder[actualPosition]
             } else
                 actualOrder[--actualPosition]
-
-
-//            if (actualPosition == 0 && !isLoop)
-//                return actualOrder[actualPosition]
-//            else if (actualPosition == 0 && isLoop)
-//                actualPosition = actualOrder.size
-//            actualTrack = actualOrder[--actualPosition]
-//            return actualTrack
         }
 
         companion object {
