@@ -1,5 +1,6 @@
 package com.maxim.musicplayer.player.media
 
+import android.util.Log
 import com.maxim.musicplayer.audioList.presentation.AudioUi
 import com.maxim.musicplayer.cope.SimpleStorage
 
@@ -58,24 +59,39 @@ interface ManageOrder {
             } else {
                 actualOrder.addAll(cachedOrder)
             }
+            Log.d(
+                "MyLog",
+                "pos: $actualPosition, generate actualOrder: ${actualOrder.map { (it as AudioUi.Base).title }}"
+            )
             actualPosition = if (isRandom) 0 else position
-            actualTrack = actualOrder[position]
+            Log.d(
+                "MyLog",
+                "set actual position in generate: $actualPosition, position in constructor: $position"
+            )
+            actualTrack = actualOrder[actualPosition]
         }
 
         override fun regenerate() {
             if (cachedOrder.isEmpty()) return
             actualOrder.clear()
-            actualPosition = if (isRandom) {
+            if (isRandom) {
                 val newOrder = ArrayList(cachedOrder)
                 val actual = newOrder.removeAt(actualPosition)
+                Log.d("MyLog", "Removed track: $actual")
                 newOrder.shuffle()
                 newOrder.add(0, actual)
                 actualOrder.addAll(newOrder)
-                0
+                actualPosition = 0
+                actualTrack = actualOrder[actualPosition]
             } else {
                 actualOrder.addAll(cachedOrder)
-                cachedOrder.indexOf(actualTrack)
+                actualPosition = cachedOrder.indexOf(actualTrack)
             }
+            Log.d("MyLog", "set actual position in regenerate: $actualPosition")
+            Log.d(
+                "MyLog",
+                "pos: $actualPosition, regenerate actualOrder: ${actualOrder.map { (it as AudioUi.Base).title }}"
+            )
         }
 
         override fun next(): AudioUi {
@@ -88,13 +104,14 @@ interface ManageOrder {
         }
 
         override fun previous(): AudioUi {
-            return if (actualPosition == 0 && isLoop) {
+            actualTrack = if (actualPosition == 0 && isLoop) {
                 actualPosition = actualOrder.lastIndex
                 actualOrder[actualPosition]
             } else if (actualPosition == 0) {
                 actualOrder[actualPosition]
             } else
                 actualOrder[--actualPosition]
+            return actualTrack
         }
 
         companion object {
