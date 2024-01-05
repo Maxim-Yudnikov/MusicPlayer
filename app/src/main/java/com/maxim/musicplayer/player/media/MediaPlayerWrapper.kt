@@ -9,7 +9,7 @@ interface MediaPlayerWrapper : StartAudio {
     class Base(private val context: Context) : MediaPlayerWrapper {
         private var mediaPlayer: MediaPlayer? = null
         private var actualUri: Uri? = null
-        override fun start(title: String, artist: String, uri: Uri) {
+        override fun start(title: String, artist: String, uri: Uri, ignoreSame: Boolean) {
             actualUri?.let {
                 if (uri != actualUri) {
                     mediaPlayer?.stop()
@@ -27,8 +27,4 @@ interface MediaPlayerWrapper : StartAudio {
             mediaPlayer?.pause()
         }
     }
-}
-
-interface StartAudio {
-    fun start(title: String, artist: String, uri: Uri)
 }

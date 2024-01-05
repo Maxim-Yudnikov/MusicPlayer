@@ -15,6 +15,7 @@ interface AudioUi {
     fun showArtist(textView: TextView)
     fun showArt(imageView: ImageView)
     fun start(startAudio: StartAudio)
+    fun startAgain(startAudio: StartAudio)
     fun showDuration(textView: TextView)
     fun setMaxDuration(seekBar: SeekBar)
     data class Base(
@@ -47,6 +48,10 @@ interface AudioUi {
 
         override fun start(startAudio: StartAudio) {
             startAudio.start(title, artist, uri)
+        }
+
+        override fun startAgain(startAudio: StartAudio) {
+            startAudio.start(title, artist, uri, true)
         }
 
         override fun showDuration(textView: TextView) {

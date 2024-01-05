@@ -47,13 +47,26 @@ class PlayerViewModel(
         sharedStorage.save(track)
         communication.update(PlayerState.Initial(track))
         track.start(mediaService)
+        mediaService.setOnCompleteListener {
+            next(mediaService)
+        }
     }
 
     override fun previous(mediaService: MediaService) {
-        isPlaying = true
-        val track = manageOrder.previous()
-        sharedStorage.save(track)
-        communication.update(PlayerState.Initial(track))
-        track.start(mediaService)
+        if (mediaService.currentPosition() < TIME_TO_PREVIOUS_MAKE_RESTART && !manageOrder.isFirst()) {
+            isPlaying = true
+            val track = manageOrder.previous()
+            sharedStorage.save(track)
+            communication.update(PlayerState.Initial(track))
+            track.start(mediaService)
+        } else
+            sharedStorage.read().startAgain(mediaService)
+        mediaService.setOnCompleteListener {
+            next(mediaService)
+        }
+    }
+
+    companion object {
+        private const val TIME_TO_PREVIOUS_MAKE_RESTART = 2500
     }
 }

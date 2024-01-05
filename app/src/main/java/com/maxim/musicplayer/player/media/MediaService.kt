@@ -35,7 +35,7 @@ class MediaService : Service(), StartAudio {
         return binder
     }
 
-    fun currentPosition() = mediaPlayer!!.currentPosition
+    fun currentPosition() = mediaPlayer?.currentPosition ?: 0
 
     fun seekTo(position: Int) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
@@ -56,7 +56,7 @@ class MediaService : Service(), StartAudio {
             createChannel()
     }
 
-    override fun start(title: String, artist: String, uri: Uri) {
+    override fun start(title: String, artist: String, uri: Uri, ignoreSame: Boolean) {
         val notificationManager =
             this.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.notify(
@@ -64,7 +64,7 @@ class MediaService : Service(), StartAudio {
             makeNotification(title, artist, false)
         )
         actualUri?.let {
-            if (uri != actualUri) {
+            if (uri != actualUri || ignoreSame) {
                 mediaPlayer?.stop()
                 mediaPlayer?.release()
                 mediaPlayer = MediaPlayer.create(this, uri)
@@ -158,4 +158,8 @@ class MediaService : Service(), StartAudio {
         private const val NOTIFICATION_ID = 123456789
         private const val CHANNEL_ID = "Player"
     }
+}
+
+interface StartAudio {
+    fun start(title: String, artist: String, uri: Uri, ignoreSame: Boolean = false)
 }

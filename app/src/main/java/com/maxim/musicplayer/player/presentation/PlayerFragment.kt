@@ -2,7 +2,6 @@ package com.maxim.musicplayer.player.presentation
 
 import android.os.Bundle
 import android.os.Handler
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -53,7 +52,8 @@ class PlayerFragment : BaseFragment<FragmentPlayerBinding, PlayerViewModel>() {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                 if (fromUser) {
                     mediaService.seekTo(progress)
-                    binding.actualTimeTextView.text = getTime(mediaService.currentPosition() / 1000 + 1)
+                    binding.actualTimeTextView.text =
+                        getTime(mediaService.currentPosition() / 1000 + 1)
                 }
             }
 
@@ -64,7 +64,6 @@ class PlayerFragment : BaseFragment<FragmentPlayerBinding, PlayerViewModel>() {
 
         runnable = Runnable {
             val currentPosition = mediaService.currentPosition()
-            Log.d("MyLog", "currentPos: $currentPosition")
             binding.seekBar.progress = currentPosition
             binding.actualTimeTextView.text = getTime(currentPosition / 1000)
             handler.postDelayed(runnable, 1000)

@@ -58,6 +58,8 @@ class App : Application(), ProvideViewModel, ProvideMediaService, ManageOrder {
             return orderList[actualPosition]
         return orderList[--actualPosition]
     }
+
+    override fun isFirst() = actualPosition == 0
 }
 
 interface ProvideMediaService {
@@ -68,4 +70,5 @@ interface ManageOrder {
     fun generate(tracks: List<AudioUi>, position: Int)
     fun next(): AudioUi
     fun previous(): AudioUi
+    fun isFirst(): Boolean
 }
