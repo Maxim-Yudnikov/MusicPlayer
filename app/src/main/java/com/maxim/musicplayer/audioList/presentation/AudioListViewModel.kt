@@ -31,6 +31,7 @@ class AudioListViewModel(
             communication.update(AudioListState.List(list.map { it.map(mapper) }))
             refreshFinish?.finish()
             refreshFinish = null
+            isRefreshing = false
         }
     }
 

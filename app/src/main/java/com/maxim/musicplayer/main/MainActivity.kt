@@ -26,17 +26,54 @@ class MainActivity : AppCompatActivity(), ProvideViewModel {
         viewModel.init(savedInstanceState == null)
     }
 
-    override fun onResume() {
+    override fun onResume() { //todo refactor
         super.onResume()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            val result = ContextCompat.checkSelfPermission(
+            val readResult = ContextCompat.checkSelfPermission(
                 applicationContext,
                 android.Manifest.permission.READ_MEDIA_AUDIO
             )
-            if (result != PackageManager.PERMISSION_GRANTED) {
+            val notificationResult = ContextCompat.checkSelfPermission(
+                applicationContext,
+                android.Manifest.permission.POST_NOTIFICATIONS
+            )
+            if (readResult != PackageManager.PERMISSION_GRANTED && notificationResult != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(
                     this,
-                    arrayOf(android.Manifest.permission.READ_MEDIA_AUDIO),
+                    arrayOf(
+                        android.Manifest.permission.READ_MEDIA_AUDIO,
+                        android.Manifest.permission.POST_NOTIFICATIONS
+                    ),
+                    200
+                )
+            } else if (readResult != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(
+                    this,
+                    arrayOf(
+                        android.Manifest.permission.READ_MEDIA_AUDIO
+                    ),
+                    200
+                )
+            } else if (notificationResult != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(
+                    this,
+                    arrayOf(
+                        android.Manifest.permission.POST_NOTIFICATIONS
+                    ),
+                    200
+                )
+            }
+        } else {
+            val readResult = ContextCompat.checkSelfPermission(
+                applicationContext,
+                android.Manifest.permission.READ_EXTERNAL_STORAGE
+            )
+            if (readResult != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(
+                    this,
+                    arrayOf(
+                        android.Manifest.permission.READ_EXTERNAL_STORAGE,
+                    ),
                     200
                 )
             }
@@ -50,15 +87,17 @@ class MainActivity : AppCompatActivity(), ProvideViewModel {
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == 200 && grantResults.isNotEmpty()) {
-            if (grantResults[0] != PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(
-                    applicationContext,
-                    "Please grand permission for read storage",
-                    Toast.LENGTH_LONG
-                ).show()
-                finish()
-            } else
-                viewModel.init(true)
+            grantResults.forEach {
+                if (it != PackageManager.PERMISSION_GRANTED) {
+                    Toast.makeText(
+                        applicationContext,
+                        "Please grand permissions",
+                        Toast.LENGTH_LONG
+                    ).show()
+                    finish()
+                }
+            }
+            viewModel.init(true)
         }
     }
 
