@@ -46,7 +46,7 @@ abstract class AudioUi {
         }
 
         override fun start(startAudio: StartAudio) {
-            startAudio.start(uri)
+            startAudio.start(title, artist, uri)
         }
     }
 }

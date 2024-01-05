@@ -9,6 +9,5 @@ class PlayerModule(private val core: Core) : Module<PlayerViewModel> {
     override fun viewModel() = PlayerViewModel(
         core.sharedStorage(),
         PlayerCommunication.Base(),
-        core.mediaPlayerWrapper()
     )
 }

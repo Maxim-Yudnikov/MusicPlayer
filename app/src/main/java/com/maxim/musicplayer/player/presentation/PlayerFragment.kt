@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.maxim.musicplayer.cope.BaseFragment
 import com.maxim.musicplayer.databinding.FragmentPlayerBinding
+import com.maxim.musicplayer.main.MainActivity
 
 class PlayerFragment : BaseFragment<FragmentPlayerBinding, PlayerViewModel>() {
     override fun viewModelClass() = PlayerViewModel::class.java
@@ -23,11 +24,12 @@ class PlayerFragment : BaseFragment<FragmentPlayerBinding, PlayerViewModel>() {
                 binding.playButton
             )
         }
+        val mediaService = (requireActivity() as MainActivity).mediaService()
 
         binding.playButton.setOnClickListener {
-            viewModel.play()
+            viewModel.play(mediaService)
         }
 
-        viewModel.init(savedInstanceState == null)
+        viewModel.init(savedInstanceState == null, mediaService)
     }
 }

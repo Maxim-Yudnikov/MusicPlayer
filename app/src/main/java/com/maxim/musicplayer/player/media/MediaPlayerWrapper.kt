@@ -5,29 +5,30 @@ import android.media.MediaPlayer
 import android.net.Uri
 
 interface MediaPlayerWrapper : StartAudio {
-    fun stop()
+    fun pause()
     class Base(private val context: Context) : MediaPlayerWrapper {
         private var mediaPlayer: MediaPlayer? = null
         private var actualUri: Uri? = null
-        override fun start(uri: Uri) {
+        override fun start(title: String, artist: String, uri: Uri) {
             actualUri?.let {
-                if (uri == actualUri) return
-                mediaPlayer?.stop()
-                mediaPlayer?.release()
+                if (uri != actualUri) {
+                    mediaPlayer?.stop()
+                    mediaPlayer?.release()
+                    mediaPlayer = MediaPlayer.create(context, uri)
+                }
             }
-            mediaPlayer = MediaPlayer.create(context, uri)
+            if (mediaPlayer == null)
+                mediaPlayer = MediaPlayer.create(context, uri)
             mediaPlayer!!.start()
             actualUri = uri
         }
 
-        override fun stop() {
-            mediaPlayer?.stop()
-            mediaPlayer?.release()
-            actualUri = null
+        override fun pause() {
+            mediaPlayer?.pause()
         }
     }
 }
 
 interface StartAudio {
-    fun start(uri: Uri)
+    fun start(title: String, artist: String, uri: Uri)
 }
