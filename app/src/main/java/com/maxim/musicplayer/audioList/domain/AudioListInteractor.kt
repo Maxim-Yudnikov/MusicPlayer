@@ -10,8 +10,9 @@ interface AudioListInteractor {
     class Base(private val repository: AudioListRepository): AudioListInteractor {
         private val cache = mutableListOf<AudioDomain>()
         override suspend fun dataWithImages(): List<AudioDomain> {
+            val data = repository.dataWithImages()
             cache.clear()
-            cache.addAll(repository.dataWithImages())
+            cache.addAll(data)
             return cache
         }
 

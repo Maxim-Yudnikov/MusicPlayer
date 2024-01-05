@@ -5,15 +5,21 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
+import androidx.viewbinding.ViewBinding
 import com.maxim.musicplayer.databinding.AudioLayoutBinding
+import com.maxim.musicplayer.databinding.CountLayoutBinding
 
 class AudioListAdapter(
     private val listener: Listener
 ) : RecyclerView.Adapter<AudioListAdapter.ItemViewHolder>() {
     private val list = mutableListOf<AudioUi>()
 
-    class ItemViewHolder(private val binding: AudioLayoutBinding) : ViewHolder(binding.root) {
-        fun bind(item: AudioUi, listener: Listener, position: Int) {
+    abstract class ItemViewHolder(binding: ViewBinding) : ViewHolder(binding.root) {
+        abstract fun bind(item: AudioUi, listener: Listener, position: Int)
+    }
+
+    class BaseViewHolder(private val binding: AudioLayoutBinding) : ItemViewHolder(binding) {
+        override fun bind(item: AudioUi, listener: Listener, position: Int) {
             item.showTitle(binding.titleTextView)
             item.showDescription(binding.descriptionTextView)
             item.showArt(binding.artImageView)
@@ -23,14 +29,32 @@ class AudioListAdapter(
         }
     }
 
+    class CountViewHolder(private val binding: CountLayoutBinding) : ItemViewHolder(binding) {
+        override fun bind(item: AudioUi, listener: Listener, position: Int) {
+            item.showTitle(binding.countTextView)
+        }
+    }
+
+    override fun getItemViewType(position: Int) = if (list[position] is AudioUi.Base) 0 else 1
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
-        return ItemViewHolder(
-            AudioLayoutBinding.inflate(
-                LayoutInflater.from(parent.context),
-                parent,
-                false
+        return when (viewType) {
+            0 -> BaseViewHolder(
+                AudioLayoutBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false
+                )
             )
-        )
+
+            else -> CountViewHolder(
+                CountLayoutBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false
+                )
+            )
+        }
     }
 
     override fun getItemCount() = list.size
@@ -55,7 +79,7 @@ class AudioListAdapter(
 class AudioDiffUtil(
     private val oldList: List<AudioUi>,
     private val newList: List<AudioUi>,
-): DiffUtil.Callback() {
+) : DiffUtil.Callback() {
     override fun getOldListSize() = oldList.size
 
     override fun getNewListSize() = newList.size

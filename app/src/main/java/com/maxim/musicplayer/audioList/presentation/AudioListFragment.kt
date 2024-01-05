@@ -23,7 +23,7 @@ class AudioListFragment : BaseFragment<FragmentAudioListBinding, AudioListViewMo
         binding.audioRecyclerView.adapter = adapter
 
         viewModel.observe(this) {
-            it.showList(adapter, binding.countTextView)
+            it.showList(adapter)
         }
 
         viewModel.init(savedInstanceState == null)

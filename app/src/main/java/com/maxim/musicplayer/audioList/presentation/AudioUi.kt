@@ -8,16 +8,16 @@ import android.widget.TextView
 import com.maxim.musicplayer.R
 import com.maxim.musicplayer.player.media.StartAudio
 
-interface AudioUi {
-    fun same(item: AudioUi): Boolean
-    fun showTitle(textView: TextView)
-    fun showDescription(textView: TextView)
-    fun showArtist(textView: TextView)
-    fun showArt(imageView: ImageView)
-    fun start(startAudio: StartAudio)
-    fun startAgain(startAudio: StartAudio)
-    fun showDuration(textView: TextView)
-    fun setMaxDuration(seekBar: SeekBar)
+abstract class AudioUi {
+    abstract fun same(item: AudioUi): Boolean
+    abstract fun showTitle(textView: TextView)
+    open fun showDescription(textView: TextView) = Unit
+    open fun showArtist(textView: TextView) = Unit
+    open fun showArt(imageView: ImageView) = Unit
+    open fun start(startAudio: StartAudio) = Unit
+    open fun startAgain(startAudio: StartAudio) = Unit
+    open fun showDuration(textView: TextView) = Unit
+    open fun setMaxDuration(seekBar: SeekBar) = Unit
     data class Base(
         private val id: Long,
         private val title: String,
@@ -26,7 +26,7 @@ interface AudioUi {
         private val album: String,
         private val artBitmap: Bitmap?,
         private val uri: Uri
-    ) : AudioUi {
+    ) : AudioUi() {
         override fun same(item: AudioUi) = item is Base && item.id == id
         override fun showTitle(textView: TextView) {
             textView.text = title
@@ -66,6 +66,15 @@ interface AudioUi {
             val minutes = seconds / 60
             val second = seconds % 60
             return "$minutes:${if (second < 10) "0$second" else second}"
+        }
+    }
+
+    data class Count(private val size: Int): AudioUi() {
+        override fun same(item: AudioUi) = item is Count
+
+        override fun showTitle(textView: TextView) {
+            val text = textView.context.getString(R.string.songs, size.toString())
+            textView.text = text
         }
     }
 }

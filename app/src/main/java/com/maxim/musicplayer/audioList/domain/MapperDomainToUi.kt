@@ -14,4 +14,6 @@ class MapperDomainToUi : AudioDomain.Mapper<AudioUi> {
         artBitmap: Bitmap?,
         uri: Uri
     ): AudioUi = AudioUi.Base(id, title, artist, duration, album, artBitmap, uri)
+
+    override fun map(count: Int): AudioUi = AudioUi.Count(count)
 }

@@ -15,6 +15,8 @@ interface AudioDomain {
             artBitmap: Bitmap?,
             uri: Uri
         ): T
+
+        fun map(count: Int): T
     }
 
     data class Base(
@@ -28,5 +30,9 @@ interface AudioDomain {
     ) : AudioDomain {
         override fun <T> map(mapper: Mapper<T>) =
             mapper.map(id, title, artist, duration, album, artBitmap, uri)
+    }
+
+    data class Count(private val count: Int) : AudioDomain {
+        override fun <T> map(mapper: Mapper<T>) = mapper.map(count)
     }
 }
