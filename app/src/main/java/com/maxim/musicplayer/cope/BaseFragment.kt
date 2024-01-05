@@ -26,7 +26,7 @@ abstract class BaseFragment<B: ViewBinding, V: ViewModel>: Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel = (activity as ProvideModule).module(viewModelClass()).viewModel()
+        viewModel = (activity as ProvideViewModel).viewModel(viewModelClass())
     }
 
     override fun onDestroyView() {

@@ -24,6 +24,9 @@ class MediaService : Service(), StartAudio {
 
     private val binder = MusicBinder()
 
+    private var cachedTitle = ""
+    private var cachedArtist = ""
+
     inner class MusicBinder : Binder() {
         fun getService(): MediaService = this@MediaService
     }
@@ -32,14 +35,18 @@ class MediaService : Service(), StartAudio {
         return binder
     }
 
+    override fun onCreate() {
+        super.onCreate()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+            createChannel()
+    }
+
     override fun start(title: String, artist: String, uri: Uri) {
         val notificationManager =
             this.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-            createChannel()
         notificationManager.notify(
             NOTIFICATION_ID,
-            makeNotification(title, artist)
+            makeNotification(title, artist, false)
         )
         actualUri?.let {
             if (uri != actualUri) {
@@ -53,9 +60,18 @@ class MediaService : Service(), StartAudio {
         mediaPlayer!!.start()
         mediaPlayer!!.isLooping = true
         actualUri = uri
+
+        cachedTitle = title
+        cachedArtist = artist
     }
 
     fun pause() {
+        val notificationManager =
+            this.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.notify(
+            NOTIFICATION_ID,
+            makeNotification(cachedTitle, cachedArtist, true)
+        )
         mediaPlayer?.pause()
     }
 
@@ -64,7 +80,7 @@ class MediaService : Service(), StartAudio {
         mediaPlayer?.release()
     }
 
-    private fun makeNotification(title: String, text: String): Notification {
+    private fun makeNotification(title: String, text: String, isPause: Boolean): Notification {
         val intentPlay = Intent(applicationContext, NotificationActionService::class.java).apply {
             action = "PLAY"
         }
@@ -81,9 +97,10 @@ class MediaService : Service(), StartAudio {
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
 
-        val intentPrevious = Intent(applicationContext, NotificationActionService::class.java).apply {
-            action = "PREVIOUS"
-        }
+        val intentPrevious =
+            Intent(applicationContext, NotificationActionService::class.java).apply {
+                action = "PREVIOUS"
+            }
         val pendingIntentPrevious = PendingIntent.getBroadcast(
             applicationContext, 0, intentPrevious,
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
@@ -99,7 +116,11 @@ class MediaService : Service(), StartAudio {
             .setOngoing(true)
             .setForegroundServiceBehavior(NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE)
             .addAction(R.drawable.previous_24, "PREVIOUS_BUTTON", pendingIntentPrevious)
-            .addAction(R.drawable.play_24, "PLAY_BUTTON", pendingIntentPlay)
+            .addAction(
+                if (isPause) R.drawable.play_24 else R.drawable.pause_24,
+                "PLAY_BUTTON",
+                pendingIntentPlay
+            )
             .addAction(R.drawable.next_24, "NEXT_BUTTON", pendingIntentNext)
             .setStyle(
                 androidx.media.app.NotificationCompat.MediaStyle()
@@ -122,6 +143,5 @@ class MediaService : Service(), StartAudio {
     companion object {
         private const val NOTIFICATION_ID = 123456789
         private const val CHANNEL_ID = "Player"
-        private const val ACTION_PLAY = "ACTION_PLAY"
     }
 }

@@ -9,17 +9,17 @@ import com.maxim.musicplayer.player.PlayerModule
 import com.maxim.musicplayer.player.presentation.PlayerViewModel
 import java.lang.IllegalStateException
 
-interface ModuleFactory: ClearViewModel, ProvideModule {
+interface ModuleFactory: ClearViewModel, ProvideViewModel {
     class Base(private val provider: ProvideModule): ModuleFactory {
-        private val map = mutableMapOf<Class<out ViewModel>, Module<*>>()
+        private val map = mutableMapOf<Class<out ViewModel>, ViewModel>()
         override fun clear(clasz: Class<out ViewModel>) {
             map.remove(clasz)
         }
 
-        override fun <T : ViewModel> module(clasz: Class<T>): Module<T> {
+        override fun <T : ViewModel> viewModel(clasz: Class<T>): T {
             if (map[clasz] == null)
-                map[clasz] = provider.module(clasz)
-            return map[clasz] as Module<T>
+                map[clasz] = provider.module(clasz).viewModel()
+            return map[clasz] as T
         }
     }
 }
@@ -40,4 +40,8 @@ interface ProvideModule {
             } as Module<T>
         }
     }
+}
+
+interface ProvideViewModel {
+    fun <T: ViewModel> viewModel(clasz: Class<T>): T
 }
