@@ -20,6 +20,9 @@ class PlayerViewModel(
             isPlaying = true
             communication.update(PlayerState.Initial(sharedStorage.read()))
             sharedStorage.read().start(mediaService)
+            mediaService.setOnCompleteListener {
+                next(mediaService)
+            }
         }
     }
 

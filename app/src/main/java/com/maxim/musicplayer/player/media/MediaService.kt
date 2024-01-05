@@ -35,6 +35,21 @@ class MediaService : Service(), StartAudio {
         return binder
     }
 
+    fun currentPosition() = mediaPlayer!!.currentPosition
+
+    fun seekTo(position: Int) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+            mediaPlayer!!.seekTo(position.toLong(), MediaPlayer.SEEK_CLOSEST)
+        else
+            mediaPlayer!!.seekTo(position)
+    }
+
+    fun setOnCompleteListener(action: () -> Unit) {
+        mediaPlayer!!.setOnCompletionListener {
+            action.invoke()
+        }
+    }
+
     override fun onCreate() {
         super.onCreate()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
@@ -58,7 +73,6 @@ class MediaService : Service(), StartAudio {
         if (mediaPlayer == null)
             mediaPlayer = MediaPlayer.create(this, uri)
         mediaPlayer!!.start()
-        mediaPlayer!!.isLooping = true
         actualUri = uri
 
         cachedTitle = title

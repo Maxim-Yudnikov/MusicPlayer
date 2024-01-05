@@ -3,17 +3,20 @@ package com.maxim.musicplayer.audioList.presentation
 import android.graphics.Bitmap
 import android.net.Uri
 import android.widget.ImageView
+import android.widget.SeekBar
 import android.widget.TextView
 import com.maxim.musicplayer.R
 import com.maxim.musicplayer.player.media.StartAudio
 
-abstract class AudioUi {
-    abstract fun same(item: AudioUi): Boolean
-    abstract fun showTitle(textView: TextView)
-    abstract fun showDescription(textView: TextView)
-    abstract fun showArtist(textView: TextView)
-    abstract fun showArt(imageView: ImageView)
-    abstract fun start(startAudio: StartAudio)
+interface AudioUi {
+    fun same(item: AudioUi): Boolean
+    fun showTitle(textView: TextView)
+    fun showDescription(textView: TextView)
+    fun showArtist(textView: TextView)
+    fun showArt(imageView: ImageView)
+    fun start(startAudio: StartAudio)
+    fun showDuration(textView: TextView)
+    fun setMaxDuration(seekBar: SeekBar)
     data class Base(
         private val id: Long,
         private val title: String,
@@ -22,18 +25,15 @@ abstract class AudioUi {
         private val album: String,
         private val artBitmap: Bitmap?,
         private val uri: Uri
-    ) : AudioUi() {
+    ) : AudioUi {
         override fun same(item: AudioUi) = item is Base && item.id == id
         override fun showTitle(textView: TextView) {
             textView.text = title
         }
 
         override fun showDescription(textView: TextView) {
-            val minutes = duration / 60
-            val second = duration % 60
-            val timeUi = "$minutes:${if (second < 10) "0$second" else second}"
-            val s = "$artist - $timeUi"
-            textView.text = s
+            val text = "$artist - ${getTime(duration)}"
+            textView.text = text
         }
 
         override fun showArtist(textView: TextView) {
@@ -47,6 +47,20 @@ abstract class AudioUi {
 
         override fun start(startAudio: StartAudio) {
             startAudio.start(title, artist, uri)
+        }
+
+        override fun showDuration(textView: TextView) {
+            textView.text = getTime(duration)
+        }
+
+        override fun setMaxDuration(seekBar: SeekBar) {
+            seekBar.max = duration * 1000
+        }
+
+        private fun getTime(seconds: Int): String {
+            val minutes = seconds / 60
+            val second = seconds % 60
+            return "$minutes:${if (second < 10) "0$second" else second}"
         }
     }
 }
