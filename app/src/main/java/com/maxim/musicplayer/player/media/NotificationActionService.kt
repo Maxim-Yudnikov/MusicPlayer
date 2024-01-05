@@ -3,7 +3,6 @@ package com.maxim.musicplayer.player.media
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.util.Log
 import com.maxim.musicplayer.cope.ProvideMediaService
 import com.maxim.musicplayer.cope.ProvideViewModel
 import com.maxim.musicplayer.player.presentation.PlayerViewModel
@@ -18,6 +17,5 @@ class NotificationActionService : BroadcastReceiver() {
             "NEXT" -> viewModel.next(mediaService)
             "PREVIOUS" -> viewModel.previous(mediaService)
         }
-        Log.d("MyLog", intent?.action ?: "empty intent")
     }
 }
