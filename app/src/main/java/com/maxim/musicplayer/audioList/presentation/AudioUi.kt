@@ -20,7 +20,7 @@ interface AudioUi {
     fun setMaxDuration(seekBar: SeekBar)
     data class Base(
         private val id: Long,
-        val title: String,
+        private val title: String,
         private val artist: String,
         private val duration: Int,
         private val album: String,

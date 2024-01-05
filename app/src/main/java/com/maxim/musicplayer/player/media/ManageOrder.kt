@@ -1,6 +1,5 @@
 package com.maxim.musicplayer.player.media
 
-import android.util.Log
 import com.maxim.musicplayer.audioList.presentation.AudioUi
 import com.maxim.musicplayer.cope.SimpleStorage
 
@@ -59,15 +58,7 @@ interface ManageOrder {
             } else {
                 actualOrder.addAll(cachedOrder)
             }
-            Log.d(
-                "MyLog",
-                "pos: $actualPosition, generate actualOrder: ${actualOrder.map { (it as AudioUi.Base).title }}"
-            )
             actualPosition = if (isRandom) 0 else position
-            Log.d(
-                "MyLog",
-                "set actual position in generate: $actualPosition, position in constructor: $position"
-            )
             actualTrack = actualOrder[actualPosition]
         }
 
@@ -77,7 +68,6 @@ interface ManageOrder {
             if (isRandom) {
                 val newOrder = ArrayList(cachedOrder)
                 val actual = newOrder.removeAt(actualPosition)
-                Log.d("MyLog", "Removed track: $actual")
                 newOrder.shuffle()
                 newOrder.add(0, actual)
                 actualOrder.addAll(newOrder)
@@ -87,11 +77,6 @@ interface ManageOrder {
                 actualOrder.addAll(cachedOrder)
                 actualPosition = cachedOrder.indexOf(actualTrack)
             }
-            Log.d("MyLog", "set actual position in regenerate: $actualPosition")
-            Log.d(
-                "MyLog",
-                "pos: $actualPosition, regenerate actualOrder: ${actualOrder.map { (it as AudioUi.Base).title }}"
-            )
         }
 
         override fun next(): AudioUi {
