@@ -10,7 +10,5 @@ class Core(private val context: Context) {
     fun contentResolver() = context.contentResolver
     private val sharedStorage = OpenPlayerStorage.Base()
     fun sharedStorage() = sharedStorage
-
-    private val mediaPlayerWrapper = MediaPlayerWrapper.Base(context)
-    fun mediaPlayerWrapper() = mediaPlayerWrapper
+    fun manageOrder() = (context.applicationContext as ManageOrder)
 }

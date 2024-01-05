@@ -20,6 +20,7 @@ class AudioListModule(private val core: Core) : Module<AudioListViewModel> {
         AudioListCommunication.Base(),
         MapperDomainToUi(),
         core.sharedStorage(),
-        core.navigation()
+        core.navigation(),
+        core.manageOrder()
     )
 }

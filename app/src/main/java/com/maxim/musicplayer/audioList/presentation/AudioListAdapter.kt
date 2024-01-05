@@ -13,12 +13,12 @@ class AudioListAdapter(
     private val list = mutableListOf<AudioUi>()
 
     class ItemViewHolder(private val binding: AudioLayoutBinding) : ViewHolder(binding.root) {
-        fun bind(item: AudioUi, listener: Listener) {
+        fun bind(item: AudioUi, listener: Listener, position: Int) {
             item.showTitle(binding.titleTextView)
             item.showDescription(binding.descriptionTextView)
             item.showArt(binding.artImageView)
             itemView.setOnClickListener {
-                listener.open(item)
+                listener.open(item, position)
             }
         }
     }
@@ -36,7 +36,7 @@ class AudioListAdapter(
     override fun getItemCount() = list.size
 
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
-        holder.bind(list[position], listener)
+        holder.bind(list[position], listener, position)
     }
 
     fun update(newList: List<AudioUi>) {
@@ -48,7 +48,7 @@ class AudioListAdapter(
     }
 
     interface Listener {
-        fun open(audioUi: AudioUi)
+        fun open(audioUi: AudioUi, position: Int)
     }
 }
 

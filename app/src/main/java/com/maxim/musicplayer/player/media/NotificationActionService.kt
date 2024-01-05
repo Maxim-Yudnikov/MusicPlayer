@@ -12,10 +12,11 @@ class NotificationActionService : BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {
         val viewModel =
             (context!!.applicationContext as ProvideViewModel).viewModel(PlayerViewModel::class.java)
+        val mediaService = (context.applicationContext as ProvideMediaService).mediaService()
         when (intent?.action) {
-            "PLAY" -> viewModel.play((context.applicationContext as ProvideMediaService).mediaService())
-            "NEXT" -> viewModel.next()
-            "PREVIOUS" -> viewModel.previous()
+            "PLAY" -> viewModel.play(mediaService)
+            "NEXT" -> viewModel.next(mediaService)
+            "PREVIOUS" -> viewModel.previous(mediaService)
         }
         Log.d("MyLog", intent?.action ?: "empty intent")
     }

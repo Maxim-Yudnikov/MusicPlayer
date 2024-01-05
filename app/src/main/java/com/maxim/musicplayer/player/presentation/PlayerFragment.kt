@@ -31,6 +31,14 @@ class PlayerFragment : BaseFragment<FragmentPlayerBinding, PlayerViewModel>() {
             viewModel.play(mediaService)
         }
 
+        binding.nextButton.setOnClickListener {
+            viewModel.next(mediaService)
+        }
+
+        binding.previousButton.setOnClickListener {
+            viewModel.previous(mediaService)
+        }
+
         viewModel.init(savedInstanceState == null, mediaService)
     }
 }

@@ -16,8 +16,8 @@ class AudioListFragment : BaseFragment<FragmentAudioListBinding, AudioListViewMo
         super.onViewCreated(view, savedInstanceState)
 
         val adapter = AudioListAdapter(object : AudioListAdapter.Listener {
-            override fun open(audioUi: AudioUi) {
-                viewModel.open(audioUi)
+            override fun open(audioUi: AudioUi, position: Int) {
+                viewModel.open(audioUi, position)
             }
         })
         binding.audioRecyclerView.adapter = adapter

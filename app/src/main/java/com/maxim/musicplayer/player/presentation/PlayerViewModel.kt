@@ -4,12 +4,14 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import com.maxim.musicplayer.cope.Communication
+import com.maxim.musicplayer.cope.ManageOrder
 import com.maxim.musicplayer.player.media.MediaService
 import com.maxim.musicplayer.player.media.Playable
 
 class PlayerViewModel(
-    private val sharedStorage: OpenPlayerStorage.Read,
-    private val communication: PlayerCommunication
+    private val sharedStorage: OpenPlayerStorage.Mutable,
+    private val communication: PlayerCommunication,
+    private val manageOrder: ManageOrder
 ) : ViewModel(), Communication.Observe<PlayerState>, Playable {
     private var isPlaying = true
 
@@ -36,11 +38,19 @@ class PlayerViewModel(
         }
     }
 
-    override fun next() {
-        TODO("Not yet implemented")
+    override fun next(mediaService: MediaService) {
+        isPlaying = true
+        val track = manageOrder.next()
+        sharedStorage.save(track)
+        communication.update(PlayerState.Initial(track))
+        track.start(mediaService)
     }
 
-    override fun previous() {
-        TODO("Not yet implemented")
+    override fun previous(mediaService: MediaService) {
+        isPlaying = true
+        val track = manageOrder.previous()
+        sharedStorage.save(track)
+        communication.update(PlayerState.Initial(track))
+        track.start(mediaService)
     }
 }

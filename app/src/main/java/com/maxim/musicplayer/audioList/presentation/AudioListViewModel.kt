@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import com.maxim.musicplayer.audioList.domain.AudioDomain
 import com.maxim.musicplayer.audioList.domain.AudioListInteractor
 import com.maxim.musicplayer.cope.Communication
+import com.maxim.musicplayer.cope.ManageOrder
 import com.maxim.musicplayer.cope.Init
 import com.maxim.musicplayer.cope.Navigation
 import com.maxim.musicplayer.player.presentation.OpenPlayerStorage
@@ -16,7 +17,8 @@ class AudioListViewModel(
     private val communication: AudioListCommunication,
     private val mapper: AudioDomain.Mapper<AudioUi>,
     private val sharedStorage: OpenPlayerStorage.Save,
-    private val navigation: Navigation.Update
+    private val navigation: Navigation.Update,
+    private val manageOrder: ManageOrder
 ) : ViewModel(), Init, Communication.Observe<AudioListState> {
     override fun init(isFirstRun: Boolean) {
         communication.update(AudioListState.List(interactor.data().map { it.map(mapper) }))
@@ -26,8 +28,9 @@ class AudioListViewModel(
         communication.observe(owner, observer)
     }
 
-    fun open(audio: AudioUi) {
+    fun open(audio: AudioUi, position: Int) {
         sharedStorage.save(audio)
+        manageOrder.generate(interactor.cachedData().map { it.map(mapper) }, position)
         navigation.update(PlayerScreen)
     }
 }
