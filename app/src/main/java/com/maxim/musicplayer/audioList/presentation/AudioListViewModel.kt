@@ -2,20 +2,16 @@ package com.maxim.musicplayer.audioList.presentation
 
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModel
 import com.maxim.musicplayer.audioList.domain.AudioDomain
 import com.maxim.musicplayer.audioList.domain.AudioListInteractor
+import com.maxim.musicplayer.cope.BaseViewModel
 import com.maxim.musicplayer.cope.Communication
 import com.maxim.musicplayer.cope.Init
 import com.maxim.musicplayer.cope.Navigation
+import com.maxim.musicplayer.cope.RunAsync
 import com.maxim.musicplayer.player.media.ManageOrder
 import com.maxim.musicplayer.player.presentation.OpenPlayerStorage
 import com.maxim.musicplayer.player.presentation.PlayerScreen
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class AudioListViewModel(
     private val interactor: AudioListInteractor,
@@ -23,27 +19,27 @@ class AudioListViewModel(
     private val mapper: AudioDomain.Mapper<AudioUi>,
     private val sharedStorage: OpenPlayerStorage.Save,
     private val navigation: Navigation.Update,
-    private val manageOrder: ManageOrder
-) : ViewModel(), Init, Communication.Observe<AudioListState> {
-    private val viewModelScope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
-    override fun init(isFirstRun: Boolean) { //todo handler
+    private val manageOrder: ManageOrder,
+    runAsync: RunAsync = RunAsync.Base()
+) : BaseViewModel(runAsync), Init, Communication.Observe<AudioListState> {
+    private var refreshFinish: RefreshFinish? = null
+    private var isRefreshing = false
+    override fun init(isFirstRun: Boolean) {
         communication.update(AudioListState.List(interactor.data().map { it.map(mapper) }))
-        viewModelScope.launch(Dispatchers.IO) {
-            val state = AudioListState.List(interactor.dataWithImages().map { it.map(mapper) })
-            withContext(Dispatchers.Main){
-                communication.update(state)
-            }
+        isRefreshing = true
+        handle({ interactor.dataWithImages() }) { list ->
+            communication.update(AudioListState.List(list.map { it.map(mapper) }))
+            refreshFinish?.finish()
+            refreshFinish = null
         }
     }
 
     fun refresh(refreshFinish: RefreshFinish) {
-        viewModelScope.launch(Dispatchers.IO) {
-            val state = AudioListState.List(interactor.dataWithImages().map { it.map(mapper) })
-            withContext(Dispatchers.Main){
-                communication.update(state)
+        if (isRefreshing) this.refreshFinish = refreshFinish
+        else handle({ interactor.dataWithImages() }) { list ->
+                communication.update(AudioListState.List(list.map { it.map(mapper) }))
                 refreshFinish.finish()
             }
-        }
     }
 
     override fun observe(owner: LifecycleOwner, observer: Observer<AudioListState>) {

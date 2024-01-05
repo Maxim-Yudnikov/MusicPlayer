@@ -40,7 +40,6 @@ android {
 
 dependencies {
 
-    implementation("com.lazygeniouz:dfc:1.0.8") //todo need?
     implementation("com.anggrayudi:storage:1.5.5")
     implementation("androidx.work:work-runtime:2.9.0")
 
