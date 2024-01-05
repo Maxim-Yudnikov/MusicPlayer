@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import com.maxim.musicplayer.cope.BaseFragment
 import com.maxim.musicplayer.databinding.FragmentAudioListBinding
 
-class AudioListFragment : BaseFragment<FragmentAudioListBinding, AudioListViewModel>() {
+class AudioListFragment : BaseFragment<FragmentAudioListBinding, AudioListViewModel>(), RefreshFinish {
     override fun viewModelClass() = AudioListViewModel::class.java
     override fun bind(inflater: LayoutInflater, container: ViewGroup?) =
         FragmentAudioListBinding.inflate(inflater, container, false)
@@ -22,10 +22,22 @@ class AudioListFragment : BaseFragment<FragmentAudioListBinding, AudioListViewMo
         })
         binding.audioRecyclerView.adapter = adapter
 
+        binding.swipeToRefresh.setOnRefreshListener {
+            viewModel.refresh(this)
+        }
+
         viewModel.observe(this) {
             it.showList(adapter)
         }
 
         viewModel.init(savedInstanceState == null)
     }
+
+    override fun finish() {
+        binding.swipeToRefresh.isRefreshing = false
+    }
+}
+
+interface RefreshFinish {
+    fun finish()
 }

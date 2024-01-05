@@ -26,12 +26,22 @@ class AudioListViewModel(
     private val manageOrder: ManageOrder
 ) : ViewModel(), Init, Communication.Observe<AudioListState> {
     private val viewModelScope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
-    override fun init(isFirstRun: Boolean) {
+    override fun init(isFirstRun: Boolean) { //todo handler
         communication.update(AudioListState.List(interactor.data().map { it.map(mapper) }))
         viewModelScope.launch(Dispatchers.IO) {
             val state = AudioListState.List(interactor.dataWithImages().map { it.map(mapper) })
             withContext(Dispatchers.Main){
                 communication.update(state)
+            }
+        }
+    }
+
+    fun refresh(refreshFinish: RefreshFinish) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val state = AudioListState.List(interactor.dataWithImages().map { it.map(mapper) })
+            withContext(Dispatchers.Main){
+                communication.update(state)
+                refreshFinish.finish()
             }
         }
     }
