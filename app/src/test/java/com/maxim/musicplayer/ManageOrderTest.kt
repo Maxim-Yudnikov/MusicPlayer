@@ -1,5 +1,6 @@
 package com.maxim.musicplayer
 
+import android.widget.TextView
 import com.maxim.musicplayer.audioList.presentation.AudioUi
 import com.maxim.musicplayer.cope.SimpleStorage
 import com.maxim.musicplayer.player.media.ManageOrder
@@ -18,15 +19,9 @@ class ManageOrderTest {
     fun before() {
         storage = FakeSimpleStorage()
         manageOrder = ManageOrder.Base(storage)
-        trackOne = AudioUi.Base(
-            23, "Title1", "Artist", 55, "album", null, null
-        )
-        trackTwo = AudioUi.Base(
-            24, "Title2", "Artist", 55, "album", null, null
-        )
-        trackThree = AudioUi.Base(
-            25, "Title3", "Artist", 55, "album", null, null
-        )
+        trackOne = FakeAudio(23)
+        trackTwo = FakeAudio(24)
+        trackThree = FakeAudio(25)
     }
 
     @Test
@@ -105,4 +100,9 @@ class FakeSimpleStorage : SimpleStorage {
 
     override fun read(key: String, default: Boolean) =
         false //if (map[key] == null) default else map[key]!!
+}
+
+private data class FakeAudio(private val id: Int): AudioUi() {
+    override fun same(item: AudioUi) = false
+    override fun showTitle(textView: TextView) = Unit
 }
