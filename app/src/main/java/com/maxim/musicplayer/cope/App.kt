@@ -51,13 +51,6 @@ class App : Application(), ProvideViewModel, ProvideMediaService, ProvideManageO
         )
     }
 
-//    fun unbind() {
-//        if (isBound) {
-//            unbindService(connection)
-//            isBound = false
-//        }
-//    }
-
     override fun mediaService() = mediaService!!
     override fun manageOrder(): ManageOrder = manageOrder
     override fun <T : ViewModel> viewModel(clasz: Class<T>) = factory.viewModel(clasz)

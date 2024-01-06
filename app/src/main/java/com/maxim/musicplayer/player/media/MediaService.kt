@@ -34,7 +34,6 @@ interface MediaService : StartAudio, Playable {
     fun currentPosition(): Int
     fun seekTo(position: Int)
     fun setOnCompleteListener(action: () -> Unit)
-    fun pause()
     fun open(list: List<AudioUi>, audio: AudioUi, position: Int)
     fun stop()
     fun isPlaying(): Boolean
@@ -134,7 +133,13 @@ interface MediaService : StartAudio, Playable {
             } else {
                 downBarTrackCommunication.stop()
                 playerCommunication.update(PlayerState.OnPause)
-                pause()
+                val notificationManager =
+                    this.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+                notificationManager.notify(
+                    NOTIFICATION_ID,
+                    makeNotification(cachedTitle, cachedArtist, cachedIcon, true)
+                )
+                mediaPlayer?.pause()
             }
         }
 
@@ -183,34 +188,21 @@ interface MediaService : StartAudio, Playable {
             audio.start(this)
         }
 
+        //todo strange, stopSelf doesn't call onDestroy
         override fun stop() {
             Log.d("MyLog", "service close")
+            if (isPlaying) play()
             stopForeground(STOP_FOREGROUND_REMOVE)
             stopSelf()
         }
 
-        //todo if service will not die, remove try catch
-        override fun isPlaying() = try {
-            mediaPlayer?.isPlaying ?: false
-        } catch (e: Exception) {
-            false
-        }
-
-        override fun pause() {
-            val notificationManager =
-                this.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            notificationManager.notify(
-                NOTIFICATION_ID,
-                makeNotification(cachedTitle, cachedArtist, cachedIcon, true)
-            )
-            mediaPlayer?.pause()
-        }
+        override fun isPlaying() = mediaPlayer?.isPlaying ?: false
 
         override fun onDestroy() {
             Log.d("MyLog", "service onDestroy")
-            super.onDestroy()
             mediaPlayer?.reset()
             mediaPlayer?.release()
+            super.onDestroy()
         }
 
         private lateinit var mediaSessionCompat: MediaSessionCompat
