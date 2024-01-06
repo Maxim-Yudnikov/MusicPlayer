@@ -41,15 +41,15 @@ class PlayerFragment : BaseFragment<FragmentPlayerBinding, PlayerViewModel>() {
             (requireContext().applicationContext as ProvideMediaService).mediaService()
 
         binding.playButton.setOnClickListener {
-            viewModel.play(mediaService)
+            viewModel.play()
         }
 
         binding.nextButton.setOnClickListener {
-            viewModel.next(mediaService)
+            viewModel.next()
         }
 
         binding.previousButton.setOnClickListener {
-            viewModel.previous(mediaService)
+            viewModel.previous()
         }
 
         binding.loopOrderButton.setOnClickListener {
@@ -93,8 +93,6 @@ class PlayerFragment : BaseFragment<FragmentPlayerBinding, PlayerViewModel>() {
         handler.postDelayed(runnable, 1300)
 
         viewModel.init(savedInstanceState == null, mediaService)
-
-
     }
 
     override fun onResume() {

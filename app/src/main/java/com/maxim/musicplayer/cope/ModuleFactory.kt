@@ -3,6 +3,8 @@ package com.maxim.musicplayer.cope
 import androidx.lifecycle.ViewModel
 import com.maxim.musicplayer.audioList.AudioListModule
 import com.maxim.musicplayer.audioList.presentation.AudioListViewModel
+import com.maxim.musicplayer.downBar.DownBarModule
+import com.maxim.musicplayer.downBar.DownBarViewModel
 import com.maxim.musicplayer.main.MainModule
 import com.maxim.musicplayer.main.MainViewModel
 import com.maxim.musicplayer.player.PlayerModule
@@ -36,6 +38,7 @@ interface ProvideModule {
                 MainViewModel::class.java -> MainModule(core)
                 AudioListViewModel::class.java -> AudioListModule(core)
                 PlayerViewModel::class.java -> PlayerModule(core)
+                DownBarViewModel::class.java -> DownBarModule(core)
                 else -> throw IllegalStateException("unknown viewModel $clasz")
             } as Module<T>
         }

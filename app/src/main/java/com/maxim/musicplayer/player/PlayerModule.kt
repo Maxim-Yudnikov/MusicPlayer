@@ -8,6 +8,7 @@ import com.maxim.musicplayer.player.presentation.PlayerViewModel
 class PlayerModule(private val core: Core) : Module<PlayerViewModel> {
     override fun viewModel() = PlayerViewModel(
         core.sharedStorage(),
+        core.downBarRepository(),
         PlayerCommunication.Base(),
         core.manageOrder()
     )

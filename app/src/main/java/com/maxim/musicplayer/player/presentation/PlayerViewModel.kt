@@ -4,12 +4,14 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import com.maxim.musicplayer.cope.Communication
+import com.maxim.musicplayer.downBar.DownBarRepository
 import com.maxim.musicplayer.player.media.ManageOrder
 import com.maxim.musicplayer.player.media.MediaService
 import com.maxim.musicplayer.player.media.Playable
 
 class PlayerViewModel(
     private val sharedStorage: OpenPlayerStorage.Mutable,
+    private val downBarRepository: DownBarRepository,
     private val communication: PlayerCommunication,
     private val manageOrder: ManageOrder
 ) : ViewModel(), Communication.Observe<PlayerState>, Playable {
@@ -17,39 +19,47 @@ class PlayerViewModel(
     private var isLoop = manageOrder.isLoop
     private var isRandom = manageOrder.isRandom
 
+    private lateinit var cachedMediaService: MediaService
+
     fun init(isFirstRun: Boolean, mediaService: MediaService) {
         if (isFirstRun) {
             isPlaying = true
+            val track = sharedStorage.read()
             communication.update(
                 PlayerState.Initial(
-                    sharedStorage.read(),
+                    track,
                     isRandom,
                     isLoop
                 )
             )
-            sharedStorage.read().start(mediaService)
+            track.start(mediaService)
+            downBarRepository.setTrack(track, this)
             mediaService.setOnCompleteListener {
-                next(mediaService)
+                next()
             }
         }
+        cachedMediaService = mediaService
     }
 
     override fun observe(owner: LifecycleOwner, observer: Observer<PlayerState>) {
         communication.observe(owner, observer)
     }
 
-    override fun play(mediaService: MediaService) {
+    override fun play() {
         isPlaying = !isPlaying
         if (isPlaying) {
-            sharedStorage.read().start(mediaService)
+            val track = sharedStorage.read()
+            track.start(cachedMediaService)
+            downBarRepository.setTrack(track, this)
             communication.update(PlayerState.Running)
         } else {
-            mediaService.pause()
+            cachedMediaService.pause()
+            downBarRepository.stop()
             communication.update(PlayerState.OnPause)
         }
     }
 
-    override fun next(mediaService: MediaService) {
+    override fun next() {
         if (!(manageOrder.isLast() && !isLoop)) {
             isPlaying = true
             val track = manageOrder.next()
@@ -59,26 +69,30 @@ class PlayerViewModel(
                     track, isRandom, isLoop
                 )
             )
-            track.start(mediaService)
-            mediaService.setOnCompleteListener {
-                next(mediaService)
+            track.start(cachedMediaService)
+            downBarRepository.setTrack(track, this)
+            cachedMediaService.setOnCompleteListener {
+                next()
             }
         }
     }
 
-    override fun previous(mediaService: MediaService) {
-        if (mediaService.currentPosition() < TIME_TO_PREVIOUS_MAKE_RESTART && !(manageOrder.isFirst() && !isLoop)) {
+    override fun previous() {
+        if (cachedMediaService.currentPosition() < TIME_TO_PREVIOUS_MAKE_RESTART && !(manageOrder.isFirst() && !isLoop)) {
             isPlaying = true
             val track = manageOrder.previous()
             sharedStorage.save(track)
             communication.update(PlayerState.Initial(track, isRandom, isLoop))
-            track.start(mediaService)
+            track.start(cachedMediaService)
+            downBarRepository.setTrack(track, this)
         } else {
             communication.update(PlayerState.Running)
-            sharedStorage.read().startAgain(mediaService)
+            val track = sharedStorage.read()
+            track.startAgain(cachedMediaService)
+            downBarRepository.setTrack(track, this)
         }
-        mediaService.setOnCompleteListener {
-            next(mediaService)
+        cachedMediaService.setOnCompleteListener {
+            next()
         }
     }
 
