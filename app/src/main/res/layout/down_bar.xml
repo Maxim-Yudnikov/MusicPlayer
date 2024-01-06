@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/down_bar"
+    android:background="@drawable/rounded_corners"
     android:clickable="true"
-    android:orientation="horizontal"
-    android:padding="8dp"
     android:focusable="true"
-    android:id="@+id/root">
+    android:orientation="horizontal"
+    android:padding="8dp">
 
     <ImageView
         android:id="@+id/artImageView"
@@ -36,9 +36,9 @@
             android:id="@+id/artistTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="15sp"
             android:ellipsize="end"
             android:maxLines="1"
+            android:textSize="15sp"
             tools:text="Artist" />
 
     </LinearLayout>

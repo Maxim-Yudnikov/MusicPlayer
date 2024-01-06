@@ -25,7 +25,7 @@ class AudioListAdapter(
             item.showDescription(binding.descriptionTextView)
             item.showArt(binding.artImageView)
             itemView.setOnClickListener {
-                listener.open(item, position)
+                listener.open(item, position - 1)
             }
         }
     }

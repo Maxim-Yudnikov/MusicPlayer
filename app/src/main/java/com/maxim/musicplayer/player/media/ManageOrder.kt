@@ -14,90 +14,93 @@ interface ManageOrder {
     fun isLast(): Boolean
     fun isFirst(): Boolean
 
+    fun actualTrack(): AudioUi
+
     class Base(private val storage: SimpleStorage) : ManageOrder {
+        override var isLoop = storage.read(LOOP_KEY, false)
+            set(value) {
+                field = value
+                storage.save(LOOP_KEY, isLoop)
+            }
+        override var isRandom = storage.read(RANDOM_KEY, false)
+            set(value) {
+                field = value
+                storage.save(RANDOM_KEY, isRandom)
+                regenerate()
+            }
+
+        private val tracksListInNormalOrder = mutableListOf<AudioUi>()
         private val actualOrder = mutableListOf<AudioUi>()
         private var actualPosition = 0
-        private val cachedOrder = mutableListOf<AudioUi>()
-        private lateinit var actualTrack: AudioUi
-        override var isLoop: Boolean = false
-            set(value) {
-                storage.save(LOOP_KEY, value)
-                field = value
-            }
-        override var isRandom: Boolean = false
-            set(value) {
-                storage.save(RANDOM_KEY, value)
-                field = value
-                regenerate()
-                actualPosition = if (value) {
-                    0
-                } else try {
-                    cachedOrder.indexOf(actualTrack)
-                } catch (e: Exception) {
-                    0
-                }
-            }
-
-        override fun isLast() = actualPosition == actualOrder.lastIndex
-        override fun isFirst() = actualPosition == 0
+        private var actualTrack: AudioUi = AudioUi.Empty
 
         override fun generate(tracks: List<AudioUi>, position: Int) {
-            isLoop = storage.read(LOOP_KEY, false)
-            isRandom = storage.read(RANDOM_KEY, false)
-
-            cachedOrder.clear()
-            cachedOrder.addAll(tracks)
-
+            tracksListInNormalOrder.clear()
+            tracksListInNormalOrder.addAll(tracks)
             actualOrder.clear()
-            if (isRandom) {
-                val newOrder = ArrayList(cachedOrder)
-                val actual = newOrder.removeAt(position)
-                newOrder.shuffle()
-                newOrder.add(0, actual)
+
+            actualPosition = if (isRandom) {
+                val newOrder = ArrayList(tracks.shuffled())
+                val actualTrack = newOrder.removeAt(newOrder.indexOf(tracksListInNormalOrder[position]))
+                newOrder.add(0, actualTrack)
                 actualOrder.addAll(newOrder)
+                0
             } else {
-                actualOrder.addAll(cachedOrder)
+                actualOrder.addAll(tracks)
+                position
             }
-            actualPosition = if (isRandom) 0 else position
             actualTrack = actualOrder[actualPosition]
+//            Log.d(
+//                "MyLog",
+//                "pos: $actualPosition\nactualTrack: $actualTrack\ngenerated order: ${actualOrder.map { (it as AudioUi.Base).title }}\n"
+//            )
         }
 
         override fun regenerate() {
-            if (cachedOrder.isEmpty()) return
             actualOrder.clear()
-            if (isRandom) {
-                val newOrder = ArrayList(cachedOrder)
-                val actual = newOrder.removeAt(actualPosition)
-                newOrder.shuffle()
-                newOrder.add(0, actual)
+
+            actualPosition = if (isRandom) {
+                val newOrder = ArrayList(tracksListInNormalOrder.shuffled())
+                val actualTrack = newOrder.removeAt(newOrder.indexOf(actualTrack))
+                newOrder.add(0, actualTrack)
                 actualOrder.addAll(newOrder)
-                actualPosition = 0
-                actualTrack = actualOrder[actualPosition]
+                0
             } else {
-                actualOrder.addAll(cachedOrder)
-                actualPosition = cachedOrder.indexOf(actualTrack)
+                actualOrder.addAll(tracksListInNormalOrder)
+                tracksListInNormalOrder.indexOf(actualTrack)
             }
+            actualTrack = actualOrder[actualPosition]
+//            Log.d(
+//                "MyLog",
+//                "pos: $actualPosition\nactualTrack: $actualTrack\ngenerated order: ${actualOrder.map { (it as AudioUi.Base).title }}\n"
+//            )
         }
 
         override fun next(): AudioUi {
-            if (actualPosition == actualOrder.lastIndex && !isLoop)
-                return actualOrder[actualPosition]
-            else if (actualPosition == actualOrder.lastIndex && isLoop)
-                actualPosition = -1
-            actualTrack = actualOrder[++actualPosition]
+            if (actualPosition != actualOrder.lastIndex) {
+                actualPosition++
+            } else if (isLoop) {
+                actualPosition = 0
+            }
+            actualTrack = actualOrder[actualPosition]
             return actualTrack
         }
 
         override fun previous(): AudioUi {
-            actualTrack = if (actualPosition == 0 && isLoop) {
+            if (actualPosition != 0) {
+                actualPosition--
+            } else if (isLoop) {
                 actualPosition = actualOrder.lastIndex
-                actualOrder[actualPosition]
-            } else if (actualPosition == 0) {
-                actualOrder[actualPosition]
-            } else
-                actualOrder[--actualPosition]
+            }
+            actualTrack = actualOrder[actualPosition]
             return actualTrack
         }
+
+        override fun isLast() = actualPosition == actualOrder.lastIndex
+
+        override fun isFirst() = actualPosition == 0
+
+        override fun actualTrack() = actualTrack
 
         companion object {
             private const val RANDOM_KEY = "RANDOM_KEY"

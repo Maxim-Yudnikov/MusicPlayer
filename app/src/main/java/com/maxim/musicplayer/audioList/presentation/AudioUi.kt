@@ -20,7 +20,7 @@ abstract class AudioUi {
     open fun setMaxDuration(seekBar: SeekBar) = Unit
     data class Base(
         private val id: Long,
-        private val title: String,
+        val title: String,
         private val artist: String,
         private val duration: Long,
         private val album: String,
@@ -80,6 +80,12 @@ abstract class AudioUi {
 
     object Space: AudioUi() {
         override fun same(item: AudioUi) = item is Space
+
+        override fun showTitle(textView: TextView) = Unit
+    }
+
+    object Empty: AudioUi() {
+        override fun same(item: AudioUi) = item is Empty
 
         override fun showTitle(textView: TextView) = Unit
     }

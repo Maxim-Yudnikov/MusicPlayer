@@ -15,7 +15,6 @@ import android.os.Binder
 import android.os.Build
 import android.os.IBinder
 import android.support.v4.media.session.MediaSessionCompat
-import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationCompat.PRIORITY_MAX
@@ -161,7 +160,6 @@ interface MediaService : StartAudio {
                 drawable?.draw(canvas)
                 bitmap
             }
-            Log.d("MyLog", "$largeIcon")
 
             mediaSessionCompat?.release()
             mediaSessionCompat = MediaSessionCompat(this, "tag")

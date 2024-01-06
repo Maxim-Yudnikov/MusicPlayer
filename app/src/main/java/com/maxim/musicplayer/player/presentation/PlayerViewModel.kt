@@ -3,6 +3,7 @@ package com.maxim.musicplayer.player.presentation
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
+import com.maxim.musicplayer.audioList.presentation.AudioUi
 import com.maxim.musicplayer.cope.Communication
 import com.maxim.musicplayer.downBar.DownBarTrackCommunication
 import com.maxim.musicplayer.player.media.ManageOrder
@@ -15,7 +16,7 @@ class PlayerViewModel(
     private val communication: PlayerCommunication,
     private val manageOrder: ManageOrder
 ) : ViewModel(), Communication.Observe<PlayerState>, Playable {
-    private var isPlaying = true
+    private var isPlaying = false
     private var isLoop = manageOrder.isLoop
     private var isRandom = manageOrder.isRandom
 
@@ -23,19 +24,29 @@ class PlayerViewModel(
 
     fun init(isFirstRun: Boolean, mediaService: MediaService) {
         if (isFirstRun) {
-            isPlaying = true
             val track = sharedStorage.read()
-            communication.update(
-                PlayerState.Initial(
-                    track,
-                    isRandom,
-                    isLoop
+            if (track != AudioUi.Empty) {
+                isPlaying = true
+                communication.update(
+                    PlayerState.Initial(
+                        track,
+                        isRandom,
+                        isLoop
+                    )
                 )
-            )
-            track.start(mediaService)
-            downBarTrackCommunication.setTrack(track, this)
-            mediaService.setOnCompleteListener {
-                next()
+                track.start(mediaService)
+                downBarTrackCommunication.setTrack(track, this)
+                mediaService.setOnCompleteListener {
+                    next()
+                }
+            } else {
+                communication.update(
+                    PlayerState.Initial(
+                        manageOrder.actualTrack(),
+                        isRandom,
+                        isLoop
+                    )
+                )
             }
         }
         cachedMediaService = mediaService
@@ -48,7 +59,7 @@ class PlayerViewModel(
     override fun play() {
         isPlaying = !isPlaying
         if (isPlaying) {
-            val track = sharedStorage.read()
+            val track = manageOrder.actualTrack()
             track.start(cachedMediaService)
             downBarTrackCommunication.setTrack(track, this)
             communication.update(PlayerState.Running)
@@ -87,7 +98,7 @@ class PlayerViewModel(
             downBarTrackCommunication.setTrack(track, this)
         } else {
             communication.update(PlayerState.Running)
-            val track = sharedStorage.read()
+            val track = manageOrder.actualTrack()
             track.startAgain(cachedMediaService)
             downBarTrackCommunication.setTrack(track, this)
         }

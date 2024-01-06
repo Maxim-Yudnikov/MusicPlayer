@@ -38,9 +38,9 @@ class AudioListViewModel(
     fun refresh(refreshFinish: RefreshFinish) {
         if (isRefreshing) this.refreshFinish = refreshFinish
         else handle({ interactor.dataWithImages() }) { list ->
-                communication.update(AudioListState.List(list.map { it.map(mapper) }))
-                refreshFinish.finish()
-            }
+            communication.update(AudioListState.List(list.map { it.map(mapper) }))
+            refreshFinish.finish()
+        }
     }
 
     override fun observe(owner: LifecycleOwner, observer: Observer<AudioListState>) {
@@ -49,7 +49,8 @@ class AudioListViewModel(
 
     fun open(audio: AudioUi, position: Int) {
         sharedStorage.save(audio)
-        manageOrder.generate(interactor.cachedData().map { it.map(mapper) }, position)
+        val list = interactor.cachedData().map { it.map(mapper) }
+        manageOrder.generate(list.subList(1, list.lastIndex), position)
         navigation.update(PlayerScreen)
     }
 }
