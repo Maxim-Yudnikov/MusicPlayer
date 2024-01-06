@@ -15,9 +15,7 @@ class App : Application(), ProvideViewModel, ProvideMediaService {
         super.onCreate()
         factory = ModuleFactory.Base(ProvideModule.Base(Core(this)))
 
-        val intent = Intent(this, MediaService.Base::class.java)
-        startService(intent)
-        bindService(intent, connection, Context.BIND_AUTO_CREATE)
+        startService(Intent(this, MediaService.Base::class.java))
     }
 
     private var isBound = false
@@ -31,6 +29,16 @@ class App : Application(), ProvideViewModel, ProvideMediaService {
         }
 
         override fun onServiceDisconnected(name: ComponentName?) {
+            isBound = false
+        }
+    }
+
+    fun bind() {
+        bindService(Intent(this, MediaService.Base::class.java), connection, Context.BIND_AUTO_CREATE)
+    }
+    fun unbind() {
+        if (isBound) {
+            unbindService(connection)
             isBound = false
         }
     }

@@ -9,6 +9,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModel
 import com.maxim.musicplayer.R
+import com.maxim.musicplayer.cope.App
 import com.maxim.musicplayer.cope.ProvideViewModel
 
 class MainActivity : AppCompatActivity(), ProvideViewModel {
@@ -99,6 +100,15 @@ class MainActivity : AppCompatActivity(), ProvideViewModel {
             }
             viewModel.init(true)
         }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        (application as App).bind()
+    }
+    override fun onStop() {
+        super.onStop()
+        (application as App).unbind()
     }
 
     override fun <T : ViewModel> viewModel(clasz: Class<T>) =
