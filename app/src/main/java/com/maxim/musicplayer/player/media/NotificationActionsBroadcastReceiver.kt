@@ -10,9 +10,17 @@ class NotificationActionsBroadcastReceiver : BroadcastReceiver() {
         val service =
             (context!!.applicationContext as ProvideMediaService).mediaService()
         when (intent?.action) {
-            "PLAY" -> service.play()
-            "NEXT" -> service.next()
-            "PREVIOUS" -> service.previous()
+            PLAY_ACTION -> service.play()
+            NEXT_ACTION -> service.next()
+            PREVIOUS_ACTION -> service.previous()
+            STOP_ACTION -> service.stop()
         }
+    }
+
+    companion object {
+        const val PLAY_ACTION = "PLAY"
+        const val NEXT_ACTION = "NEXT"
+        const val PREVIOUS_ACTION = "PREVIOUS"
+        const val STOP_ACTION = "STOP"
     }
 }

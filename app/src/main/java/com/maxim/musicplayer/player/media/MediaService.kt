@@ -36,6 +36,7 @@ interface MediaService : StartAudio, Playable {
     fun setOnCompleteListener(action: () -> Unit)
     fun pause()
     fun open(list: List<AudioUi>, audio: AudioUi, position: Int)
+    fun stop()
     fun isPlaying(): Boolean
 
     class Base : Service(), MediaService {
@@ -79,7 +80,6 @@ interface MediaService : StartAudio, Playable {
 
         override fun onCreate() {
             super.onCreate()
-            Log.d("MyLog", "service on create")
             manageOrder = (applicationContext as ProvideManageOrder).manageOrder()
             downBarTrackCommunication =
                 (applicationContext as ProvideDownBarTrackCommunication).downBarTrackCommunication()
@@ -91,8 +91,6 @@ interface MediaService : StartAudio, Playable {
         }
 
         override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-            Log.d("MyLog", "service onStartCommand")
-            Log.d("MyLog", "service onStartCommand")
             return START_STICKY
         }
 
@@ -103,13 +101,6 @@ interface MediaService : StartAudio, Playable {
             icon: Bitmap?,
             ignoreSame: Boolean
         ) {
-            Log.d("MyLog", "service#start()")
-//            val notificationManager =
-//                this.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-//            notificationManager.notify(
-//                NOTIFICATION_ID,
-//                makeNotification(title, artist, icon, false)
-//            )
 
             startForeground(NOTIFICATION_ID, makeNotification(title, artist, icon, false))
 
@@ -192,6 +183,12 @@ interface MediaService : StartAudio, Playable {
             audio.start(this)
         }
 
+        override fun stop() {
+            Log.d("MyLog", "service close")
+            stopForeground(STOP_FOREGROUND_REMOVE)
+            stopSelf()
+        }
+
         //todo if service will not die, remove try catch
         override fun isPlaying() = try {
             mediaPlayer?.isPlaying ?: false
@@ -210,8 +207,8 @@ interface MediaService : StartAudio, Playable {
         }
 
         override fun onDestroy() {
-            super.onDestroy()
             Log.d("MyLog", "service onDestroy")
+            super.onDestroy()
             mediaPlayer?.reset()
             mediaPlayer?.release()
         }
@@ -226,7 +223,7 @@ interface MediaService : StartAudio, Playable {
         ): Notification {
             val intentPlay =
                 Intent(applicationContext, NotificationActionsBroadcastReceiver::class.java).apply {
-                    action = "PLAY"
+                    action = NotificationActionsBroadcastReceiver.PLAY_ACTION
                 }
             val pendingIntentPlay = PendingIntent.getBroadcast(
                 applicationContext, 0, intentPlay,
@@ -235,7 +232,7 @@ interface MediaService : StartAudio, Playable {
 
             val intentNext =
                 Intent(applicationContext, NotificationActionsBroadcastReceiver::class.java).apply {
-                    action = "NEXT"
+                    action = NotificationActionsBroadcastReceiver.NEXT_ACTION
                 }
             val pendingIntentNext = PendingIntent.getBroadcast(
                 applicationContext, 0, intentNext,
@@ -244,10 +241,19 @@ interface MediaService : StartAudio, Playable {
 
             val intentPrevious =
                 Intent(applicationContext, NotificationActionsBroadcastReceiver::class.java).apply {
-                    action = "PREVIOUS"
+                    action = NotificationActionsBroadcastReceiver.PREVIOUS_ACTION
                 }
             val pendingIntentPrevious = PendingIntent.getBroadcast(
                 applicationContext, 0, intentPrevious,
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            )
+
+            val intentStop =
+                Intent(applicationContext, NotificationActionsBroadcastReceiver::class.java).apply {
+                    action = NotificationActionsBroadcastReceiver.STOP_ACTION
+                }
+            val pendingIntentStop = PendingIntent.getBroadcast(
+                applicationContext, 0, intentStop,
                 PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
             )
 
@@ -271,16 +277,17 @@ interface MediaService : StartAudio, Playable {
                 .setPriority(PRIORITY_MAX)
                 .setOngoing(true)
                 .setForegroundServiceBehavior(NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE)
-                .addAction(R.drawable.previous_24, "PREVIOUS_BUTTON", pendingIntentPrevious)
+                .addAction(R.drawable.previous_24, "Previous", pendingIntentPrevious)
                 .addAction(
                     if (isPause) R.drawable.play_24 else R.drawable.pause_24,
-                    "PLAY_BUTTON",
+                    "Play",
                     pendingIntentPlay
                 )
-                .addAction(R.drawable.next_24, "NEXT_BUTTON", pendingIntentNext)
+                .addAction(R.drawable.next_24, "Next", pendingIntentNext)
+                .addAction(R.drawable.close_24, "Stop", pendingIntentStop)
                 .setStyle(
                     androidx.media.app.NotificationCompat.MediaStyle()
-                        .setShowActionsInCompactView(0, 1, 2)
+                        .setShowActionsInCompactView(0, 1, 2, 4)
                         .setMediaSession(mediaSessionCompat.sessionToken)
                 )
                 .build()
