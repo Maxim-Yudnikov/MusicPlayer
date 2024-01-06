@@ -1,7 +1,6 @@
 package com.maxim.musicplayer.player.presentation
 
 import android.os.Bundle
-import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,14 +11,19 @@ import com.maxim.musicplayer.cope.BaseFragment
 import com.maxim.musicplayer.cope.ProvideMediaService
 import com.maxim.musicplayer.databinding.FragmentPlayerBinding
 import com.maxim.musicplayer.player.media.MediaService
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class PlayerFragment : BaseFragment<FragmentPlayerBinding, PlayerViewModel>() {
-    private lateinit var runnable: Runnable
-    private val handler = Handler()
     private lateinit var mediaService: MediaService
     override fun viewModelClass() = PlayerViewModel::class.java
     override fun bind(inflater: LayoutInflater, container: ViewGroup?) =
         FragmentPlayerBinding.inflate(inflater, container, false)
+
+    private var coroutineIsRunning = true
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -84,13 +88,19 @@ class PlayerFragment : BaseFragment<FragmentPlayerBinding, PlayerViewModel>() {
             override fun onStopTrackingTouch(seekBar: SeekBar?) = Unit
         })
 
-        runnable = Runnable {
-            val currentPosition = mediaService.currentPosition()
-            binding.seekBar.progress = currentPosition
-            binding.actualTimeTextView.text = getTime(currentPosition / 1000)
-            handler.postDelayed(runnable, 1000)
+        CoroutineScope(Dispatchers.Default).launch {
+            delay(1300)
+            while (coroutineIsRunning) {
+                withContext(Dispatchers.Main) {
+                    if (mediaService.isPlaying()) {
+                        val currentPosition = mediaService.currentPosition()
+                        binding.seekBar.progress = currentPosition
+                        binding.actualTimeTextView.text = getTime(currentPosition / 1000)
+                    }
+                }
+                delay(1000)
+            }
         }
-        handler.postDelayed(runnable, 1300)
 
         viewModel.init(savedInstanceState == null)
     }
@@ -103,7 +113,7 @@ class PlayerFragment : BaseFragment<FragmentPlayerBinding, PlayerViewModel>() {
     }
 
     override fun onDestroyView() {
-        handler.removeCallbacksAndMessages(null)
+        coroutineIsRunning = false
         super.onDestroyView()
     }
 

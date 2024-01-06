@@ -25,7 +25,7 @@ class App : Application(), ProvideViewModel, ProvideMediaService, ProvideManageO
         factory = ModuleFactory.Base(ProvideModule.Base(Core(this)))
         manageOrder =
             ManageOrder.Base(SimpleStorage.Base(getSharedPreferences(STORAGE_NAME, MODE_PRIVATE)))
-        startForegroundService(Intent(this, MediaService::class.java))
+        startService(Intent(this, MediaService::class.java))
     }
 
     private var isBound = false
@@ -51,12 +51,12 @@ class App : Application(), ProvideViewModel, ProvideMediaService, ProvideManageO
         )
     }
 
-    fun unbind() {
-        if (isBound) {
-            unbindService(connection)
-            isBound = false
-        }
-    }
+//    fun unbind() {
+//        if (isBound) {
+//            unbindService(connection)
+//            isBound = false
+//        }
+//    }
 
     override fun mediaService() = mediaService!!
     override fun manageOrder(): ManageOrder = manageOrder

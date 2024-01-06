@@ -87,11 +87,12 @@ interface MediaService : StartAudio, Playable {
                 (applicationContext as ProvidePlayerCommunication).playerCommunication()
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
                 createChannel()
+            mediaSessionCompat = MediaSessionCompat(this, "tag")
         }
 
         override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
             Log.d("MyLog", "service onStartCommand")
-            //manageOrder.generate(repository.dataWithImages().map { it.map(mapperToUi) }, 0)
+            Log.d("MyLog", "service onStartCommand")
             return START_STICKY
         }
 
@@ -103,15 +104,18 @@ interface MediaService : StartAudio, Playable {
             ignoreSame: Boolean
         ) {
             Log.d("MyLog", "service#start()")
-            val notificationManager =
-                this.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            notificationManager.notify(
-                NOTIFICATION_ID,
-                makeNotification(title, artist, icon, false)
-            )
+//            val notificationManager =
+//                this.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+//            notificationManager.notify(
+//                NOTIFICATION_ID,
+//                makeNotification(title, artist, icon, false)
+//            )
+
+            startForeground(NOTIFICATION_ID, makeNotification(title, artist, icon, false))
+
             actualUri?.let {
                 if (uri != actualUri || ignoreSame) {
-                    mediaPlayer?.stop()
+                    mediaPlayer?.reset()
                     mediaPlayer?.release()
                     mediaPlayer = MediaPlayer.create(this, uri)
                     mediaPlayer!!.setOnCompletionListener { next() }
@@ -188,7 +192,12 @@ interface MediaService : StartAudio, Playable {
             audio.start(this)
         }
 
-        override fun isPlaying() = mediaPlayer?.isPlaying ?: false
+        //todo if service will not die, remove try catch
+        override fun isPlaying() = try {
+            mediaPlayer?.isPlaying ?: false
+        } catch (e: Exception) {
+            false
+        }
 
         override fun pause() {
             val notificationManager =
@@ -203,10 +212,11 @@ interface MediaService : StartAudio, Playable {
         override fun onDestroy() {
             super.onDestroy()
             Log.d("MyLog", "service onDestroy")
+            mediaPlayer?.reset()
             mediaPlayer?.release()
         }
 
-        private var mediaSessionCompat: MediaSessionCompat? = null
+        private lateinit var mediaSessionCompat: MediaSessionCompat
 
         private fun makeNotification(
             title: String,
@@ -252,8 +262,6 @@ interface MediaService : StartAudio, Playable {
                 bitmap
             }
 
-            mediaSessionCompat?.release()
-            mediaSessionCompat = MediaSessionCompat(this, "tag")
             return NotificationCompat.Builder(applicationContext, CHANNEL_ID)
                 .setContentTitle(title)
                 .setTicker(title)
@@ -273,7 +281,7 @@ interface MediaService : StartAudio, Playable {
                 .setStyle(
                     androidx.media.app.NotificationCompat.MediaStyle()
                         .setShowActionsInCompactView(0, 1, 2)
-                        .setMediaSession(mediaSessionCompat!!.sessionToken)
+                        .setMediaSession(mediaSessionCompat.sessionToken)
                 )
                 .build()
         }

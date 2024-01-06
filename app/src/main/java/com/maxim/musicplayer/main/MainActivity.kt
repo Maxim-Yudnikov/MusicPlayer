@@ -106,10 +106,6 @@ class MainActivity : AppCompatActivity(), ProvideViewModel {
         super.onStart()
         (application as App).bind()
     }
-    override fun onStop() {
-        super.onStop()
-        (application as App).unbind()
-    }
 
     override fun <T : ViewModel> viewModel(clasz: Class<T>) =
         (application as ProvideViewModel).viewModel(clasz)
