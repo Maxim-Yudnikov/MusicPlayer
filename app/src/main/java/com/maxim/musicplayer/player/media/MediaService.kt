@@ -14,7 +14,9 @@ import android.net.Uri
 import android.os.Binder
 import android.os.Build
 import android.os.IBinder
+import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
+import android.support.v4.media.session.PlaybackStateCompat
 import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
@@ -69,6 +71,7 @@ interface MediaService : StartAudio, Playable {
                 mediaPlayer!!.seekTo(position.toLong(), MediaPlayer.SEEK_CLOSEST)
             else
                 mediaPlayer!!.seekTo(position)
+            makeNotification(cachedTitle, cachedArtist, cachedIcon, !mediaPlayer!!.isPlaying)
         }
 
         override fun setOnCompleteListener(action: () -> Unit) {
@@ -100,9 +103,6 @@ interface MediaService : StartAudio, Playable {
             icon: Bitmap?,
             ignoreSame: Boolean
         ) {
-
-            startForeground(NOTIFICATION_ID, makeNotification(title, artist, icon, false))
-
             actualUri?.let {
                 if (uri != actualUri || ignoreSame) {
                     mediaPlayer?.reset()
@@ -121,6 +121,8 @@ interface MediaService : StartAudio, Playable {
             cachedTitle = title
             cachedArtist = artist
             cachedIcon = icon
+
+            startForeground(NOTIFICATION_ID, makeNotification(title, artist, icon, false))
         }
 
         override fun play() {
@@ -211,7 +213,7 @@ interface MediaService : StartAudio, Playable {
             title: String,
             text: String,
             icon: Bitmap?,
-            isPause: Boolean
+            isPause: Boolean,
         ): Notification {
             val intentPlay =
                 Intent(applicationContext, NotificationActionsBroadcastReceiver::class.java).apply {
@@ -259,6 +261,27 @@ interface MediaService : StartAudio, Playable {
                 drawable?.draw(canvas)
                 bitmap
             }
+
+            mediaSessionCompat.setMetadata(
+                MediaMetadataCompat.Builder().putLong(
+                    MediaMetadataCompat.METADATA_KEY_DURATION,
+                    mediaPlayer!!.duration.toLong()
+                ).build()
+            )
+            mediaSessionCompat.setPlaybackState(
+                PlaybackStateCompat.Builder()
+                    .setActions(PlaybackStateCompat.ACTION_SEEK_TO)
+                    .setState(
+                        if (isPause) PlaybackStateCompat.STATE_PAUSED else PlaybackStateCompat.STATE_PLAYING,
+                        mediaPlayer!!.currentPosition.toLong(),
+                        if (isPause) 0f else 1f
+                    ).build()
+            )
+            mediaSessionCompat.setCallback(object : MediaSessionCompat.Callback() {
+                override fun onSeekTo(pos: Long) {
+                    mediaPlayer?.seekTo(pos.toInt())
+                }
+            })
 
             return NotificationCompat.Builder(applicationContext, CHANNEL_ID)
                 .setContentTitle(title)

@@ -25,7 +25,6 @@ class App : Application(), ProvideViewModel, ProvideMediaService, ProvideManageO
         factory = ModuleFactory.Base(ProvideModule.Base(Core(this)))
         manageOrder =
             ManageOrder.Base(SimpleStorage.Base(getSharedPreferences(STORAGE_NAME, MODE_PRIVATE)))
-        startService(Intent(this, MediaService::class.java))
     }
 
     private var isBound = false
