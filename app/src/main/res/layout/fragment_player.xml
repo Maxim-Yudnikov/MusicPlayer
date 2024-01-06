@@ -6,7 +6,8 @@
     android:background="@color/light_background"
     android:clickable="true"
     android:gravity="center"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:focusable="true">
 
     <ImageView
         android:id="@+id/artImageView"
@@ -21,7 +22,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="40dp"
-        android:paddingStart="24dp"
+        android:paddingHorizontal="24dp"
         android:textSize="22sp"
         android:textStyle="bold"
         tools:text="Some name" />
@@ -30,7 +31,7 @@
         android:id="@+id/artistTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingStart="24dp"
+        android:paddingHorizontal="24dp"
         android:textSize="20sp"
         tools:text="Artist name" />
 

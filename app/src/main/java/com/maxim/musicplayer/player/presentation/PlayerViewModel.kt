@@ -42,10 +42,6 @@ class PlayerViewModel(
         mediaService.setOnCompleteListener { next() }
     }
 
-    override fun observe(owner: LifecycleOwner, observer: Observer<PlayerState>) {
-        communication.observe(owner, observer)
-    }
-
     override fun play() {
         isPlaying = !isPlaying
         if (isPlaying) {
@@ -108,6 +104,10 @@ class PlayerViewModel(
     fun changeLoop(): Boolean {
         manageOrder.isLoop = !manageOrder.isLoop
         return manageOrder.isLoop
+    }
+
+    override fun observe(owner: LifecycleOwner, observer: Observer<PlayerState>) {
+        communication.observe(owner, observer)
     }
 
     companion object {
