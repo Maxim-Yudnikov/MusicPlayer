@@ -16,6 +16,7 @@ import com.maxim.musicplayer.player.presentation.PlayerScreen
 class AudioListViewModel(
     private val interactor: AudioListInteractor,
     private val communication: AudioListCommunication,
+    private val actualPositionCommunication: ActualTrackPositionCommunication,
     private val mapper: AudioDomain.Mapper<AudioUi>,
     private val sharedStorage: OpenPlayerStorage.Save,
     private val navigation: Navigation.Update,
@@ -24,21 +25,20 @@ class AudioListViewModel(
 ) : BaseViewModel(runAsync), Init, Communication.Observe<AudioListState> {
     private var refreshFinish: RefreshFinish? = null
     private var isRefreshing = false
+    private var actualPosition = -1
+
     override fun init(isFirstRun: Boolean) {
-        communication.update(AudioListState.List(interactor.data().map { it.map(mapper) }))
-        isRefreshing = true
-        handle({ interactor.dataWithImages() }) { list ->
-            communication.update(AudioListState.List(list.map { it.map(mapper) }))
-            refreshFinish?.finish()
-            refreshFinish = null
-            isRefreshing = false
+        if (isFirstRun) {
+            communication.update(
+                AudioListState.List(interactor.dataWithImages().map { it.map(mapper) }, actualPosition)
+            )
         }
     }
 
     fun refresh(refreshFinish: RefreshFinish) {
         if (isRefreshing) this.refreshFinish = refreshFinish
         else handle({ interactor.dataWithImages() }) { list ->
-            communication.update(AudioListState.List(list.map { it.map(mapper) }))
+            communication.update(AudioListState.List(list.map { it.map(mapper) }, actualPosition))
             refreshFinish.finish()
         }
     }
@@ -47,7 +47,19 @@ class AudioListViewModel(
         communication.observe(owner, observer)
     }
 
+    fun setPosition(position: Int) {
+        communication.update(
+            AudioListState.List(interactor.cachedData().map { it.map(mapper) }, position)
+        )
+    }
+
+    fun observePosition(owner: LifecycleOwner, observer: Observer<Int>) {
+        actualPositionCommunication.observe(owner, observer)
+    }
+
     fun open(audio: AudioUi, position: Int) {
+        actualPositionCommunication.update(position)
+        actualPosition = position
         sharedStorage.save(audio)
         val list = interactor.cachedData().map { it.map(mapper) }
         manageOrder.generate(list.subList(1, list.lastIndex), position)

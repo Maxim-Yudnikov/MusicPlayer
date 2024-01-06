@@ -15,6 +15,7 @@ interface ManageOrder {
     fun canGoPrevious(): Boolean
 
     fun actualTrack(): AudioUi
+    fun actualAbsolutePosition(): Int
 
     class Base(private val storage: SimpleStorage) : ManageOrder {
         override var isLoop = storage.read(LOOP_KEY, false)
@@ -104,6 +105,7 @@ interface ManageOrder {
             actualPosition != 0 || isLoop
 
         override fun actualTrack() = actualTrack
+        override fun actualAbsolutePosition() = tracksListInNormalOrder.indexOf(actualTrack)
 
         companion object {
             private const val RANDOM_KEY = "RANDOM_KEY"

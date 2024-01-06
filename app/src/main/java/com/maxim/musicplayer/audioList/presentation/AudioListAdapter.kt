@@ -1,11 +1,14 @@
 package com.maxim.musicplayer.audioList.presentation
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import androidx.viewbinding.ViewBinding
+import com.maxim.musicplayer.R
 import com.maxim.musicplayer.databinding.AudioLayoutBinding
 import com.maxim.musicplayer.databinding.CountLayoutBinding
 import com.maxim.musicplayer.databinding.SpaceBinding
@@ -14,24 +17,32 @@ class AudioListAdapter(
     private val listener: Listener
 ) : RecyclerView.Adapter<AudioListAdapter.ItemViewHolder>() {
     private val list = mutableListOf<AudioUi>()
+    private var actualPosition = -1
 
     abstract class ItemViewHolder(binding: ViewBinding) : ViewHolder(binding.root) {
-        open fun bind(item: AudioUi, listener: Listener, position: Int) = Unit
+        open fun bind(item: AudioUi, listener: Listener, position: Int, actualPosition: Int) = Unit
     }
 
-    class BaseViewHolder(private val binding: AudioLayoutBinding) : ItemViewHolder(binding) {
-        override fun bind(item: AudioUi, listener: Listener, position: Int) {
+    class BaseViewHolder(private val binding: AudioLayoutBinding) :
+        ItemViewHolder(binding) {
+        override fun bind(item: AudioUi, listener: Listener, position: Int, actualPosition: Int) {
+            Log.d("MyLog", "bind with pos: $position, actualPos: $actualPosition")
             item.showTitle(binding.titleTextView)
             item.showDescription(binding.descriptionTextView)
             item.showArt(binding.artImageView)
             itemView.setOnClickListener {
                 listener.open(item, position - 1)
             }
+            val color = ContextCompat.getColor(
+                binding.artImageView.context,
+                if (position == actualPosition) R.color.green else R.color.black
+            )
+            binding.titleTextView.setTextColor(color)
         }
     }
 
     class CountViewHolder(private val binding: CountLayoutBinding) : ItemViewHolder(binding) {
-        override fun bind(item: AudioUi, listener: Listener, position: Int) {
+        override fun bind(item: AudioUi, listener: Listener, position: Int, actualPosition: Int) {
             item.showTitle(binding.countTextView)
         }
     }
@@ -72,15 +83,19 @@ class AudioListAdapter(
     override fun getItemCount() = list.size
 
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
-        holder.bind(list[position], listener, position)
+        holder.bind(list[position], listener, position, actualPosition)
     }
 
-    fun update(newList: List<AudioUi>) {
+    fun update(newList: List<AudioUi>, actualPosition: Int) {
+        Log.d("MyLog", actualPosition.toString())
+        notifyItemChanged(this.actualPosition)
+        this.actualPosition = actualPosition + 1
         val diff = AudioDiffUtil(list, newList)
         val result = DiffUtil.calculateDiff(diff)
         list.clear()
         list.addAll(newList)
         result.dispatchUpdatesTo(this)
+        notifyItemChanged(actualPosition + 1)
     }
 
     interface Listener {

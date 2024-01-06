@@ -30,6 +30,10 @@ class AudioListFragment : BaseFragment<FragmentAudioListBinding, AudioListViewMo
             it.showList(adapter)
         }
 
+        viewModel.observePosition(this) {
+            viewModel.setPosition(it)
+        }
+
         viewModel.init(savedInstanceState == null)
     }
 

@@ -1,6 +1,7 @@
 package com.maxim.musicplayer.cope
 
 import android.content.Context
+import com.maxim.musicplayer.audioList.presentation.ActualTrackPositionCommunication
 import com.maxim.musicplayer.downBar.DownBarTrackCommunication
 import com.maxim.musicplayer.player.media.ManageOrder
 import com.maxim.musicplayer.player.presentation.OpenPlayerStorage
@@ -21,6 +22,8 @@ class Core(private val context: Context) {
     fun manageOrder() = manageOrder
     private val downBarTrackCommunication = DownBarTrackCommunication.Base()
     fun downBarRepository() = downBarTrackCommunication
+    private val actualTrackPositionCommunication = ActualTrackPositionCommunication.Base()
+    fun actualTrackPositionCommunication() = actualTrackPositionCommunication
 
     companion object {
         private const val STORAGE_NAME = "MUSIC_PLAYER_STORAGE"

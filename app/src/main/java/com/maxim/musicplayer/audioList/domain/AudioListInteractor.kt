@@ -3,13 +3,13 @@ package com.maxim.musicplayer.audioList.domain
 import com.maxim.musicplayer.audioList.data.AudioListRepository
 
 interface AudioListInteractor {
-    suspend fun dataWithImages(): List<AudioDomain>
+    fun dataWithImages(): List<AudioDomain>
     fun data(): List<AudioDomain>
     fun cachedData(): List<AudioDomain>
 
     class Base(private val repository: AudioListRepository): AudioListInteractor {
         private val cache = mutableListOf<AudioDomain>()
-        override suspend fun dataWithImages(): List<AudioDomain> {
+        override fun dataWithImages(): List<AudioDomain> {
             val data = repository.dataWithImages()
             cache.clear()
             cache.addAll(data)

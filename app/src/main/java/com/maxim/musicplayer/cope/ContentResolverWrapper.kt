@@ -9,7 +9,7 @@ import android.provider.MediaStore
 import com.maxim.musicplayer.audioList.data.AudioData
 
 interface ContentResolverWrapper {
-    suspend fun queryWithImages(
+    fun queryWithImages(
         sourceUri: Uri,
         sortOrder: String
     ): List<AudioData>
@@ -35,7 +35,7 @@ interface ContentResolverWrapper {
 
 
         //todo optimize get bitmap
-        override suspend fun queryWithImages(
+        override fun queryWithImages(
             sourceUri: Uri,
             sortOrder: String
         ): List<AudioData> {

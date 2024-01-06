@@ -9,6 +9,7 @@ class PlayerModule(private val core: Core) : Module<PlayerViewModel> {
     override fun viewModel() = PlayerViewModel(
         core.sharedStorage(),
         core.downBarRepository(),
+        core.actualTrackPositionCommunication(),
         PlayerCommunication.Base(),
         core.manageOrder()
     )

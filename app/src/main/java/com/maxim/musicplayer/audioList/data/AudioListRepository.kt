@@ -5,14 +5,14 @@ import com.maxim.musicplayer.audioList.domain.AudioDomain
 import com.maxim.musicplayer.cope.ContentResolverWrapper
 
 interface AudioListRepository {
-    suspend fun dataWithImages(): List<AudioDomain>
+    fun dataWithImages(): List<AudioDomain>
     fun data(): List<AudioDomain>
 
     class Base(
         private val contentResolverWrapper: ContentResolverWrapper,
         private val mapper: AudioData.Mapper<AudioDomain>
     ) : AudioListRepository {
-        override suspend fun dataWithImages(): List<AudioDomain> {
+        override fun dataWithImages(): List<AudioDomain> {
             val list: ArrayList<AudioDomain> = ArrayList(contentResolverWrapper.queryWithImages(
                 MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
                 "${MediaStore.Audio.Media.TITLE} ASC"

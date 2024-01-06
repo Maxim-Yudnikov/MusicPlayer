@@ -3,6 +3,7 @@ package com.maxim.musicplayer.player.presentation
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
+import com.maxim.musicplayer.audioList.presentation.ActualTrackPositionCommunication
 import com.maxim.musicplayer.audioList.presentation.AudioUi
 import com.maxim.musicplayer.cope.Communication
 import com.maxim.musicplayer.downBar.DownBarTrackCommunication
@@ -13,6 +14,7 @@ import com.maxim.musicplayer.player.media.Playable
 class PlayerViewModel(
     private val sharedStorage: OpenPlayerStorage.Mutable,
     private val downBarTrackCommunication: DownBarTrackCommunication,
+    private val actualPositionCommunication: ActualTrackPositionCommunication,
     private val communication: PlayerCommunication,
     private val manageOrder: ManageOrder
 ) : ViewModel(), Communication.Observe<PlayerState>, Playable {
@@ -71,6 +73,7 @@ class PlayerViewModel(
             track.start(cachedMediaService)
             downBarTrackCommunication.setTrack(track, this)
             cachedMediaService.setOnCompleteListener { next() }
+            actualPositionCommunication.update(manageOrder.actualAbsolutePosition())
         }
     }
 
@@ -88,6 +91,7 @@ class PlayerViewModel(
             )
             track.start(cachedMediaService)
             downBarTrackCommunication.setTrack(track, this)
+            actualPositionCommunication.update(manageOrder.actualAbsolutePosition())
         } else {
             communication.update(PlayerState.Running)
             val track = manageOrder.actualTrack()
