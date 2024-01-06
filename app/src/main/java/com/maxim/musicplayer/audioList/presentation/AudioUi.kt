@@ -77,4 +77,10 @@ abstract class AudioUi {
             textView.text = text
         }
     }
+
+    object Space: AudioUi() {
+        override fun same(item: AudioUi) = item is Space
+
+        override fun showTitle(textView: TextView) = Unit
+    }
 }

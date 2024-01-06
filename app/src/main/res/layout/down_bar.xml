@@ -3,10 +3,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/background"
+    android:background="@color/down_bar"
     android:clickable="true"
     android:orientation="horizontal"
-    android:padding="8dp">
+    android:padding="8dp"
+    android:focusable="true"
+    android:id="@+id/root">
 
     <ImageView
         android:id="@+id/artImageView"
@@ -17,7 +19,7 @@
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_marginStart="5dp"
+        android:layout_marginStart="10dp"
         android:layout_weight="1"
         android:orientation="vertical">
 
@@ -26,6 +28,8 @@
             style="@style/TextAppearance.AppCompat.Title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1"
             tools:text="Some track name" />
 
         <TextView
@@ -33,6 +37,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="15sp"
+            android:ellipsize="end"
+            android:maxLines="1"
             tools:text="Artist" />
 
     </LinearLayout>

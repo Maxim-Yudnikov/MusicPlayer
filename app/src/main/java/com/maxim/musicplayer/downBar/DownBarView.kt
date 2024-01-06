@@ -41,6 +41,9 @@ class DownBarView : FrameLayout {
             visibility = View.VISIBLE
             it.show(imageView, titleTextView, artistTextView, playButton)
         }
+        findViewById<View>(R.id.root).setOnClickListener {
+            viewModel.open()
+        }
         playButton.setOnClickListener {
             viewModel.play()
         }

@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import androidx.viewbinding.ViewBinding
 import com.maxim.musicplayer.databinding.AudioLayoutBinding
 import com.maxim.musicplayer.databinding.CountLayoutBinding
+import com.maxim.musicplayer.databinding.SpaceBinding
 
 class AudioListAdapter(
     private val listener: Listener
@@ -15,7 +16,7 @@ class AudioListAdapter(
     private val list = mutableListOf<AudioUi>()
 
     abstract class ItemViewHolder(binding: ViewBinding) : ViewHolder(binding.root) {
-        abstract fun bind(item: AudioUi, listener: Listener, position: Int)
+        open fun bind(item: AudioUi, listener: Listener, position: Int) = Unit
     }
 
     class BaseViewHolder(private val binding: AudioLayoutBinding) : ItemViewHolder(binding) {
@@ -35,12 +36,23 @@ class AudioListAdapter(
         }
     }
 
-    override fun getItemViewType(position: Int) = if (list[position] is AudioUi.Base) 0 else 1
+    class SpaceViewHolder(binding: SpaceBinding) : ItemViewHolder(binding)
+
+    override fun getItemViewType(position: Int) =
+        if (list[position] is AudioUi.Base) 0 else if (list[position] is AudioUi.Space) 1 else 2
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
         return when (viewType) {
             0 -> BaseViewHolder(
                 AudioLayoutBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false
+                )
+            )
+
+            1 -> SpaceViewHolder(
+                SpaceBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
                     false

@@ -5,10 +5,13 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import com.maxim.musicplayer.audioList.presentation.AudioUi
 import com.maxim.musicplayer.cope.Communication
+import com.maxim.musicplayer.cope.Navigation
+import com.maxim.musicplayer.player.presentation.PlayerScreen
 
 class DownBarViewModel(
-    private val repository: DownBarRepository,
-    private val communication: DownBarCommunication
+    private val trackCommunication: DownBarTrackCommunication,
+    private val communication: DownBarCommunication,
+    private val navigation: Navigation.Update
 ): ViewModel(), Communication.Observe<DownBarState>, ReloadDownBar {
 
     override fun observe(owner: LifecycleOwner, observer: Observer<DownBarState>) {
@@ -20,11 +23,15 @@ class DownBarViewModel(
     }
 
     fun init() {
-        repository.init(this)
+        trackCommunication.init(this)
     }
 
     fun play() {
-        repository.playButton()
+        trackCommunication.playButton()
+    }
+
+    fun open() {
+        navigation.update(PlayerScreen)
     }
 }
 

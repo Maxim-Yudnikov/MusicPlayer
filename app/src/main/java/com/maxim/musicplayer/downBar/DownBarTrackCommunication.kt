@@ -3,14 +3,14 @@ package com.maxim.musicplayer.downBar
 import com.maxim.musicplayer.audioList.presentation.AudioUi
 import com.maxim.musicplayer.player.media.Playable
 
-interface DownBarRepository {
+interface DownBarTrackCommunication {
     fun init(reload: ReloadDownBar)
     fun setTrack(track: AudioUi, playable: Playable)
     fun play()
     fun stop()
     fun playButton()
 
-    class Base: DownBarRepository {
+    class Base: DownBarTrackCommunication {
         private lateinit var cachedReload: ReloadDownBar
         private var cachedTrack: AudioUi? = null
         private var cachedPlayable: Playable? = null

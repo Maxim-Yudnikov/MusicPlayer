@@ -13,12 +13,14 @@ interface AudioListInteractor {
             val data = repository.dataWithImages()
             cache.clear()
             cache.addAll(data)
+            cache.add(AudioDomain.Space)
             return cache
         }
 
         override fun data(): List<AudioDomain> {
             cache.clear()
             cache.addAll(repository.data())
+            cache.add(AudioDomain.Space)
             return cache
         }
 

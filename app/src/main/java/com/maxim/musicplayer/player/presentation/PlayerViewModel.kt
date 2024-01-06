@@ -4,14 +4,14 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import com.maxim.musicplayer.cope.Communication
-import com.maxim.musicplayer.downBar.DownBarRepository
+import com.maxim.musicplayer.downBar.DownBarTrackCommunication
 import com.maxim.musicplayer.player.media.ManageOrder
 import com.maxim.musicplayer.player.media.MediaService
 import com.maxim.musicplayer.player.media.Playable
 
 class PlayerViewModel(
     private val sharedStorage: OpenPlayerStorage.Mutable,
-    private val downBarRepository: DownBarRepository,
+    private val downBarTrackCommunication: DownBarTrackCommunication,
     private val communication: PlayerCommunication,
     private val manageOrder: ManageOrder
 ) : ViewModel(), Communication.Observe<PlayerState>, Playable {
@@ -33,7 +33,7 @@ class PlayerViewModel(
                 )
             )
             track.start(mediaService)
-            downBarRepository.setTrack(track, this)
+            downBarTrackCommunication.setTrack(track, this)
             mediaService.setOnCompleteListener {
                 next()
             }
@@ -50,11 +50,11 @@ class PlayerViewModel(
         if (isPlaying) {
             val track = sharedStorage.read()
             track.start(cachedMediaService)
-            downBarRepository.setTrack(track, this)
+            downBarTrackCommunication.setTrack(track, this)
             communication.update(PlayerState.Running)
         } else {
             cachedMediaService.pause()
-            downBarRepository.stop()
+            downBarTrackCommunication.stop()
             communication.update(PlayerState.OnPause)
         }
     }
@@ -70,7 +70,7 @@ class PlayerViewModel(
                 )
             )
             track.start(cachedMediaService)
-            downBarRepository.setTrack(track, this)
+            downBarTrackCommunication.setTrack(track, this)
             cachedMediaService.setOnCompleteListener {
                 next()
             }
@@ -84,12 +84,12 @@ class PlayerViewModel(
             sharedStorage.save(track)
             communication.update(PlayerState.Initial(track, isRandom, isLoop))
             track.start(cachedMediaService)
-            downBarRepository.setTrack(track, this)
+            downBarTrackCommunication.setTrack(track, this)
         } else {
             communication.update(PlayerState.Running)
             val track = sharedStorage.read()
             track.startAgain(cachedMediaService)
-            downBarRepository.setTrack(track, this)
+            downBarTrackCommunication.setTrack(track, this)
         }
         cachedMediaService.setOnCompleteListener {
             next()

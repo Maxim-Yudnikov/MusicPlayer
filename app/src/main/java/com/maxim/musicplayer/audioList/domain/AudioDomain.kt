@@ -17,6 +17,7 @@ interface AudioDomain {
         ): T
 
         fun map(count: Int): T
+        fun map(): T
     }
 
     data class Base(
@@ -34,5 +35,9 @@ interface AudioDomain {
 
     data class Count(private val count: Int) : AudioDomain {
         override fun <T> map(mapper: Mapper<T>) = mapper.map(count)
+    }
+
+    object Space: AudioDomain {
+        override fun <T> map(mapper: Mapper<T>) = mapper.map()
     }
 }
