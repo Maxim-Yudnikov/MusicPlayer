@@ -10,15 +10,13 @@ import com.maxim.musicplayer.cope.Init
 import com.maxim.musicplayer.cope.Navigation
 import com.maxim.musicplayer.cope.RunAsync
 import com.maxim.musicplayer.player.media.ManageOrder
-import com.maxim.musicplayer.player.presentation.OpenPlayerStorage
+import com.maxim.musicplayer.player.media.MediaService
 import com.maxim.musicplayer.player.presentation.PlayerScreen
 
 class AudioListViewModel(
     private val interactor: AudioListInteractor,
     private val communication: AudioListCommunication,
-    private val actualPositionCommunication: ActualTrackPositionCommunication,
     private val mapper: AudioDomain.Mapper<AudioUi>,
-    private val sharedStorage: OpenPlayerStorage.Save,
     private val navigation: Navigation.Update,
     private val manageOrder: ManageOrder,
     runAsync: RunAsync = RunAsync.Base()
@@ -54,15 +52,14 @@ class AudioListViewModel(
     }
 
     fun observePosition(owner: LifecycleOwner, observer: Observer<Int>) {
-        actualPositionCommunication.observe(owner, observer)
+        manageOrder.observeActualTrackPosition(owner, observer)
     }
 
-    fun open(audio: AudioUi, position: Int) {
-        actualPositionCommunication.update(position)
+    fun open(track: AudioUi, position: Int, mediaService: MediaService) {
+        manageOrder.setActualTrack(position)
         actualPosition = position
-        sharedStorage.save(audio)
         val list = interactor.cachedData().map { it.map(mapper) }
-        manageOrder.generate(list.subList(1, list.lastIndex), position)
+        mediaService.open(list.subList(1, list.lastIndex), track, position)
         navigation.update(PlayerScreen)
     }
 }

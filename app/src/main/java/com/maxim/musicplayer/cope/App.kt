@@ -5,17 +5,27 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.ServiceConnection
+import android.os.Build
 import android.os.IBinder
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
+import com.maxim.musicplayer.downBar.DownBarTrackCommunication
+import com.maxim.musicplayer.player.media.ManageOrder
 import com.maxim.musicplayer.player.media.MediaService
+import com.maxim.musicplayer.player.presentation.PlayerCommunication
 
-class App : Application(), ProvideViewModel, ProvideMediaService {
+class App : Application(), ProvideViewModel, ProvideMediaService, ProvideManageOrder,
+    ProvideDownBarTrackCommunication, ProvidePlayerCommunication {
     private lateinit var factory: ModuleFactory
+    private lateinit var manageOrder: ManageOrder
+
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate() {
         super.onCreate()
         factory = ModuleFactory.Base(ProvideModule.Base(Core(this)))
-
-        startService(Intent(this, MediaService.Base::class.java))
+        manageOrder =
+            ManageOrder.Base(SimpleStorage.Base(getSharedPreferences(STORAGE_NAME, MODE_PRIVATE)))
+        startForegroundService(Intent(this, MediaService::class.java))
     }
 
     private var isBound = false
@@ -34,8 +44,13 @@ class App : Application(), ProvideViewModel, ProvideMediaService {
     }
 
     fun bind() {
-        bindService(Intent(this, MediaService.Base::class.java), connection, Context.BIND_AUTO_CREATE)
+        bindService(
+            Intent(this, MediaService.Base::class.java),
+            connection,
+            Context.BIND_AUTO_CREATE
+        )
     }
+
     fun unbind() {
         if (isBound) {
             unbindService(connection)
@@ -44,9 +59,31 @@ class App : Application(), ProvideViewModel, ProvideMediaService {
     }
 
     override fun mediaService() = mediaService!!
+    override fun manageOrder(): ManageOrder = manageOrder
     override fun <T : ViewModel> viewModel(clasz: Class<T>) = factory.viewModel(clasz)
+
+    companion object {
+        private const val STORAGE_NAME = "MUSIC_PLAYER_STORAGE"
+    }
+
+    private val downBarTrackCommunication = DownBarTrackCommunication.Base()
+    override fun downBarTrackCommunication() = downBarTrackCommunication
+    private val playerCommunication = PlayerCommunication.Base()
+    override fun playerCommunication() = playerCommunication
 }
 
 interface ProvideMediaService {
     fun mediaService(): MediaService
+}
+
+interface ProvideManageOrder {
+    fun manageOrder(): ManageOrder
+}
+
+interface ProvideDownBarTrackCommunication {
+    fun downBarTrackCommunication(): DownBarTrackCommunication
+}
+
+interface ProvidePlayerCommunication {
+    fun playerCommunication(): PlayerCommunication
 }

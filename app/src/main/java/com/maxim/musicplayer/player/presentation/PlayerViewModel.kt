@@ -3,101 +3,53 @@ package com.maxim.musicplayer.player.presentation
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
-import com.maxim.musicplayer.audioList.presentation.ActualTrackPositionCommunication
 import com.maxim.musicplayer.audioList.presentation.AudioUi
 import com.maxim.musicplayer.cope.Communication
+import com.maxim.musicplayer.cope.ProvideMediaService
 import com.maxim.musicplayer.downBar.DownBarTrackCommunication
 import com.maxim.musicplayer.player.media.ManageOrder
-import com.maxim.musicplayer.player.media.MediaService
 import com.maxim.musicplayer.player.media.Playable
 
 class PlayerViewModel(
-    private val sharedStorage: OpenPlayerStorage.Mutable,
     private val downBarTrackCommunication: DownBarTrackCommunication,
-    private val actualPositionCommunication: ActualTrackPositionCommunication,
     private val communication: PlayerCommunication,
-    private val manageOrder: ManageOrder
+    private val manageOrder: ManageOrder,
+    private val mediaServiceProvider: ProvideMediaService
 ) : ViewModel(), Communication.Observe<PlayerState>, Playable {
-    private var isPlaying = false
 
-    private lateinit var cachedMediaService: MediaService
-
-    fun init(isFirstRun: Boolean, mediaService: MediaService) {
+    fun init(isFirstRun: Boolean) {
         if (isFirstRun) {
-            val track = sharedStorage.read()
+            val track = manageOrder.actualTrack()
             if (track != AudioUi.Empty) {
-                isPlaying = true
                 communication.update(
-                    PlayerState.Initial(track, manageOrder.isRandom, manageOrder.isLoop)
+                    PlayerState.Initial(track, manageOrder.isRandom, manageOrder.isLoop, false)
                 )
-                track.start(mediaService)
+                track.start(mediaServiceProvider.mediaService())
                 downBarTrackCommunication.setTrack(track, this)
             } else {
+                manageOrder.syncActualTrack()
                 communication.update(
                     PlayerState.Initial(
-                        manageOrder.actualTrack(), manageOrder.isRandom, manageOrder.isLoop
+                        manageOrder.actualTrack(),
+                        manageOrder.isRandom,
+                        manageOrder.isLoop,
+                        !mediaServiceProvider.mediaService().isPlaying()
                     )
                 )
             }
         }
-        cachedMediaService = mediaService
-        mediaService.setOnCompleteListener { next() }
     }
 
     override fun play() {
-        isPlaying = !isPlaying
-        if (isPlaying) {
-            val track = manageOrder.actualTrack()
-            track.start(cachedMediaService)
-            downBarTrackCommunication.setTrack(track, this)
-            communication.update(PlayerState.Running)
-        } else {
-            cachedMediaService.pause()
-            downBarTrackCommunication.stop()
-            communication.update(PlayerState.OnPause)
-        }
+        mediaServiceProvider.mediaService().play()
     }
 
     override fun next() {
-        if (manageOrder.canGoNext()) {
-            isPlaying = true
-            val track = manageOrder.next()
-            sharedStorage.save(track)
-            communication.update(
-                PlayerState.Initial(
-                    track,
-                    manageOrder.isRandom,
-                    manageOrder.isLoop
-                )
-            )
-            track.start(cachedMediaService)
-            downBarTrackCommunication.setTrack(track, this)
-            cachedMediaService.setOnCompleteListener { next() }
-            actualPositionCommunication.update(manageOrder.actualAbsolutePosition())
-        }
+        mediaServiceProvider.mediaService().next()
     }
 
     override fun previous() {
-        if (cachedMediaService.currentPosition() < TIME_TO_PREVIOUS_MAKE_RESTART && manageOrder.canGoPrevious()) {
-            isPlaying = true
-            val track = manageOrder.previous()
-            sharedStorage.save(track)
-            communication.update(
-                PlayerState.Initial(
-                    track,
-                    manageOrder.isRandom,
-                    manageOrder.isLoop
-                )
-            )
-            track.start(cachedMediaService)
-            downBarTrackCommunication.setTrack(track, this)
-            actualPositionCommunication.update(manageOrder.actualAbsolutePosition())
-        } else {
-            communication.update(PlayerState.Running)
-            val track = manageOrder.actualTrack()
-            track.startAgain(cachedMediaService)
-        }
-        cachedMediaService.setOnCompleteListener { next() }
+        mediaServiceProvider.mediaService().previous()
     }
 
     fun changeRandom(): Boolean {
@@ -112,9 +64,5 @@ class PlayerViewModel(
 
     override fun observe(owner: LifecycleOwner, observer: Observer<PlayerState>) {
         communication.observe(owner, observer)
-    }
-
-    companion object {
-        private const val TIME_TO_PREVIOUS_MAKE_RESTART = 2500
     }
 }

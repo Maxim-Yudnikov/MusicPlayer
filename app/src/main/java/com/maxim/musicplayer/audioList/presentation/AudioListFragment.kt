@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.maxim.musicplayer.cope.BaseFragment
 import com.maxim.musicplayer.databinding.FragmentAudioListBinding
+import com.maxim.musicplayer.player.media.MediaService
 
 class AudioListFragment : BaseFragment<FragmentAudioListBinding, AudioListViewModel>(), RefreshFinish {
     override fun viewModelClass() = AudioListViewModel::class.java
@@ -16,8 +17,8 @@ class AudioListFragment : BaseFragment<FragmentAudioListBinding, AudioListViewMo
         super.onViewCreated(view, savedInstanceState)
 
         val adapter = AudioListAdapter(object : AudioListAdapter.Listener {
-            override fun open(audioUi: AudioUi, position: Int) {
-                viewModel.open(audioUi, position)
+            override fun open(audioUi: AudioUi, position: Int, mediaService: MediaService) {
+                viewModel.open(audioUi, position, mediaService)
             }
         })
         binding.audioRecyclerView.adapter = adapter

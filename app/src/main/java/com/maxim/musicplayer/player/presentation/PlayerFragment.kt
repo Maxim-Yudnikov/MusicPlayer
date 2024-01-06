@@ -92,7 +92,7 @@ class PlayerFragment : BaseFragment<FragmentPlayerBinding, PlayerViewModel>() {
         }
         handler.postDelayed(runnable, 1300)
 
-        viewModel.init(savedInstanceState == null, mediaService)
+        viewModel.init(savedInstanceState == null)
     }
 
     override fun onResume() {

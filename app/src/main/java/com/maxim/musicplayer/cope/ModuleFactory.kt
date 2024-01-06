@@ -37,7 +37,7 @@ interface ProvideModule {
             return when (clasz) {
                 MainViewModel::class.java -> MainModule(core)
                 AudioListViewModel::class.java -> AudioListModule(core)
-                PlayerViewModel::class.java -> PlayerModule(core)
+                PlayerViewModel::class.java -> PlayerModule(core, core.provideMediaService())
                 DownBarViewModel::class.java -> DownBarModule(core)
                 else -> throw IllegalStateException("unknown viewModel $clasz")
             } as Module<T>

@@ -1,5 +1,8 @@
 package com.maxim.musicplayer.player.media
 
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
 import com.maxim.musicplayer.audioList.presentation.AudioUi
 import com.maxim.musicplayer.cope.SimpleStorage
 
@@ -15,7 +18,12 @@ interface ManageOrder {
     fun canGoPrevious(): Boolean
 
     fun actualTrack(): AudioUi
+    fun makeEmpty()
+    fun syncActualTrack()
     fun actualAbsolutePosition(): Int
+
+    fun setActualTrack(position: Int)
+    fun observeActualTrackPosition(owner: LifecycleOwner, observer: Observer<Int>)
 
     class Base(private val storage: SimpleStorage) : ManageOrder {
         override var isLoop = storage.read(LOOP_KEY, false)
@@ -52,10 +60,6 @@ interface ManageOrder {
                 position
             }
             actualTrack = actualOrder[actualPosition]
-//            Log.d(
-//                "MyLog",
-//                "pos: $actualPosition\nactualTrack: $actualTrack\ngenerated order: ${actualOrder.map { (it as AudioUi.Base).title }}\n"
-//            )
         }
 
         override fun regenerate() {
@@ -72,10 +76,6 @@ interface ManageOrder {
                 tracksListInNormalOrder.indexOf(actualTrack)
             }
             actualTrack = actualOrder[actualPosition]
-//            Log.d(
-//                "MyLog",
-//                "pos: $actualPosition\nactualTrack: $actualTrack\ngenerated order: ${actualOrder.map { (it as AudioUi.Base).title }}\n"
-//            )
         }
 
         override fun next(): AudioUi {
@@ -105,7 +105,25 @@ interface ManageOrder {
             actualPosition != 0 || isLoop
 
         override fun actualTrack() = actualTrack
+        override fun makeEmpty() {
+            actualTrack = AudioUi.Empty
+        }
+
+        override fun syncActualTrack() {
+            actualTrack = actualOrder[actualPosition]
+        }
+
         override fun actualAbsolutePosition() = tracksListInNormalOrder.indexOf(actualTrack)
+
+        private val actualTrackPositionLiveData = MutableLiveData<Int>()
+
+        override fun setActualTrack(position: Int) {
+            actualTrackPositionLiveData.value = position
+        }
+
+        override fun observeActualTrackPosition(owner: LifecycleOwner, observer: Observer<Int>) {
+            actualTrackPositionLiveData.observe(owner, observer)
+        }
 
         companion object {
             private const val RANDOM_KEY = "RANDOM_KEY"

@@ -2,15 +2,14 @@ package com.maxim.musicplayer.player
 
 import com.maxim.musicplayer.cope.Core
 import com.maxim.musicplayer.cope.Module
-import com.maxim.musicplayer.player.presentation.PlayerCommunication
+import com.maxim.musicplayer.cope.ProvideMediaService
 import com.maxim.musicplayer.player.presentation.PlayerViewModel
 
-class PlayerModule(private val core: Core) : Module<PlayerViewModel> {
+class PlayerModule(private val core: Core, private val provideMediaService: ProvideMediaService) : Module<PlayerViewModel> {
     override fun viewModel() = PlayerViewModel(
-        core.sharedStorage(),
-        core.downBarRepository(),
-        core.actualTrackPositionCommunication(),
-        PlayerCommunication.Base(),
-        core.manageOrder()
+        core.downBarTrackCommunication(),
+        core.playerCommunication(),
+        core.manageOrder(),
+        provideMediaService
     )
 }

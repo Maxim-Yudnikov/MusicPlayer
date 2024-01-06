@@ -1,6 +1,5 @@
 package com.maxim.musicplayer.audioList.presentation
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
@@ -9,9 +8,11 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import androidx.viewbinding.ViewBinding
 import com.maxim.musicplayer.R
+import com.maxim.musicplayer.cope.ProvideMediaService
 import com.maxim.musicplayer.databinding.AudioLayoutBinding
 import com.maxim.musicplayer.databinding.CountLayoutBinding
 import com.maxim.musicplayer.databinding.SpaceBinding
+import com.maxim.musicplayer.player.media.MediaService
 
 class AudioListAdapter(
     private val listener: Listener
@@ -26,12 +27,15 @@ class AudioListAdapter(
     class BaseViewHolder(private val binding: AudioLayoutBinding) :
         ItemViewHolder(binding) {
         override fun bind(item: AudioUi, listener: Listener, position: Int, actualPosition: Int) {
-            Log.d("MyLog", "bind with pos: $position, actualPos: $actualPosition")
             item.showTitle(binding.titleTextView)
             item.showDescription(binding.descriptionTextView)
             item.showArt(binding.artImageView)
             itemView.setOnClickListener {
-                listener.open(item, position - 1)
+                listener.open(
+                    item,
+                    position - 1,
+                    (binding.titleTextView.context.applicationContext as ProvideMediaService).mediaService()
+                )
             }
             val color = ContextCompat.getColor(
                 binding.artImageView.context,
@@ -87,7 +91,6 @@ class AudioListAdapter(
     }
 
     fun update(newList: List<AudioUi>, actualPosition: Int) {
-        Log.d("MyLog", actualPosition.toString())
         notifyItemChanged(this.actualPosition)
         this.actualPosition = actualPosition + 1
         val diff = AudioDiffUtil(list, newList)
@@ -99,7 +102,7 @@ class AudioListAdapter(
     }
 
     interface Listener {
-        fun open(audioUi: AudioUi, position: Int)
+        fun open(audioUi: AudioUi, position: Int, mediaService: MediaService)
     }
 }
 

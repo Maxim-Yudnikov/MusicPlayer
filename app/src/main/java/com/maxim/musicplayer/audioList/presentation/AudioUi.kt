@@ -7,8 +7,9 @@ import android.widget.SeekBar
 import android.widget.TextView
 import com.maxim.musicplayer.R
 import com.maxim.musicplayer.player.media.StartAudio
+import java.io.Serializable
 
-abstract class AudioUi {
+abstract class AudioUi: Serializable {
     abstract fun same(item: AudioUi): Boolean
     abstract fun showTitle(textView: TextView)
     open fun showDescription(textView: TextView) = Unit
@@ -25,8 +26,9 @@ abstract class AudioUi {
         private val duration: Long,
         private val album: String,
         private val artBitmap: Bitmap?,
-        private val uri: Uri
+        private var uri: Uri
     ) : AudioUi() {
+
         override fun same(item: AudioUi) = item is Base && item.id == id
         override fun showTitle(textView: TextView) {
             textView.text = title

@@ -25,7 +25,8 @@ interface PlayerState {
     data class Initial(
         private val audio: AudioUi,
         private val isRandom: Boolean,
-        private val isLoop: Boolean
+        private val isLoop: Boolean,
+        private val onPause: Boolean
     ) : PlayerState {
         @SuppressLint("SetTextI18n")
         override fun show(
@@ -46,7 +47,7 @@ interface PlayerState {
             audio.showArt(artImageView)
             audio.showTitle(titleTextView)
             audio.showArtist(artistTextView)
-            playButton.setImageResource(R.drawable.pause_24)
+            playButton.setImageResource(if (onPause) R.drawable.play_24 else R.drawable.pause_24)
             val selectedColor = R.color.green
             val unselectedColor = R.color.white
             randomButton.setBackgroundColor(

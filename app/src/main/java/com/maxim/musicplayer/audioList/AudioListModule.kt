@@ -18,9 +18,7 @@ class AudioListModule(private val core: Core) : Module<AudioListViewModel> {
             )
         ),
         AudioListCommunication.Base(),
-        core.actualTrackPositionCommunication(),
         MapperDomainToUi(),
-        core.sharedStorage(),
         core.navigation(),
         core.manageOrder()
     )

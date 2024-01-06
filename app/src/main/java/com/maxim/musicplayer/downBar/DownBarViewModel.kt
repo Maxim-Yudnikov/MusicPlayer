@@ -6,12 +6,12 @@ import androidx.lifecycle.ViewModel
 import com.maxim.musicplayer.audioList.presentation.AudioUi
 import com.maxim.musicplayer.cope.Communication
 import com.maxim.musicplayer.cope.Navigation
-import com.maxim.musicplayer.player.presentation.OpenPlayerStorage
+import com.maxim.musicplayer.player.media.ManageOrder
 import com.maxim.musicplayer.player.presentation.PlayerScreen
 
 class DownBarViewModel(
     private val trackCommunication: DownBarTrackCommunication,
-    private val sharedStorage: OpenPlayerStorage.Save,
+    private val manageOrder: ManageOrder,
     private val communication: DownBarCommunication,
     private val navigation: Navigation.Update
 ): ViewModel(), Communication.Observe<DownBarState>, ReloadDownBar {
@@ -33,7 +33,7 @@ class DownBarViewModel(
     }
 
     fun open() {
-        sharedStorage.save(AudioUi.Empty)
+        manageOrder.makeEmpty()
         navigation.update(PlayerScreen)
     }
 }

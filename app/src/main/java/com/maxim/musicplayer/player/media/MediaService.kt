@@ -15,18 +15,28 @@ import android.os.Binder
 import android.os.Build
 import android.os.IBinder
 import android.support.v4.media.session.MediaSessionCompat
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationCompat.PRIORITY_MAX
 import androidx.core.content.ContextCompat
 import com.maxim.musicplayer.R
+import com.maxim.musicplayer.audioList.presentation.AudioUi
+import com.maxim.musicplayer.cope.ProvideDownBarTrackCommunication
+import com.maxim.musicplayer.cope.ProvideManageOrder
+import com.maxim.musicplayer.cope.ProvidePlayerCommunication
+import com.maxim.musicplayer.downBar.DownBarTrackCommunication
+import com.maxim.musicplayer.player.presentation.PlayerCommunication
+import com.maxim.musicplayer.player.presentation.PlayerState
 
 
-interface MediaService : StartAudio {
+interface MediaService : StartAudio, Playable {
     fun currentPosition(): Int
     fun seekTo(position: Int)
     fun setOnCompleteListener(action: () -> Unit)
     fun pause()
+    fun open(list: List<AudioUi>, audio: AudioUi, position: Int)
+    fun isPlaying(): Boolean
 
     class Base : Service(), MediaService {
         private var mediaPlayer: MediaPlayer? = null
@@ -38,16 +48,18 @@ interface MediaService : StartAudio {
         private var cachedArtist = ""
         private var cachedIcon: Bitmap? = null
 
+        private var isPlaying = false
+
+        private lateinit var manageOrder: ManageOrder
+        private lateinit var downBarTrackCommunication: DownBarTrackCommunication
+        private lateinit var playerCommunication: PlayerCommunication
+
         inner class MusicBinder : Binder() {
             fun getService(): Base = this@Base
         }
 
         override fun onBind(intent: Intent?): IBinder {
             return binder
-        }
-
-        override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-            return START_NOT_STICKY
         }
 
         override fun currentPosition() = mediaPlayer?.currentPosition ?: 0
@@ -67,8 +79,20 @@ interface MediaService : StartAudio {
 
         override fun onCreate() {
             super.onCreate()
+            Log.d("MyLog", "service on create")
+            manageOrder = (applicationContext as ProvideManageOrder).manageOrder()
+            downBarTrackCommunication =
+                (applicationContext as ProvideDownBarTrackCommunication).downBarTrackCommunication()
+            playerCommunication =
+                (applicationContext as ProvidePlayerCommunication).playerCommunication()
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
                 createChannel()
+        }
+
+        override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+            Log.d("MyLog", "service onStartCommand")
+            //manageOrder.generate(repository.dataWithImages().map { it.map(mapperToUi) }, 0)
+            return START_STICKY
         }
 
         override fun start(
@@ -78,6 +102,7 @@ interface MediaService : StartAudio {
             icon: Bitmap?,
             ignoreSame: Boolean
         ) {
+            Log.d("MyLog", "service#start()")
             val notificationManager =
                 this.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             notificationManager.notify(
@@ -89,10 +114,13 @@ interface MediaService : StartAudio {
                     mediaPlayer?.stop()
                     mediaPlayer?.release()
                     mediaPlayer = MediaPlayer.create(this, uri)
+                    mediaPlayer!!.setOnCompletionListener { next() }
                 }
             }
-            if (mediaPlayer == null)
+            if (mediaPlayer == null) {
                 mediaPlayer = MediaPlayer.create(this, uri)
+                mediaPlayer!!.setOnCompletionListener { next() }
+            }
             mediaPlayer!!.start()
             actualUri = uri
 
@@ -100,6 +128,67 @@ interface MediaService : StartAudio {
             cachedArtist = artist
             cachedIcon = icon
         }
+
+        override fun play() {
+            isPlaying = !isPlaying
+            if (isPlaying) {
+                val track = manageOrder.actualTrack()
+                downBarTrackCommunication.setTrack(track, this)
+                track.start(this)
+                playerCommunication.update(PlayerState.Running)
+            } else {
+                downBarTrackCommunication.stop()
+                playerCommunication.update(PlayerState.OnPause)
+                pause()
+            }
+        }
+
+        override fun next() {
+            if (manageOrder.canGoNext()) {
+                isPlaying = true
+                val track = manageOrder.next()
+                track.start(this)
+                playerCommunication.update(
+                    PlayerState.Initial(
+                        track,
+                        manageOrder.isRandom,
+                        manageOrder.isLoop, false
+                    )
+                )
+                manageOrder.setActualTrack(manageOrder.actualAbsolutePosition())
+                downBarTrackCommunication.setTrack(track, this)
+            }
+        }
+
+
+        override fun previous() {
+            if (currentPosition() < TIME_TO_PREVIOUS_MAKE_RESTART && manageOrder.canGoPrevious()) {
+                isPlaying = true
+                val track = manageOrder.previous()
+                track.start(this)
+                manageOrder.setActualTrack(manageOrder.actualAbsolutePosition())
+                downBarTrackCommunication.setTrack(track, this)
+                playerCommunication.update(
+                    PlayerState.Initial(
+                        track,
+                        manageOrder.isRandom,
+                        manageOrder.isLoop, false
+                    )
+                )
+            } else {
+                val track = manageOrder.actualTrack()
+                track.startAgain(this)
+                playerCommunication.update(PlayerState.Running)
+            }
+        }
+
+        override fun open(list: List<AudioUi>, audio: AudioUi, position: Int) {
+            isPlaying = true
+            manageOrder.generate(list, position)
+            audio.start(this)
+        }
+
+        override fun isPlaying() = mediaPlayer?.isPlaying ?: false
 
         override fun pause() {
             val notificationManager =
@@ -113,6 +202,7 @@ interface MediaService : StartAudio {
 
         override fun onDestroy() {
             super.onDestroy()
+            Log.d("MyLog", "service onDestroy")
             mediaPlayer?.release()
         }
 
@@ -125,7 +215,7 @@ interface MediaService : StartAudio {
             isPause: Boolean
         ): Notification {
             val intentPlay =
-                Intent(applicationContext, NotificationActionService::class.java).apply {
+                Intent(applicationContext, NotificationActionsBroadcastReceiver::class.java).apply {
                     action = "PLAY"
                 }
             val pendingIntentPlay = PendingIntent.getBroadcast(
@@ -134,7 +224,7 @@ interface MediaService : StartAudio {
             )
 
             val intentNext =
-                Intent(applicationContext, NotificationActionService::class.java).apply {
+                Intent(applicationContext, NotificationActionsBroadcastReceiver::class.java).apply {
                     action = "NEXT"
                 }
             val pendingIntentNext = PendingIntent.getBroadcast(
@@ -143,7 +233,7 @@ interface MediaService : StartAudio {
             )
 
             val intentPrevious =
-                Intent(applicationContext, NotificationActionService::class.java).apply {
+                Intent(applicationContext, NotificationActionsBroadcastReceiver::class.java).apply {
                     action = "PREVIOUS"
                 }
             val pendingIntentPrevious = PendingIntent.getBroadcast(
@@ -153,7 +243,8 @@ interface MediaService : StartAudio {
 
             val largeIcon = if (icon != null) icon
             else {
-                val drawable = ContextCompat.getDrawable(applicationContext, R.drawable.ic_launcher_background)
+                val drawable =
+                    ContextCompat.getDrawable(applicationContext, R.drawable.ic_launcher_background)
                 val bitmap = Bitmap.createBitmap(128, 128, Bitmap.Config.RGB_565)
                 val canvas = Canvas(bitmap)
                 drawable?.setBounds(0, 0, canvas.width, canvas.height)
@@ -200,6 +291,7 @@ interface MediaService : StartAudio {
         companion object {
             private const val NOTIFICATION_ID = 123456789
             private const val CHANNEL_ID = "Player"
+            private const val TIME_TO_PREVIOUS_MAKE_RESTART = 2500
         }
     }
 }
