@@ -11,8 +11,8 @@ interface ManageOrder {
     var isLoop: Boolean
     var isRandom: Boolean
 
-    fun isLast(): Boolean
-    fun isFirst(): Boolean
+    fun canGoNext(): Boolean
+    fun canGoPrevious(): Boolean
 
     fun actualTrack(): AudioUi
 
@@ -41,7 +41,8 @@ interface ManageOrder {
 
             actualPosition = if (isRandom) {
                 val newOrder = ArrayList(tracks.shuffled())
-                val actualTrack = newOrder.removeAt(newOrder.indexOf(tracksListInNormalOrder[position]))
+                val actualTrack =
+                    newOrder.removeAt(newOrder.indexOf(tracksListInNormalOrder[position]))
                 newOrder.add(0, actualTrack)
                 actualOrder.addAll(newOrder)
                 0
@@ -96,9 +97,11 @@ interface ManageOrder {
             return actualTrack
         }
 
-        override fun isLast() = actualPosition == actualOrder.lastIndex
+        override fun canGoNext() =
+            actualPosition != actualOrder.lastIndex || isLoop
 
-        override fun isFirst() = actualPosition == 0
+        override fun canGoPrevious() =
+            actualPosition != 0 || isLoop
 
         override fun actualTrack() = actualTrack
 

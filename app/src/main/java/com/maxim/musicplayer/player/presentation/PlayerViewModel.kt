@@ -17,8 +17,6 @@ class PlayerViewModel(
     private val manageOrder: ManageOrder
 ) : ViewModel(), Communication.Observe<PlayerState>, Playable {
     private var isPlaying = false
-    private var isLoop = manageOrder.isLoop
-    private var isRandom = manageOrder.isRandom
 
     private lateinit var cachedMediaService: MediaService
 
@@ -28,28 +26,20 @@ class PlayerViewModel(
             if (track != AudioUi.Empty) {
                 isPlaying = true
                 communication.update(
-                    PlayerState.Initial(
-                        track,
-                        isRandom,
-                        isLoop
-                    )
+                    PlayerState.Initial(track, manageOrder.isRandom, manageOrder.isLoop)
                 )
                 track.start(mediaService)
                 downBarTrackCommunication.setTrack(track, this)
-                mediaService.setOnCompleteListener {
-                    next()
-                }
             } else {
                 communication.update(
                     PlayerState.Initial(
-                        manageOrder.actualTrack(),
-                        isRandom,
-                        isLoop
+                        manageOrder.actualTrack(), manageOrder.isRandom, manageOrder.isLoop
                     )
                 )
             }
         }
         cachedMediaService = mediaService
+        mediaService.setOnCompleteListener { next() }
     }
 
     override fun observe(owner: LifecycleOwner, observer: Observer<PlayerState>) {
@@ -71,52 +61,53 @@ class PlayerViewModel(
     }
 
     override fun next() {
-        if (!(manageOrder.isLast() && !isLoop)) {
+        if (manageOrder.canGoNext()) {
             isPlaying = true
             val track = manageOrder.next()
             sharedStorage.save(track)
             communication.update(
                 PlayerState.Initial(
-                    track, isRandom, isLoop
+                    track,
+                    manageOrder.isRandom,
+                    manageOrder.isLoop
                 )
             )
             track.start(cachedMediaService)
             downBarTrackCommunication.setTrack(track, this)
-            cachedMediaService.setOnCompleteListener {
-                next()
-            }
+            cachedMediaService.setOnCompleteListener { next() }
         }
     }
 
     override fun previous() {
-        if (cachedMediaService.currentPosition() < TIME_TO_PREVIOUS_MAKE_RESTART && !(manageOrder.isFirst() && !isLoop)) {
+        if (cachedMediaService.currentPosition() < TIME_TO_PREVIOUS_MAKE_RESTART && manageOrder.canGoPrevious()) {
             isPlaying = true
             val track = manageOrder.previous()
             sharedStorage.save(track)
-            communication.update(PlayerState.Initial(track, isRandom, isLoop))
+            communication.update(
+                PlayerState.Initial(
+                    track,
+                    manageOrder.isRandom,
+                    manageOrder.isLoop
+                )
+            )
             track.start(cachedMediaService)
             downBarTrackCommunication.setTrack(track, this)
         } else {
             communication.update(PlayerState.Running)
             val track = manageOrder.actualTrack()
             track.startAgain(cachedMediaService)
-            downBarTrackCommunication.setTrack(track, this)
         }
-        cachedMediaService.setOnCompleteListener {
-            next()
-        }
+        cachedMediaService.setOnCompleteListener { next() }
     }
 
     fun changeRandom(): Boolean {
-        isRandom = !isRandom
-        manageOrder.isRandom = isRandom
-        return isRandom
+        manageOrder.isRandom = !manageOrder.isRandom
+        return manageOrder.isRandom
     }
 
     fun changeLoop(): Boolean {
-        isLoop = !isLoop
-        manageOrder.isLoop = isLoop
-        return isLoop
+        manageOrder.isLoop = !manageOrder.isLoop
+        return manageOrder.isLoop
     }
 
     companion object {
