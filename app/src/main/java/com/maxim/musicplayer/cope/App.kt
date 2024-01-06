@@ -16,6 +16,7 @@ class App : Application(), ProvideViewModel, ProvideMediaService {
         factory = ModuleFactory.Base(ProvideModule.Base(Core(this)))
 
         val intent = Intent(this, MediaService.Base::class.java)
+        startService(intent)
         bindService(intent, connection, Context.BIND_AUTO_CREATE)
     }
 

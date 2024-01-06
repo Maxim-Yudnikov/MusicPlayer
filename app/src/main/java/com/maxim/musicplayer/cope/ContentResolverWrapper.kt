@@ -47,7 +47,8 @@ interface ContentResolverWrapper {
                     val id = cursor.getLong(idIndex)
                     val title = cursor.getString(titleIndex)
                     val artist = cursor.getString(artistIndex)
-                    val duration = (cursor.getLong(durationIndex) / 1000).toInt()
+                    val duration = cursor.getLong(durationIndex)
+                    if (duration < 1000) continue
                     val album = cursor.getString(albumIndex)
                     val albumArtUri = Uri.parse("content://media/external/audio/media/$id/albumart")
                     var parseFileDescriptor: ParcelFileDescriptor? = null
@@ -78,7 +79,8 @@ interface ContentResolverWrapper {
                     val id = cursor.getLong(idIndex)
                     val title = cursor.getString(titleIndex)
                     val artist = cursor.getString(artistIndex)
-                    val duration = (cursor.getLong(durationIndex) / 1000).toInt()
+                    val duration = cursor.getLong(durationIndex)
+                    if (duration < 1000) continue
                     val album = cursor.getString(albumIndex)
                     val uri =
                         ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, id)

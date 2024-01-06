@@ -9,7 +9,7 @@ class MapperDomainToUi : AudioDomain.Mapper<AudioUi> {
         id: Long,
         title: String,
         artist: String,
-        duration: Int,
+        duration: Long,
         album: String,
         artBitmap: Bitmap?,
         uri: Uri

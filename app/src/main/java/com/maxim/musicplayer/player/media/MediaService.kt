@@ -7,18 +7,23 @@ import android.app.PendingIntent
 import android.app.Service
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.Canvas
 import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Binder
 import android.os.Build
 import android.os.IBinder
 import android.support.v4.media.session.MediaSessionCompat
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationCompat.PRIORITY_MAX
+import androidx.core.content.ContextCompat
 import com.maxim.musicplayer.R
 
-interface MediaService: StartAudio {
+
+interface MediaService : StartAudio {
     fun currentPosition(): Int
     fun seekTo(position: Int)
     fun setOnCompleteListener(action: () -> Unit)
@@ -32,6 +37,7 @@ interface MediaService: StartAudio {
 
         private var cachedTitle = ""
         private var cachedArtist = ""
+        private var cachedIcon: Bitmap? = null
 
         inner class MusicBinder : Binder() {
             fun getService(): Base = this@Base
@@ -39,6 +45,10 @@ interface MediaService: StartAudio {
 
         override fun onBind(intent: Intent?): IBinder {
             return binder
+        }
+
+        override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+            return START_NOT_STICKY
         }
 
         override fun currentPosition() = mediaPlayer?.currentPosition ?: 0
@@ -62,12 +72,18 @@ interface MediaService: StartAudio {
                 createChannel()
         }
 
-        override fun start(title: String, artist: String, uri: Uri, ignoreSame: Boolean) {
+        override fun start(
+            title: String,
+            artist: String,
+            uri: Uri,
+            icon: Bitmap?,
+            ignoreSame: Boolean
+        ) {
             val notificationManager =
                 this.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             notificationManager.notify(
                 NOTIFICATION_ID,
-                makeNotification(title, artist, false)
+                makeNotification(title, artist, icon, false)
             )
             actualUri?.let {
                 if (uri != actualUri || ignoreSame) {
@@ -83,6 +99,7 @@ interface MediaService: StartAudio {
 
             cachedTitle = title
             cachedArtist = artist
+            cachedIcon = icon
         }
 
         override fun pause() {
@@ -90,7 +107,7 @@ interface MediaService: StartAudio {
                 this.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             notificationManager.notify(
                 NOTIFICATION_ID,
-                makeNotification(cachedTitle, cachedArtist, true)
+                makeNotification(cachedTitle, cachedArtist, cachedIcon, true)
             )
             mediaPlayer?.pause()
         }
@@ -102,18 +119,25 @@ interface MediaService: StartAudio {
 
         private var mediaSessionCompat: MediaSessionCompat? = null
 
-        private fun makeNotification(title: String, text: String, isPause: Boolean): Notification {
-            val intentPlay = Intent(applicationContext, NotificationActionService::class.java).apply {
-                action = "PLAY"
-            }
+        private fun makeNotification(
+            title: String,
+            text: String,
+            icon: Bitmap?,
+            isPause: Boolean
+        ): Notification {
+            val intentPlay =
+                Intent(applicationContext, NotificationActionService::class.java).apply {
+                    action = "PLAY"
+                }
             val pendingIntentPlay = PendingIntent.getBroadcast(
                 applicationContext, 0, intentPlay,
                 PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
             )
 
-            val intentNext = Intent(applicationContext, NotificationActionService::class.java).apply {
-                action = "NEXT"
-            }
+            val intentNext =
+                Intent(applicationContext, NotificationActionService::class.java).apply {
+                    action = "NEXT"
+                }
             val pendingIntentNext = PendingIntent.getBroadcast(
                 applicationContext, 0, intentNext,
                 PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
@@ -128,12 +152,24 @@ interface MediaService: StartAudio {
                 PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
             )
 
+            val largeIcon = if (icon != null) icon
+            else {
+                val drawable = ContextCompat.getDrawable(applicationContext, R.drawable.ic_launcher_background)
+                val bitmap = Bitmap.createBitmap(128, 128, Bitmap.Config.RGB_565)
+                val canvas = Canvas(bitmap)
+                drawable?.setBounds(0, 0, canvas.width, canvas.height)
+                drawable?.draw(canvas)
+                bitmap
+            }
+            Log.d("MyLog", "$largeIcon")
+
             mediaSessionCompat?.release()
             mediaSessionCompat = MediaSessionCompat(this, "tag")
             return NotificationCompat.Builder(applicationContext, CHANNEL_ID)
                 .setContentTitle(title)
                 .setTicker(title)
                 .setContentText(text)
+                .setLargeIcon(largeIcon)
                 .setSmallIcon(R.drawable.ic_launcher_foreground)
                 .setPriority(PRIORITY_MAX)
                 .setOngoing(true)

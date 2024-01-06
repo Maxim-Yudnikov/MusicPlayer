@@ -22,7 +22,7 @@ abstract class AudioUi {
         private val id: Long,
         private val title: String,
         private val artist: String,
-        private val duration: Int,
+        private val duration: Long,
         private val album: String,
         private val artBitmap: Bitmap?,
         private val uri: Uri
@@ -33,7 +33,7 @@ abstract class AudioUi {
         }
 
         override fun showDescription(textView: TextView) {
-            val text = "$artist - ${getTime(duration)}"
+            val text = "$artist - ${getTime((duration / 1000).toInt())}"
             textView.text = text
         }
 
@@ -47,19 +47,19 @@ abstract class AudioUi {
         }
 
         override fun start(startAudio: StartAudio) {
-            startAudio.start(title, artist, uri)
+            startAudio.start(title, artist, uri, artBitmap, false)
         }
 
         override fun startAgain(startAudio: StartAudio) {
-            startAudio.start(title, artist, uri, true)
+            startAudio.start(title, artist, uri, artBitmap, true)
         }
 
         override fun showDuration(textView: TextView) {
-            textView.text = getTime(duration)
+            textView.text = getTime((duration / 1000).toInt())
         }
 
         override fun setMaxDuration(seekBar: SeekBar) {
-            seekBar.max = duration * 1000
+            seekBar.max = duration.toInt()
         }
 
         private fun getTime(seconds: Int): String {

@@ -10,7 +10,7 @@ interface AudioDomain {
             id: Long,
             title: String,
             artist: String,
-            duration: Int,
+            duration: Long,
             album: String,
             artBitmap: Bitmap?,
             uri: Uri
@@ -23,7 +23,7 @@ interface AudioDomain {
         private val id: Long,
         private val title: String,
         private val artist: String,
-        private val duration: Int,
+        private val duration: Long,
         private val album: String,
         private val artBitmap: Bitmap?,
         private val uri: Uri
