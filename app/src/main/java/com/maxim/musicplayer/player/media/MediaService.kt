@@ -13,10 +13,12 @@ import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Binder
 import android.os.Build
+import android.os.Bundle
 import android.os.IBinder
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationCompat.PRIORITY_MAX
@@ -264,10 +266,10 @@ interface MediaService : StartAudio, Playable {
             isPause: Boolean,
         ): Notification {
             val pendingIntents = listOf(
-                NotificationActionsBroadcastReceiver.PREVIOUS_ACTION,
-                NotificationActionsBroadcastReceiver.PLAY_ACTION,
-                NotificationActionsBroadcastReceiver.NEXT_ACTION,
-                NotificationActionsBroadcastReceiver.STOP_ACTION
+                PREVIOUS_ACTION,
+                PLAY_ACTION,
+                NEXT_ACTION,
+                STOP_ACTION
             ).map { action ->
                 val intent =
                     Intent(applicationContext, NotificationActionsBroadcastReceiver::class.java)
@@ -307,6 +309,14 @@ interface MediaService : StartAudio, Playable {
             )
             mediaSessionCompat.setPlaybackState(
                 PlaybackStateCompat.Builder()
+                    .addCustomAction(PREVIOUS_ACTION, "Previous", R.drawable.previous_24)
+                    .addCustomAction(NEXT_ACTION, "Next", R.drawable.next_24)
+                    .addCustomAction(
+                        PLAY_ACTION,
+                        "Play",
+                        if (isPause) R.drawable.play_24 else R.drawable.pause_24
+                    )
+                    .addCustomAction(STOP_ACTION, "Stop", R.drawable.close_24)
                     .setActions(PlaybackStateCompat.ACTION_SEEK_TO)
                     .setState(
                         if (isPause) PlaybackStateCompat.STATE_PAUSED else PlaybackStateCompat.STATE_PLAYING,
@@ -317,6 +327,17 @@ interface MediaService : StartAudio, Playable {
             mediaSessionCompat.setCallback(object : MediaSessionCompat.Callback() {
                 override fun onSeekTo(pos: Long) {
                     mediaPlayer?.seekTo(pos.toInt())
+                    Log.d("MyLog", "seek to")
+                }
+
+                override fun onCustomAction(action: String?, extras: Bundle?) {
+                    super.onCustomAction(action, extras)
+                    when (action) {
+                        PREVIOUS_ACTION -> previous()
+                        NEXT_ACTION -> next()
+                        PLAY_ACTION -> play()
+                        STOP_ACTION -> stop()
+                    }
                 }
             })
 
@@ -360,6 +381,10 @@ interface MediaService : StartAudio, Playable {
             private const val NOTIFICATION_ID = 123456789
             private const val CHANNEL_ID = "Player"
             private const val TIME_TO_PREVIOUS_MAKE_RESTART = 2500
+            const val PLAY_ACTION = "PLAY"
+            const val NEXT_ACTION = "NEXT"
+            const val PREVIOUS_ACTION = "PREVIOUS"
+            const val STOP_ACTION = "STOP"
         }
     }
 }

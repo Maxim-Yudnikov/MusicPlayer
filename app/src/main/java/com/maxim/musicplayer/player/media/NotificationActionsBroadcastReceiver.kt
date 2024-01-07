@@ -4,6 +4,10 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import com.maxim.musicplayer.cope.ProvideMediaService
+import com.maxim.musicplayer.player.media.MediaService.Base.Companion.NEXT_ACTION
+import com.maxim.musicplayer.player.media.MediaService.Base.Companion.PLAY_ACTION
+import com.maxim.musicplayer.player.media.MediaService.Base.Companion.PREVIOUS_ACTION
+import com.maxim.musicplayer.player.media.MediaService.Base.Companion.STOP_ACTION
 
 class NotificationActionsBroadcastReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {
@@ -15,12 +19,5 @@ class NotificationActionsBroadcastReceiver : BroadcastReceiver() {
             PREVIOUS_ACTION -> service.previous()
             STOP_ACTION -> service.stop()
         }
-    }
-
-    companion object {
-        const val PLAY_ACTION = "PLAY"
-        const val NEXT_ACTION = "NEXT"
-        const val PREVIOUS_ACTION = "PREVIOUS"
-        const val STOP_ACTION = "STOP"
     }
 }
