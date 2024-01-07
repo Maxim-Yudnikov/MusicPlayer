@@ -1,10 +1,9 @@
-package com.maxim.musicplayer.cope.data
+package com.maxim.musicplayer.audioList.data
 
 import android.content.ContentResolver
 import android.content.ContentUris
 import android.net.Uri
 import android.provider.MediaStore
-import com.maxim.musicplayer.audioList.data.AudioData
 
 interface ContentResolverWrapper {
 
@@ -51,11 +50,3 @@ interface ContentResolverWrapper {
         }
     }
 }
-
-//val bitmap = try {
-//    parseFileDescriptor = contentResolver.openFileDescriptor(albumArtUri, "r")
-//    val fileDescriptor = parseFileDescriptor!!.fileDescriptor
-//    BitmapFactory.decodeFileDescriptor(fileDescriptor)
-//} catch (_: Exception) {
-//    null
-//}

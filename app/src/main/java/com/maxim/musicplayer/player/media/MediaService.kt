@@ -142,7 +142,7 @@ interface MediaService : StartAudio, Playable {
             val track = manageOrder.actualTrack()
             if (isPlaying) {
                 downBarTrackCommunication.setTrack(track, this)
-                track.start(this)
+                track.start(this, contentResolver)
                 playerCommunication.update(
                     PlayerState.Base(
                         track,
@@ -178,7 +178,7 @@ interface MediaService : StartAudio, Playable {
 
                 isPlaying = true
                 val track = manageOrder.next()
-                track.start(this)
+                track.start(this, contentResolver)
                 playerCommunication.update(
                     PlayerState.Base(
                         track,
@@ -202,7 +202,7 @@ interface MediaService : StartAudio, Playable {
 
                 isPlaying = true
                 val track = manageOrder.previous()
-                track.start(this)
+                track.start(this, contentResolver)
                 if (isFavoriteOrder)
                     manageOrder.setActualTrackFavorite(manageOrder.actualAbsolutePosition())
                 else
@@ -213,7 +213,7 @@ interface MediaService : StartAudio, Playable {
                 )
             } else {
                 val track = manageOrder.actualTrack()
-                track.startAgain(this)
+                track.startAgain(this, contentResolver)
                 playerCommunication.update(
                     PlayerState.Base(track, manageOrder.isRandom, manageOrder.loopState(), false, 0)
                 )
@@ -229,7 +229,7 @@ interface MediaService : StartAudio, Playable {
             isPlaying = true
             manageOrder.generate(list, position)
             this.isFavoriteOrder = isFavoriteOrder
-            audio.start(this)
+            audio.start(this, contentResolver)
         }
 
         //todo strange, stopSelf doesn't call onDestroy

@@ -1,6 +1,11 @@
 package com.maxim.musicplayer.audioList.presentation
 
+import android.content.ContentResolver
+import android.graphics.Bitmap
+import android.graphics.ImageDecoder
 import android.net.Uri
+import android.os.Build
+import android.provider.MediaStore
 import android.widget.ImageView
 import android.widget.SeekBar
 import android.widget.TextView
@@ -15,8 +20,8 @@ abstract class AudioUi : Serializable {
     open fun showDescription(textView: TextView) = Unit
     open fun showArtist(textView: TextView) = Unit
     open fun showArt(artImageView: ArtImageView, fullQuality: Boolean) = Unit
-    open fun start(startAudio: StartAudio) = Unit
-    open fun startAgain(startAudio: StartAudio) = Unit
+    open fun start(startAudio: StartAudio, contentResolver: ContentResolver) = Unit
+    open fun startAgain(startAudio: StartAudio, contentResolver: ContentResolver) = Unit
     open fun showDuration(textView: TextView) = Unit
     open fun setMaxDuration(seekBar: SeekBar) = Unit
     open fun showFavorite(imageView: ImageView) = Unit
@@ -49,12 +54,12 @@ abstract class AudioUi : Serializable {
             artImageView.setArt(artUri, fullQuality)
         }
 
-        override fun start(startAudio: StartAudio) {
-            startAudio.start(title, artist, uri, null, false)
+        override fun start(startAudio: StartAudio, contentResolver: ContentResolver) {
+            startAudio.start(title, artist, uri, getBitmap(artUri, contentResolver), false)
         }
 
-        override fun startAgain(startAudio: StartAudio) {
-            startAudio.start(title, artist, uri, null, true)
+        override fun startAgain(startAudio: StartAudio, contentResolver: ContentResolver) {
+            startAudio.start(title, artist, uri, getBitmap(artUri, contentResolver), true)
         }
 
         override fun showDuration(textView: TextView) {
@@ -63,6 +68,17 @@ abstract class AudioUi : Serializable {
 
         override fun setMaxDuration(seekBar: SeekBar) {
             seekBar.max = duration.toInt()
+        }
+
+        private fun getBitmap(uri: Uri, contentResolver: ContentResolver): Bitmap? {
+            return try {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P)
+                    ImageDecoder.decodeBitmap(ImageDecoder.createSource(contentResolver, uri))
+                else
+                    MediaStore.Images.Media.getBitmap(contentResolver, uri)
+            } catch (_: Exception) {
+                null
+            }
         }
 
         //todo custom view timeTextView

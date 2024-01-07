@@ -2,7 +2,7 @@ package com.maxim.musicplayer.cope.sl
 
 import android.content.Context
 import androidx.room.Room
-import com.maxim.musicplayer.cope.data.ContentResolverWrapper
+import com.maxim.musicplayer.audioList.data.ContentResolverWrapper
 import com.maxim.musicplayer.cope.ProvideDownBarTrackCommunication
 import com.maxim.musicplayer.cope.ProvideManageOrder
 import com.maxim.musicplayer.cope.ProvideMediaService
