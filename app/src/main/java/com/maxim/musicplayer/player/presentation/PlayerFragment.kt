@@ -8,7 +8,6 @@ import android.widget.SeekBar
 import com.maxim.musicplayer.cope.BaseFragment
 import com.maxim.musicplayer.cope.ProvideMediaService
 import com.maxim.musicplayer.databinding.FragmentPlayerBinding
-import com.maxim.musicplayer.player.media.MediaService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -16,7 +15,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class PlayerFragment : BaseFragment<FragmentPlayerBinding, PlayerViewModel>() {
-    private lateinit var mediaService: MediaService
     override fun viewModelClass() = PlayerViewModel::class.java
     override fun bind(inflater: LayoutInflater, container: ViewGroup?) =
         FragmentPlayerBinding.inflate(inflater, container, false)
@@ -39,8 +37,7 @@ class PlayerFragment : BaseFragment<FragmentPlayerBinding, PlayerViewModel>() {
                 binding.durationTextView
             )
         }
-        mediaService =
-            (requireContext().applicationContext as ProvideMediaService).mediaService()
+
 
         binding.playButton.setOnClickListener {
             viewModel.play()
@@ -62,6 +59,7 @@ class PlayerFragment : BaseFragment<FragmentPlayerBinding, PlayerViewModel>() {
             viewModel.changeRandom()
         }
 
+        val mediaService = (requireContext().applicationContext as ProvideMediaService).mediaService()
         binding.seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                 if (fromUser) {
@@ -91,13 +89,6 @@ class PlayerFragment : BaseFragment<FragmentPlayerBinding, PlayerViewModel>() {
         }
 
         viewModel.init(savedInstanceState == null)
-    }
-
-    override fun onResume() {
-        super.onResume()
-//        val currentPosition = mediaService.currentPosition()
-//        binding.seekBar.progress = currentPosition
-//        binding.actualTimeTextView.text = getTime(currentPosition / 1000)
     }
 
     override fun onDestroyView() {
