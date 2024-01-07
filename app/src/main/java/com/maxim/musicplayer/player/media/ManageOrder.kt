@@ -66,17 +66,18 @@ interface ManageOrder {
         }
 
         override fun regenerate() {
+            val cachedActualTrack = actualOrder[actualPosition]
             actualOrder.clear()
 
             actualPosition = if (isRandom) {
                 val newOrder = ArrayList(defaultOrder.shuffled())
-                val actualTrack = newOrder.removeAt(newOrder.indexOf(actualOrder[actualPosition]))
+                val actualTrack = newOrder.removeAt(newOrder.indexOf(cachedActualTrack))
                 newOrder.add(0, actualTrack)
                 actualOrder.addAll(newOrder)
                 0
             } else {
                 actualOrder.addAll(defaultOrder)
-                defaultOrder.indexOf(actualOrder[actualPosition])
+                defaultOrder.indexOf(cachedActualTrack)
             }
         }
 
