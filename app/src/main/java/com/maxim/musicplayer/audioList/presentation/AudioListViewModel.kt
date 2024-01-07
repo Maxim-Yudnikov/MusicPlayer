@@ -27,7 +27,7 @@ class AudioListViewModel(
 
     override fun init(isFirstRun: Boolean) {
         if (isFirstRun) {
-            handle({interactor.dataWithImages()}) { list ->
+            handle({ interactor.dataWithImages() }) { list ->
                 communication.update(
                     AudioListState.List(list.map { it.map(mapper) }, actualPosition)
                 )
@@ -48,9 +48,11 @@ class AudioListViewModel(
     }
 
     fun setPosition(position: Int) {
-        communication.update(
-            AudioListState.List(interactor.cachedData().map { it.map(mapper) }, position)
-        )
+        handle({interactor.cachedData()}) { list ->
+            communication.update(
+                AudioListState.List(list.map { it.map(mapper) }, position)
+            )
+        }
     }
 
     fun observePosition(owner: LifecycleOwner, observer: Observer<Int>) {
@@ -60,8 +62,10 @@ class AudioListViewModel(
     fun open(track: AudioUi, position: Int, mediaService: MediaService) {
         manageOrder.setActualTrack(position)
         actualPosition = position
-        val list = interactor.cachedData().map { it.map(mapper) }
-        mediaService.open(list.subList(1, list.lastIndex), track, position)
-        navigation.update(PlayerScreen)
+        handle({ interactor.cachedData() }) { list ->
+            mediaService.open(list.map { it.map(mapper) }
+                .subList(1, list.lastIndex) as List<AudioUi.Abstract>, track, position)
+            navigation.update(PlayerScreen)
+        }
     }
 }

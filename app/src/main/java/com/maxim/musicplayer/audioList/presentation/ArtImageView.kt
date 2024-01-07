@@ -32,14 +32,14 @@ class ArtImageView : androidx.appcompat.widget.AppCompatImageView {
             ?: setImageResource(R.drawable.baseline_audiotrack_24)
     }
 
-    private var actualArt = false
+    private var actualUri: Uri = Uri.EMPTY
 
     fun notifyArtChanged() {
-        actualArt = false
+        actualUri = Uri.EMPTY
     }
 
     fun setArt(uri: Uri, fullQuality: Boolean) {
-        actualArt = true
+        actualUri = uri
         if (fullQuality) {
             try {
                 val parseFileDescriptor =
@@ -77,7 +77,7 @@ class ArtImageView : androidx.appcompat.widget.AppCompatImageView {
                 } catch (_: Exception) {
                     bitmapMap[uri] = null
                 }
-                if (actualArt) {
+                if (actualUri == uri) {
                     withContext(Dispatchers.Main) {
                         showBitmap(bitmapMap[uri])
                     }

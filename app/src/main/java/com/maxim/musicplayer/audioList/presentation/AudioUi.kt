@@ -24,7 +24,7 @@ abstract class AudioUi : Serializable {
     open fun changeFavorite(): AudioUi = Empty
 
     abstract class Abstract(
-        private val id: Long,
+        val id: Long,
         private val title: String,
         private val artist: String,
         private val duration: Long,
@@ -32,7 +32,6 @@ abstract class AudioUi : Serializable {
         private val artUri: Uri,
         private var uri: Uri
     ) : AudioUi() {
-        override fun same(item: AudioUi) = item is Abstract && item.id == id
         override fun showTitle(textView: TextView) {
             textView.text = title
         }
@@ -75,45 +74,49 @@ abstract class AudioUi : Serializable {
     }
 
     data class Base(
-        private val id: Long,
+        private val baseId: Long,
         private val title: String,
         private val artist: String,
         private val duration: Long,
         private val album: String,
         private val artUri: Uri,
         private var uri: Uri
-    ) : Abstract(id, title, artist, duration, album, artUri, uri) {
+    ) : Abstract(baseId, title, artist, duration, album, artUri, uri) {
+
+        override fun same(item: AudioUi) = item is Base && item.baseId == baseId
 
         override fun showFavorite(imageView: ImageView) {
             imageView.setImageResource(R.drawable.favorite_24)
         }
 
         override suspend fun changeFavorite(favoritesActions: FavoritesActions) {
-            favoritesActions.addToFavorite(id, title, artist, duration, album, artUri, uri)
+            favoritesActions.addToFavorite(baseId, title, artist, duration, album, artUri, uri)
         }
 
-        override fun changeFavorite() = Favorite(id, title, artist, duration, album, artUri, uri)
+        override fun changeFavorite() = Favorite(baseId, title, artist, duration, album, artUri, uri)
     }
 
     data class Favorite(
-        private val id: Long,
+        private val favoriteId: Long,
         private val title: String,
         private val artist: String,
         private val duration: Long,
         private val album: String,
         private val artUri: Uri,
         private var uri: Uri
-    ) : Abstract(id, title, artist, duration, album, artUri, uri) {
+    ) : Abstract(favoriteId, title, artist, duration, album, artUri, uri) {
+
+        override fun same(item: AudioUi) = item is Favorite && item.favoriteId == favoriteId
 
         override fun showFavorite(imageView: ImageView) {
             imageView.setImageResource(R.drawable.favorite_full_24)
         }
 
         override suspend fun changeFavorite(favoritesActions: FavoritesActions) {
-            favoritesActions.removeFromFavorites(id)
+            favoritesActions.removeFromFavorites(favoriteId)
         }
 
-        override fun changeFavorite() = Base(id, title, artist, duration, album, artUri, uri)
+        override fun changeFavorite() = Base(favoriteId, title, artist, duration, album, artUri, uri)
     }
 
     data class Count(private val size: Int) : AudioUi() {

@@ -22,6 +22,7 @@ interface AudioDomain {
 
     fun containsId(list: List<Long>): Boolean = false
     fun changeFavorite(): AudioDomain = Space
+    fun toBase(): AudioDomain
 
     data class Base(
         private val id: Long,
@@ -38,6 +39,7 @@ interface AudioDomain {
         override fun containsId(list: List<Long>) = list.contains(id)
 
         override fun changeFavorite() = Favorite(id, title, artist, duration, album, artUri, uri)
+        override fun toBase() = this
     }
 
     data class Favorite(
@@ -55,13 +57,16 @@ interface AudioDomain {
         override fun containsId(list: List<Long>) = list.contains(id)
 
         override fun changeFavorite() = Base(id, title, artist, duration, album, artUri, uri)
+        override fun toBase() = Base(id, title, artist, duration, album, artUri, uri)
     }
 
     data class Count(private val count: Int) : AudioDomain {
         override fun <T> map(mapper: Mapper<T>) = mapper.map(count)
+        override fun toBase() = this
     }
 
     object Space: AudioDomain {
         override fun <T> map(mapper: Mapper<T>) = mapper.map()
+        override fun toBase() = this
     }
 }

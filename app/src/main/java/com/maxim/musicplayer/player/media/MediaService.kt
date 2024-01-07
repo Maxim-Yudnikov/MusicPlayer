@@ -38,7 +38,7 @@ interface MediaService : StartAudio, Playable {
     fun currentPosition(): Int
     fun seekTo(position: Int)
     fun setOnCompleteListener(action: () -> Unit)
-    fun open(list: List<AudioUi>, audio: AudioUi, position: Int)
+    fun open(list: List<AudioUi.Abstract>, audio: AudioUi, position: Int)
     fun stop()
     fun isPlaying(): Boolean
     fun changeRandom()
@@ -213,7 +213,7 @@ interface MediaService : StartAudio, Playable {
             }
         }
 
-        override fun open(list: List<AudioUi>, audio: AudioUi, position: Int) {
+        override fun open(list: List<AudioUi.Abstract>, audio: AudioUi, position: Int) {
             isPlaying = true
             manageOrder.generate(list, position)
             audio.start(this)
