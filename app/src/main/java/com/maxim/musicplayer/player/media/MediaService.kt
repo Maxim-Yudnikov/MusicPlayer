@@ -17,7 +17,6 @@ import android.os.IBinder
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
-import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationCompat.PRIORITY_MAX
@@ -39,6 +38,8 @@ interface MediaService : StartAudio, Playable {
     fun open(list: List<AudioUi>, audio: AudioUi, position: Int)
     fun stop()
     fun isPlaying(): Boolean
+    fun changeRandom()
+    fun changeLoop()
 
     class Base : Service(), MediaService {
         private var mediaPlayer: MediaPlayer? = null
@@ -127,14 +128,30 @@ interface MediaService : StartAudio, Playable {
 
         override fun play() {
             isPlaying = !isPlaying
+            val track = manageOrder.actualTrack()
             if (isPlaying) {
-                val track = manageOrder.actualTrack()
                 downBarTrackCommunication.setTrack(track, this)
                 track.start(this)
-                playerCommunication.update(PlayerState.Running)
+                playerCommunication.update(
+                    PlayerState.Base(
+                        track,
+                        manageOrder.isRandom,
+                        manageOrder.isLoop,
+                        false,
+                        mediaPlayer!!.currentPosition
+                    )
+                )
             } else {
                 downBarTrackCommunication.stop()
-                playerCommunication.update(PlayerState.OnPause)
+                playerCommunication.update(
+                    PlayerState.Base(
+                        track,
+                        manageOrder.isRandom,
+                        manageOrder.isLoop,
+                        true,
+                        mediaPlayer!!.currentPosition
+                    )
+                )
                 val notificationManager =
                     this.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
                 notificationManager.notify(
@@ -151,10 +168,10 @@ interface MediaService : StartAudio, Playable {
                 val track = manageOrder.next()
                 track.start(this)
                 playerCommunication.update(
-                    PlayerState.Initial(
+                    PlayerState.Base(
                         track,
                         manageOrder.isRandom,
-                        manageOrder.isLoop, false
+                        manageOrder.isLoop, false, 0
                     )
                 )
                 manageOrder.setActualTrack(manageOrder.actualAbsolutePosition())
@@ -171,16 +188,14 @@ interface MediaService : StartAudio, Playable {
                 manageOrder.setActualTrack(manageOrder.actualAbsolutePosition())
                 downBarTrackCommunication.setTrack(track, this)
                 playerCommunication.update(
-                    PlayerState.Initial(
-                        track,
-                        manageOrder.isRandom,
-                        manageOrder.isLoop, false
-                    )
+                    PlayerState.Base(track, manageOrder.isRandom, manageOrder.isLoop, false, 0)
                 )
             } else {
                 val track = manageOrder.actualTrack()
                 track.startAgain(this)
-                playerCommunication.update(PlayerState.Running)
+                playerCommunication.update(
+                    PlayerState.Base(track, manageOrder.isRandom, manageOrder.isLoop, false, 0)
+                )
             }
         }
 
@@ -192,7 +207,6 @@ interface MediaService : StartAudio, Playable {
 
         //todo strange, stopSelf doesn't call onDestroy
         override fun stop() {
-            Log.d("MyLog", "service close")
             if (isPlaying) play()
             stopForeground(STOP_FOREGROUND_REMOVE)
             stopSelf()
@@ -200,8 +214,33 @@ interface MediaService : StartAudio, Playable {
 
         override fun isPlaying() = mediaPlayer?.isPlaying ?: false
 
+        override fun changeRandom() {
+            manageOrder.isRandom = !manageOrder.isRandom
+            playerCommunication.update(
+                PlayerState.Base(
+                    manageOrder.actualTrack(),
+                    manageOrder.isRandom,
+                    manageOrder.isLoop,
+                    !mediaPlayer!!.isPlaying,
+                    mediaPlayer!!.currentPosition
+                )
+            )
+        }
+
+        override fun changeLoop() {
+            manageOrder.isLoop = !manageOrder.isLoop
+            playerCommunication.update(
+                PlayerState.Base(
+                    manageOrder.actualTrack(),
+                    manageOrder.isRandom,
+                    manageOrder.isLoop,
+                    !mediaPlayer!!.isPlaying,
+                    mediaPlayer!!.currentPosition
+                )
+            )
+        }
+
         override fun onDestroy() {
-            Log.d("MyLog", "service onDestroy")
             mediaPlayer?.reset()
             mediaPlayer?.release()
             super.onDestroy()
@@ -215,41 +254,20 @@ interface MediaService : StartAudio, Playable {
             icon: Bitmap?,
             isPause: Boolean,
         ): Notification {
-            val intentPlay =
-                Intent(applicationContext, NotificationActionsBroadcastReceiver::class.java).apply {
-                    action = NotificationActionsBroadcastReceiver.PLAY_ACTION
-                }
-            val pendingIntentPlay = PendingIntent.getBroadcast(
-                applicationContext, 0, intentPlay,
-                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-            )
-
-            val intentNext =
-                Intent(applicationContext, NotificationActionsBroadcastReceiver::class.java).apply {
-                    action = NotificationActionsBroadcastReceiver.NEXT_ACTION
-                }
-            val pendingIntentNext = PendingIntent.getBroadcast(
-                applicationContext, 0, intentNext,
-                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-            )
-
-            val intentPrevious =
-                Intent(applicationContext, NotificationActionsBroadcastReceiver::class.java).apply {
-                    action = NotificationActionsBroadcastReceiver.PREVIOUS_ACTION
-                }
-            val pendingIntentPrevious = PendingIntent.getBroadcast(
-                applicationContext, 0, intentPrevious,
-                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-            )
-
-            val intentStop =
-                Intent(applicationContext, NotificationActionsBroadcastReceiver::class.java).apply {
-                    action = NotificationActionsBroadcastReceiver.STOP_ACTION
-                }
-            val pendingIntentStop = PendingIntent.getBroadcast(
-                applicationContext, 0, intentStop,
-                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-            )
+            val pendingIntents = listOf(
+                NotificationActionsBroadcastReceiver.PREVIOUS_ACTION,
+                NotificationActionsBroadcastReceiver.PLAY_ACTION,
+                NotificationActionsBroadcastReceiver.NEXT_ACTION,
+                NotificationActionsBroadcastReceiver.STOP_ACTION
+            ).map { action ->
+                val intent =
+                    Intent(applicationContext, NotificationActionsBroadcastReceiver::class.java)
+                intent.action = action
+                PendingIntent.getBroadcast(
+                    applicationContext, 0, intent,
+                    PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+                )
+            }
 
             val largeIcon = if (icon != null) icon
             else {
@@ -292,17 +310,17 @@ interface MediaService : StartAudio, Playable {
                 .setPriority(PRIORITY_MAX)
                 .setOngoing(true)
                 .setForegroundServiceBehavior(NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE)
-                .addAction(R.drawable.previous_24, "Previous", pendingIntentPrevious)
+                .addAction(R.drawable.previous_24, "Previous", pendingIntents[0])
                 .addAction(
                     if (isPause) R.drawable.play_24 else R.drawable.pause_24,
                     "Play",
-                    pendingIntentPlay
+                    pendingIntents[1]
                 )
-                .addAction(R.drawable.next_24, "Next", pendingIntentNext)
-                .addAction(R.drawable.close_24, "Stop", pendingIntentStop)
+                .addAction(R.drawable.next_24, "Next", pendingIntents[2])
+                .addAction(R.drawable.close_24, "Stop", pendingIntents[3])
                 .setStyle(
                     androidx.media.app.NotificationCompat.MediaStyle()
-                        .setShowActionsInCompactView(0, 1, 2, 4)
+                        .setShowActionsInCompactView(0, 1, 2)
                         .setMediaSession(mediaSessionCompat.sessionToken)
                 )
                 .build()

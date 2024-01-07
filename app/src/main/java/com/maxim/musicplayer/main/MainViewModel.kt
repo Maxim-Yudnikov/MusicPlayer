@@ -11,9 +11,10 @@ import com.maxim.musicplayer.cope.Screen
 
 class MainViewModel(
     private val navigation: Navigation.Mutable
-): ViewModel(), Init, Communication.Observe<Screen> {
+) : ViewModel(), Init, Communication.Observe<Screen> {
     override fun init(isFirstRun: Boolean) {
-        navigation.update(AudioListScreen)
+        if (isFirstRun)
+            navigation.update(AudioListScreen)
     }
 
     override fun observe(owner: LifecycleOwner, observer: Observer<Screen>) {

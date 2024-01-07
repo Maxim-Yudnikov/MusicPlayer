@@ -22,18 +22,19 @@ class PlayerViewModel(
             val track = manageOrder.actualTrack()
             if (track != AudioUi.Empty) {
                 communication.update(
-                    PlayerState.Initial(track, manageOrder.isRandom, manageOrder.isLoop, false)
+                    PlayerState.Base(track, manageOrder.isRandom, manageOrder.isLoop, false, 0)
                 )
                 track.start(mediaServiceProvider.mediaService())
                 downBarTrackCommunication.setTrack(track, this)
             } else {
                 manageOrder.syncActualTrack()
                 communication.update(
-                    PlayerState.Initial(
+                    PlayerState.Base(
                         manageOrder.actualTrack(),
                         manageOrder.isRandom,
                         manageOrder.isLoop,
-                        !mediaServiceProvider.mediaService().isPlaying()
+                        !mediaServiceProvider.mediaService().isPlaying(),
+                        mediaServiceProvider.mediaService().currentPosition()
                     )
                 )
             }
@@ -52,14 +53,12 @@ class PlayerViewModel(
         mediaServiceProvider.mediaService().previous()
     }
 
-    fun changeRandom(): Boolean {
-        manageOrder.isRandom = !manageOrder.isRandom
-        return manageOrder.isRandom
+    fun changeRandom() {
+        mediaServiceProvider.mediaService().changeRandom()
     }
 
-    fun changeLoop(): Boolean {
-        manageOrder.isLoop = !manageOrder.isLoop
-        return manageOrder.isLoop
+    fun changeLoop() {
+        mediaServiceProvider.mediaService().changeLoop()
     }
 
     override fun observe(owner: LifecycleOwner, observer: Observer<PlayerState>) {

@@ -22,11 +22,12 @@ interface PlayerState {
         durationTextView: TextView
     )
 
-    data class Initial(
+    data class Base(
         private val audio: AudioUi,
         private val isRandom: Boolean,
         private val isLoop: Boolean,
-        private val onPause: Boolean
+        private val onPause: Boolean,
+        private val currentPosition: Int
     ) : PlayerState {
         @SuppressLint("SetTextI18n")
         override fun show(
@@ -40,9 +41,9 @@ interface PlayerState {
             actualTimeTextView: TextView,
             durationTextView: TextView
         ) {
-            seekBar.progress = 0
-            actualTimeTextView.text = "0:00"
             audio.setMaxDuration(seekBar)
+            seekBar.progress = currentPosition
+            actualTimeTextView.text = getTime(currentPosition / 1000)
             audio.showDuration(durationTextView)
             audio.showArt(artImageView)
             audio.showTitle(titleTextView)
@@ -63,37 +64,11 @@ interface PlayerState {
                 )
             )
         }
-    }
 
-    object Running : PlayerState {
-        override fun show(
-            artImageView: ImageView,
-            titleTextView: TextView,
-            artistTextView: TextView,
-            playButton: ImageButton,
-            randomButton: ImageButton,
-            loopButton: ImageButton,
-            seekBar: SeekBar,
-            actualTimeTextView: TextView,
-            durationTextView: TextView
-        ) {
-            playButton.setImageResource(R.drawable.pause_24)
-        }
-    }
-
-    object OnPause : PlayerState {
-        override fun show(
-            artImageView: ImageView,
-            titleTextView: TextView,
-            artistTextView: TextView,
-            playButton: ImageButton,
-            randomButton: ImageButton,
-            loopButton: ImageButton,
-            seekBar: SeekBar,
-            actualTimeTextView: TextView,
-            durationTextView: TextView
-        ) {
-            playButton.setImageResource(R.drawable.play_24)
+        private fun getTime(seconds: Int): String {
+            val minutes = seconds / 60
+            val second = seconds % 60
+            return "$minutes:${if (second < 10) "0$second" else second}"
         }
     }
 }
