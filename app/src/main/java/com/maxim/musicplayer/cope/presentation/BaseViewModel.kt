@@ -1,4 +1,4 @@
-package com.maxim.musicplayer.cope
+package com.maxim.musicplayer.cope.presentation
 
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.CoroutineScope

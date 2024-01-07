@@ -1,4 +1,4 @@
-package com.maxim.musicplayer.cope
+package com.maxim.musicplayer.cope.sl
 
 import androidx.lifecycle.ViewModel
 

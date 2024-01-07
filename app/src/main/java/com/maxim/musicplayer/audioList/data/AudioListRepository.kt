@@ -2,7 +2,7 @@ package com.maxim.musicplayer.audioList.data
 
 import android.provider.MediaStore
 import com.maxim.musicplayer.audioList.domain.AudioDomain
-import com.maxim.musicplayer.cope.ContentResolverWrapper
+import com.maxim.musicplayer.cope.data.ContentResolverWrapper
 
 interface AudioListRepository {
     fun dataWithImages(): List<AudioDomain>

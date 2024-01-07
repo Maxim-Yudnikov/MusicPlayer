@@ -1,4 +1,4 @@
-package com.maxim.musicplayer.cope
+package com.maxim.musicplayer.cope.presentation
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

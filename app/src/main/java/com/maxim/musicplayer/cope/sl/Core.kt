@@ -1,6 +1,12 @@
-package com.maxim.musicplayer.cope
+package com.maxim.musicplayer.cope.sl
 
 import android.content.Context
+import com.maxim.musicplayer.cope.data.ContentResolverWrapper
+import com.maxim.musicplayer.cope.ProvideDownBarTrackCommunication
+import com.maxim.musicplayer.cope.ProvideManageOrder
+import com.maxim.musicplayer.cope.ProvideMediaService
+import com.maxim.musicplayer.cope.ProvidePlayerCommunication
+import com.maxim.musicplayer.cope.presentation.Navigation
 
 class Core(private val context: Context) {
     private val navigation = Navigation.Base()

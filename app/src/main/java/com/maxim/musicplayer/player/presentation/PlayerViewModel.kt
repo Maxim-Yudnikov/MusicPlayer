@@ -3,8 +3,11 @@ package com.maxim.musicplayer.player.presentation
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
-import com.maxim.musicplayer.cope.Communication
+import com.maxim.musicplayer.cope.sl.ClearViewModel
+import com.maxim.musicplayer.cope.presentation.Communication
+import com.maxim.musicplayer.cope.presentation.Navigation
 import com.maxim.musicplayer.cope.ProvideMediaService
+import com.maxim.musicplayer.cope.presentation.Screen
 import com.maxim.musicplayer.downBar.DownBarTrackCommunication
 import com.maxim.musicplayer.player.media.ManageOrder
 import com.maxim.musicplayer.player.media.Playable
@@ -13,7 +16,9 @@ class PlayerViewModel(
     private val downBarTrackCommunication: DownBarTrackCommunication,
     private val communication: PlayerCommunication,
     private val manageOrder: ManageOrder,
-    private val mediaServiceProvider: ProvideMediaService
+    private val mediaServiceProvider: ProvideMediaService,
+    private val navigation: Navigation.Update,
+    private val clearViewModel: ClearViewModel
 ) : ViewModel(), Communication.Observe<PlayerState>, Playable {
 
     fun init(isFirstRun: Boolean) {
@@ -30,6 +35,11 @@ class PlayerViewModel(
                 )
             )
         }
+    }
+
+    fun back() {
+        navigation.update(Screen.Pop)
+        clearViewModel.clear(PlayerViewModel::class.java)
     }
 
     override fun play() {

@@ -4,10 +4,10 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import com.maxim.musicplayer.audioList.presentation.AudioListScreen
-import com.maxim.musicplayer.cope.Communication
-import com.maxim.musicplayer.cope.Init
-import com.maxim.musicplayer.cope.Navigation
-import com.maxim.musicplayer.cope.Screen
+import com.maxim.musicplayer.cope.presentation.Communication
+import com.maxim.musicplayer.cope.presentation.Init
+import com.maxim.musicplayer.cope.presentation.Navigation
+import com.maxim.musicplayer.cope.presentation.Screen
 import com.maxim.musicplayer.player.presentation.PlayerScreen
 
 class MainViewModel(

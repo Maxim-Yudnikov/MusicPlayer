@@ -1,4 +1,4 @@
-package com.maxim.musicplayer.cope
+package com.maxim.musicplayer.cope.data
 
 import android.content.ContentResolver
 import android.content.ContentUris

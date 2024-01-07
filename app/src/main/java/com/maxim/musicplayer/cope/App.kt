@@ -5,10 +5,13 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.ServiceConnection
-import android.os.Build
 import android.os.IBinder
-import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
+import com.maxim.musicplayer.cope.data.SimpleStorage
+import com.maxim.musicplayer.cope.sl.Core
+import com.maxim.musicplayer.cope.sl.ClearViewModel
+import com.maxim.musicplayer.cope.sl.ProvideViewModel
+import com.maxim.musicplayer.cope.sl.ViewModelFactory
 import com.maxim.musicplayer.downBar.DownBarTrackCommunication
 import com.maxim.musicplayer.player.media.ManageOrder
 import com.maxim.musicplayer.player.media.MediaService
@@ -16,13 +19,18 @@ import com.maxim.musicplayer.player.presentation.PlayerCommunication
 
 class App : Application(), ProvideViewModel, ProvideMediaService, ProvideManageOrder,
     ProvideDownBarTrackCommunication, ProvidePlayerCommunication {
-    private lateinit var factory: ModuleFactory
+    private lateinit var factory: ViewModelFactory
     private lateinit var manageOrder: ManageOrder
 
-    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate() {
         super.onCreate()
-        factory = ModuleFactory.Base(ProvideModule.Base(Core(this)))
+        factory = ViewModelFactory.Empty
+        val provideViewModel = ProvideViewModel.Base(Core(this), object : ClearViewModel {
+            override fun clear(clasz: Class<out ViewModel>) {
+                factory.clear(clasz)
+            }
+        })
+        factory = ViewModelFactory.Base(provideViewModel)
         manageOrder =
             ManageOrder.Base(SimpleStorage.Base(getSharedPreferences(STORAGE_NAME, MODE_PRIVATE)))
     }

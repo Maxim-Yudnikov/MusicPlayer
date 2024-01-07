@@ -2,7 +2,7 @@ package com.maxim.musicplayer
 
 import android.widget.TextView
 import com.maxim.musicplayer.audioList.presentation.AudioUi
-import com.maxim.musicplayer.cope.SimpleStorage
+import com.maxim.musicplayer.cope.data.SimpleStorage
 import com.maxim.musicplayer.player.media.ManageOrder
 import junit.framework.TestCase.assertEquals
 import org.junit.Before

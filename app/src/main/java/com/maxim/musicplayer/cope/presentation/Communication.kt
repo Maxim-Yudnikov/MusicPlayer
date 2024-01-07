@@ -1,4 +1,4 @@
-package com.maxim.musicplayer.cope
+package com.maxim.musicplayer.cope.presentation
 
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.MutableLiveData
@@ -15,7 +15,7 @@ interface Communication {
 
     interface Mutable<T> : Update<T>, Observe<T>
     abstract class Regular<T>(
-        private val liveData: MutableLiveData<T> = MutableLiveData<T>()
+        protected val liveData: MutableLiveData<T> = MutableLiveData<T>()
     ) : Mutable<T> {
         override fun update(value: T) {
             liveData.value = value

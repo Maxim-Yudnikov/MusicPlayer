@@ -11,7 +11,7 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModel
 import com.maxim.musicplayer.R
 import com.maxim.musicplayer.cope.App
-import com.maxim.musicplayer.cope.ProvideViewModel
+import com.maxim.musicplayer.cope.sl.ProvideViewModel
 
 class MainActivity : AppCompatActivity(), ProvideViewModel {
     private lateinit var viewModel: MainViewModel
@@ -26,10 +26,6 @@ class MainActivity : AppCompatActivity(), ProvideViewModel {
         }
 
         viewModel.init(savedInstanceState == null)
-
-        if (intent?.action == OPEN_PLAYER_ACTION) {
-            viewModel.openPlayer()
-        }
     }
 
     override fun onNewIntent(intent: Intent?) {
@@ -41,6 +37,11 @@ class MainActivity : AppCompatActivity(), ProvideViewModel {
 
     override fun onResume() { //todo refactor
         super.onResume()
+
+        if (intent?.action == OPEN_PLAYER_ACTION) {
+            viewModel.openPlayer()
+        }
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             val readResult = ContextCompat.checkSelfPermission(
                 applicationContext,

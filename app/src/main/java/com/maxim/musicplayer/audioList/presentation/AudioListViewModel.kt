@@ -4,11 +4,11 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import com.maxim.musicplayer.audioList.domain.AudioDomain
 import com.maxim.musicplayer.audioList.domain.AudioListInteractor
-import com.maxim.musicplayer.cope.BaseViewModel
-import com.maxim.musicplayer.cope.Communication
-import com.maxim.musicplayer.cope.Init
-import com.maxim.musicplayer.cope.Navigation
-import com.maxim.musicplayer.cope.RunAsync
+import com.maxim.musicplayer.cope.presentation.BaseViewModel
+import com.maxim.musicplayer.cope.presentation.Communication
+import com.maxim.musicplayer.cope.presentation.Init
+import com.maxim.musicplayer.cope.presentation.Navigation
+import com.maxim.musicplayer.cope.presentation.RunAsync
 import com.maxim.musicplayer.player.media.ManageOrder
 import com.maxim.musicplayer.player.media.MediaService
 import com.maxim.musicplayer.player.presentation.PlayerScreen

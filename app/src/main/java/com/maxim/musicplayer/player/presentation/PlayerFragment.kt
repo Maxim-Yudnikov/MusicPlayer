@@ -5,7 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.SeekBar
-import com.maxim.musicplayer.cope.BaseFragment
+import androidx.activity.OnBackPressedCallback
+import com.maxim.musicplayer.cope.presentation.BaseFragment
 import com.maxim.musicplayer.cope.ProvideMediaService
 import com.maxim.musicplayer.databinding.FragmentPlayerBinding
 import kotlinx.coroutines.CoroutineScope
@@ -22,6 +23,12 @@ class PlayerFragment : BaseFragment<FragmentPlayerBinding, PlayerViewModel>() {
     private var coroutineIsRunning = true
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        onBackPressedCallback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                viewModel.back()
+            }
+        }
+
         super.onViewCreated(view, savedInstanceState)
 
         viewModel.observe(this) {
@@ -37,7 +44,6 @@ class PlayerFragment : BaseFragment<FragmentPlayerBinding, PlayerViewModel>() {
                 binding.durationTextView
             )
         }
-
 
         binding.playButton.setOnClickListener {
             viewModel.play()

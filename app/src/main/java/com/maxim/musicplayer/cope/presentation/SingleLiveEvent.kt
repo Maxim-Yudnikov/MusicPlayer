@@ -1,4 +1,4 @@
-package com.maxim.musicplayer.cope
+package com.maxim.musicplayer.cope.presentation
 
 import androidx.annotation.MainThread
 import androidx.lifecycle.LifecycleOwner

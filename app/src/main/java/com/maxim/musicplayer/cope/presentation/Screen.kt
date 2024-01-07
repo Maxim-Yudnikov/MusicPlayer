@@ -1,4 +1,4 @@
-package com.maxim.musicplayer.cope
+package com.maxim.musicplayer.cope.presentation
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
