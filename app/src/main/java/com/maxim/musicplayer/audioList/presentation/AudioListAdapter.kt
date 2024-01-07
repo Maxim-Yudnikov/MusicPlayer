@@ -55,7 +55,7 @@ class AudioListAdapter(
     class SpaceViewHolder(binding: SpaceBinding) : ItemViewHolder(binding)
 
     override fun getItemViewType(position: Int) =
-        if (list[position] is AudioUi.Base) 0 else if (list[position] is AudioUi.Space) 1 else 2
+        if (list[position] is AudioUi.Base || list[position] is AudioUi.Favorite) 0 else if (list[position] is AudioUi.Space) 1 else 2
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
         return when (viewType) {

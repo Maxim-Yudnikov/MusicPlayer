@@ -11,8 +11,10 @@ class MapperDomainToUi : AudioDomain.Mapper<AudioUi> {
         duration: Long,
         album: String,
         artUri: Uri,
-        uri: Uri
-    ): AudioUi = AudioUi.Base(id, title, artist, duration, album, artUri, uri)
+        uri: Uri,
+        isFavorite: Boolean
+    ): AudioUi = if (isFavorite) AudioUi.Favorite(id, title, artist, duration, album, artUri, uri)
+    else AudioUi.Base(id, title, artist, duration, album, artUri, uri)
 
     override fun map(count: Int): AudioUi = AudioUi.Count(count)
     override fun map() = AudioUi.Space

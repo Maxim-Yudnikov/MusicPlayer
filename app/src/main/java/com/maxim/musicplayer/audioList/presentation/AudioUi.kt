@@ -1,9 +1,11 @@
 package com.maxim.musicplayer.audioList.presentation
 
 import android.net.Uri
+import android.widget.ImageView
 import android.widget.SeekBar
 import android.widget.TextView
 import com.maxim.musicplayer.R
+import com.maxim.musicplayer.favoriteList.data.FavoritesActions
 import com.maxim.musicplayer.player.media.StartAudio
 import java.io.Serializable
 
@@ -17,17 +19,20 @@ abstract class AudioUi : Serializable {
     open fun startAgain(startAudio: StartAudio) = Unit
     open fun showDuration(textView: TextView) = Unit
     open fun setMaxDuration(seekBar: SeekBar) = Unit
-    data class Base(
+    open fun showFavorite(imageView: ImageView) = Unit
+    open suspend fun changeFavorite(favoritesActions: FavoritesActions) = Unit
+    open fun changeFavorite(): AudioUi = Empty
+
+    abstract class Abstract(
         private val id: Long,
-        val title: String,
+        private val title: String,
         private val artist: String,
         private val duration: Long,
         private val album: String,
         private val artUri: Uri,
-        private var uri: Uri,
+        private var uri: Uri
     ) : AudioUi() {
-
-        override fun same(item: AudioUi) = item is Base && item.id == id
+        override fun same(item: AudioUi) = item is Abstract && item.id == id
         override fun showTitle(textView: TextView) {
             textView.text = title
         }
@@ -67,6 +72,48 @@ abstract class AudioUi : Serializable {
             val second = seconds % 60
             return "$minutes:${if (second < 10) "0$second" else second}"
         }
+    }
+
+    data class Base(
+        private val id: Long,
+        private val title: String,
+        private val artist: String,
+        private val duration: Long,
+        private val album: String,
+        private val artUri: Uri,
+        private var uri: Uri
+    ) : Abstract(id, title, artist, duration, album, artUri, uri) {
+
+        override fun showFavorite(imageView: ImageView) {
+            imageView.setImageResource(R.drawable.favorite_24)
+        }
+
+        override suspend fun changeFavorite(favoritesActions: FavoritesActions) {
+            favoritesActions.addToFavorite(id, title, artist, duration, album, artUri, uri)
+        }
+
+        override fun changeFavorite() = Favorite(id, title, artist, duration, album, artUri, uri)
+    }
+
+    data class Favorite(
+        private val id: Long,
+        private val title: String,
+        private val artist: String,
+        private val duration: Long,
+        private val album: String,
+        private val artUri: Uri,
+        private var uri: Uri
+    ) : Abstract(id, title, artist, duration, album, artUri, uri) {
+
+        override fun showFavorite(imageView: ImageView) {
+            imageView.setImageResource(R.drawable.favorite_full_24)
+        }
+
+        override suspend fun changeFavorite(favoritesActions: FavoritesActions) {
+            favoritesActions.removeFromFavorites(id)
+        }
+
+        override fun changeFavorite() = Base(id, title, artist, duration, album, artUri, uri)
     }
 
     data class Count(private val size: Int) : AudioUi() {

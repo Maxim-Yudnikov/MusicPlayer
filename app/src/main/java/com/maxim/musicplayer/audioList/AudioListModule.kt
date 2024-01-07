@@ -14,8 +14,9 @@ class AudioListModule(private val core: Core) : Module<AudioListViewModel> {
         AudioListInteractor.Base(
             AudioListRepository.Base(
                 core.contentResolverWrapper(),
-                MapperDataToDomain()
-            )
+                MapperDataToDomain(),
+            ),
+            core.favoriteRepository(),
         ),
         AudioListCommunication.Base(),
         MapperDomainToUi(),

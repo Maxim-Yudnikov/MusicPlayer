@@ -24,8 +24,10 @@ class App : Application(), ProvideViewModel, ProvideMediaService, ProvideManageO
 
     override fun onCreate() {
         super.onCreate()
+        val core = Core(this)
+        core.init()
         factory = ViewModelFactory.Empty
-        val provideViewModel = ProvideViewModel.Base(Core(this), object : ClearViewModel {
+        val provideViewModel = ProvideViewModel.Base(core, object : ClearViewModel {
             override fun clear(clasz: Class<out ViewModel>) {
                 factory.clear(clasz)
             }

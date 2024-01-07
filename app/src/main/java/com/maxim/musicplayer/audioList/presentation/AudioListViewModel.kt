@@ -27,9 +27,11 @@ class AudioListViewModel(
 
     override fun init(isFirstRun: Boolean) {
         if (isFirstRun) {
-            communication.update(
-                AudioListState.List(interactor.dataWithImages().map { it.map(mapper) }, actualPosition)
-            )
+            handle({interactor.dataWithImages()}) { list ->
+                communication.update(
+                    AudioListState.List(list.map { it.map(mapper) }, actualPosition)
+                )
+            }
         }
     }
 

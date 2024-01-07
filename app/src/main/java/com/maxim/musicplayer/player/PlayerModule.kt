@@ -4,6 +4,7 @@ import com.maxim.musicplayer.cope.sl.ClearViewModel
 import com.maxim.musicplayer.cope.sl.Core
 import com.maxim.musicplayer.cope.sl.Module
 import com.maxim.musicplayer.cope.ProvideMediaService
+import com.maxim.musicplayer.favoriteList.data.FavoriteListRepository
 import com.maxim.musicplayer.player.presentation.PlayerViewModel
 
 class PlayerModule(
@@ -17,6 +18,7 @@ class PlayerModule(
         core.manageOrder(),
         provideMediaService,
         core.navigation(),
-        clearViewModel
+        clearViewModel,
+        FavoriteListRepository.Base(core.dao())
     )
 }

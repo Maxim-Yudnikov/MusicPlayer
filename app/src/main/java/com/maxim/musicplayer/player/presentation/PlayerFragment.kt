@@ -41,8 +41,13 @@ class PlayerFragment : BaseFragment<FragmentPlayerBinding, PlayerViewModel>() {
                 binding.loopOrderButton,
                 binding.seekBar,
                 binding.actualTimeTextView,
-                binding.durationTextView
+                binding.durationTextView,
+                binding.favoriteButton
             )
+        }
+
+        binding.favoriteButton.setOnClickListener {
+            viewModel.saveToFavorites()
         }
 
         binding.playButton.setOnClickListener {

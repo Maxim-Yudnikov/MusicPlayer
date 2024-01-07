@@ -26,6 +26,8 @@ interface ManageOrder {
     fun setActualTrack(position: Int)
     fun observeActualTrackPosition(owner: LifecycleOwner, observer: Observer<Int>)
 
+    fun changeActualFavorite()
+
     class Base(private val storage: SimpleStorage) : ManageOrder {
         private var loopState: LoopState = storage.read(LOOP_KEY, LoopState.Base)
 
@@ -126,6 +128,10 @@ interface ManageOrder {
 
         override fun observeActualTrackPosition(owner: LifecycleOwner, observer: Observer<Int>) {
             actualTrackPositionLiveData.observe(owner, observer)
+        }
+
+        override fun changeActualFavorite() {
+            actualTrack = actualTrack.changeFavorite()
         }
 
         companion object {

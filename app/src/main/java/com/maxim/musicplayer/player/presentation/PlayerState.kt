@@ -20,7 +20,8 @@ interface PlayerState {
         loopButton: ImageButton,
         seekBar: SeekBar,
         actualTimeTextView: TextView,
-        durationTextView: TextView
+        durationTextView: TextView,
+        favoriteImageView: ImageButton
     )
 
     data class Base(
@@ -28,7 +29,7 @@ interface PlayerState {
         private val isRandom: Boolean,
         private val loopState: LoopState,
         private val onPause: Boolean,
-        private val currentPosition: Int
+        private val currentPosition: Int,
     ) : PlayerState {
         @SuppressLint("SetTextI18n")
         override fun show(
@@ -40,7 +41,8 @@ interface PlayerState {
             loopButton: ImageButton,
             seekBar: SeekBar,
             actualTimeTextView: TextView,
-            durationTextView: TextView
+            durationTextView: TextView,
+            favoriteImageView: ImageButton
         ) {
             audio.setMaxDuration(seekBar)
             seekBar.progress = currentPosition
@@ -49,6 +51,7 @@ interface PlayerState {
             audio.showArt(artImageView, true)
             audio.showTitle(titleTextView)
             audio.showArtist(artistTextView)
+            audio.showFavorite(favoriteImageView)
             playButton.setImageResource(if (onPause) R.drawable.play_24 else R.drawable.pause_24)
             val selectedColor = R.color.green
             val unselectedColor = R.color.white
