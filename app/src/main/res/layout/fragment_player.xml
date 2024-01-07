@@ -9,7 +9,7 @@
     android:orientation="vertical"
     android:focusable="true">
 
-    <ImageView
+    <com.maxim.musicplayer.audioList.presentation.ArtImageView
         android:id="@+id/artImageView"
         android:layout_width="350dp"
         android:layout_height="350dp"

@@ -5,10 +5,10 @@ import android.util.AttributeSet
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.ImageButton
-import android.widget.ImageView
 import android.widget.TextView
 import androidx.lifecycle.findViewTreeLifecycleOwner
 import com.maxim.musicplayer.R
+import com.maxim.musicplayer.audioList.presentation.ArtImageView
 import com.maxim.musicplayer.cope.App
 
 class DownBarView : FrameLayout {
@@ -33,7 +33,7 @@ class DownBarView : FrameLayout {
         super.onAttachedToWindow()
         viewModel = (context.applicationContext as App).viewModel(DownBarViewModel::class.java)
         viewModel.init()
-        val imageView = findViewById<ImageView>(R.id.artImageView)
+        val imageView = findViewById<ArtImageView>(R.id.artImageView)
         val titleTextView = findViewById<TextView>(R.id.titleTextView)
         val artistTextView = findViewById<TextView>(R.id.artistTextView)
         val playButton = findViewById<ImageButton>(R.id.playButton)
