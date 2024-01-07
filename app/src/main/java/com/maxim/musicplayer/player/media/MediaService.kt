@@ -116,7 +116,7 @@ interface MediaService : StartAudio, Playable {
             }
             if (mediaPlayer == null) {
                 mediaPlayer = MediaPlayer.create(this, uri)
-                mediaPlayer!!.setOnCompletionListener { next() }
+                mediaPlayer!!.setOnCompletionListener { if (manageOrder.loopState() != LoopState.LoopTrack) next() }
             }
             mediaPlayer!!.start()
             actualUri = uri
@@ -125,6 +125,7 @@ interface MediaService : StartAudio, Playable {
             cachedArtist = artist
             cachedIcon = icon
 
+            manageOrder.initLoop(mediaPlayer!!)
             startForeground(NOTIFICATION_ID, makeNotification(title, artist, icon, false))
         }
 
@@ -138,7 +139,7 @@ interface MediaService : StartAudio, Playable {
                     PlayerState.Base(
                         track,
                         manageOrder.isRandom,
-                        manageOrder.isLoop,
+                        manageOrder.loopState(),
                         false,
                         mediaPlayer!!.currentPosition
                     )
@@ -149,7 +150,7 @@ interface MediaService : StartAudio, Playable {
                     PlayerState.Base(
                         track,
                         manageOrder.isRandom,
-                        manageOrder.isLoop,
+                        manageOrder.loopState(),
                         true,
                         mediaPlayer!!.currentPosition
                     )
@@ -166,6 +167,9 @@ interface MediaService : StartAudio, Playable {
 
         override fun next() {
             if (manageOrder.canGoNext()) {
+                if (manageOrder.loopState() == LoopState.LoopTrack)
+                    manageOrder.changeLoop(mediaPlayer!!)
+
                 isPlaying = true
                 val track = manageOrder.next()
                 track.start(this)
@@ -173,7 +177,7 @@ interface MediaService : StartAudio, Playable {
                     PlayerState.Base(
                         track,
                         manageOrder.isRandom,
-                        manageOrder.isLoop, false, 0
+                        manageOrder.loopState(), false, 0
                     )
                 )
                 manageOrder.setActualTrack(manageOrder.actualAbsolutePosition())
@@ -184,19 +188,22 @@ interface MediaService : StartAudio, Playable {
 
         override fun previous() {
             if (currentPosition() < TIME_TO_PREVIOUS_MAKE_RESTART && manageOrder.canGoPrevious()) {
+                if (manageOrder.loopState() == LoopState.LoopTrack)
+                    manageOrder.changeLoop(mediaPlayer!!)
+
                 isPlaying = true
                 val track = manageOrder.previous()
                 track.start(this)
                 manageOrder.setActualTrack(manageOrder.actualAbsolutePosition())
                 downBarTrackCommunication.setTrack(track, this)
                 playerCommunication.update(
-                    PlayerState.Base(track, manageOrder.isRandom, manageOrder.isLoop, false, 0)
+                    PlayerState.Base(track, manageOrder.isRandom, manageOrder.loopState(), false, 0)
                 )
             } else {
                 val track = manageOrder.actualTrack()
                 track.startAgain(this)
                 playerCommunication.update(
-                    PlayerState.Base(track, manageOrder.isRandom, manageOrder.isLoop, false, 0)
+                    PlayerState.Base(track, manageOrder.isRandom, manageOrder.loopState(), false, 0)
                 )
             }
         }
@@ -222,7 +229,7 @@ interface MediaService : StartAudio, Playable {
                 PlayerState.Base(
                     manageOrder.actualTrack(),
                     manageOrder.isRandom,
-                    manageOrder.isLoop,
+                    manageOrder.loopState(),
                     !mediaPlayer!!.isPlaying,
                     mediaPlayer!!.currentPosition
                 )
@@ -230,12 +237,12 @@ interface MediaService : StartAudio, Playable {
         }
 
         override fun changeLoop() {
-            manageOrder.isLoop = !manageOrder.isLoop
+            manageOrder.changeLoop(mediaPlayer!!)
             playerCommunication.update(
                 PlayerState.Base(
                     manageOrder.actualTrack(),
                     manageOrder.isRandom,
-                    manageOrder.isLoop,
+                    manageOrder.loopState(),
                     !mediaPlayer!!.isPlaying,
                     mediaPlayer!!.currentPosition
                 )

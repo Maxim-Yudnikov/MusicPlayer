@@ -29,7 +29,7 @@ class PlayerViewModel(
                 PlayerState.Base(
                     manageOrder.actualTrack(),
                     manageOrder.isRandom,
-                    manageOrder.isLoop,
+                    manageOrder.loopState(),
                     !mediaServiceProvider.mediaService().isPlaying(),
                     mediaServiceProvider.mediaService().currentPosition()
                 )

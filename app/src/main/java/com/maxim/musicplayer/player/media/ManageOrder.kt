@@ -1,5 +1,6 @@
 package com.maxim.musicplayer.player.media
 
+import android.media.MediaPlayer
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
@@ -11,7 +12,9 @@ interface ManageOrder {
     fun regenerate()
     fun next(): AudioUi
     fun previous(): AudioUi
-    var isLoop: Boolean
+    fun initLoop(mediaPlayer: MediaPlayer)
+    fun changeLoop(mediaPlayer: MediaPlayer)
+    fun loopState(): LoopState
     var isRandom: Boolean
 
     fun canGoNext(): Boolean
@@ -24,17 +27,26 @@ interface ManageOrder {
     fun observeActualTrackPosition(owner: LifecycleOwner, observer: Observer<Int>)
 
     class Base(private val storage: SimpleStorage) : ManageOrder {
-        override var isLoop = storage.read(LOOP_KEY, false)
-            set(value) {
-                field = value
-                storage.save(LOOP_KEY, isLoop)
-            }
+        private var loopState: LoopState = storage.read(LOOP_KEY, LoopState.Base)
+
         override var isRandom = storage.read(RANDOM_KEY, false)
             set(value) {
                 field = value
                 storage.save(RANDOM_KEY, isRandom)
                 regenerate()
             }
+
+        override fun initLoop(mediaPlayer: MediaPlayer) {
+            loopState.handle(mediaPlayer)
+        }
+
+        override fun changeLoop(mediaPlayer: MediaPlayer) {
+            loopState = loopState.next()
+            storage.save(LOOP_KEY, loopState)
+            loopState.handle(mediaPlayer)
+        }
+
+        override fun loopState() = loopState
 
         private val tracksListInNormalOrder = mutableListOf<AudioUi>()
         private val actualOrder = mutableListOf<AudioUi>()
@@ -79,7 +91,7 @@ interface ManageOrder {
         override fun next(): AudioUi {
             if (actualPosition != actualOrder.lastIndex) {
                 actualPosition++
-            } else if (isLoop) {
+            } else if (loopState == LoopState.LoopOrder) {
                 actualPosition = 0
             }
             actualTrack = actualOrder[actualPosition]
@@ -89,7 +101,7 @@ interface ManageOrder {
         override fun previous(): AudioUi {
             if (actualPosition != 0) {
                 actualPosition--
-            } else if (isLoop) {
+            } else if (loopState == LoopState.LoopOrder) {
                 actualPosition = actualOrder.lastIndex
             }
             actualTrack = actualOrder[actualPosition]
@@ -97,10 +109,10 @@ interface ManageOrder {
         }
 
         override fun canGoNext() =
-            actualPosition != actualOrder.lastIndex || isLoop
+            actualPosition != actualOrder.lastIndex || loopState == LoopState.LoopOrder
 
         override fun canGoPrevious() =
-            actualPosition != 0 || isLoop
+            actualPosition != 0 || loopState == LoopState.LoopOrder
 
         override fun actualTrack() = actualTrack
 

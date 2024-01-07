@@ -8,6 +8,7 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import com.maxim.musicplayer.R
 import com.maxim.musicplayer.audioList.presentation.AudioUi
+import com.maxim.musicplayer.player.media.LoopState
 
 interface PlayerState {
     fun show(
@@ -25,7 +26,7 @@ interface PlayerState {
     data class Base(
         private val audio: AudioUi,
         private val isRandom: Boolean,
-        private val isLoop: Boolean,
+        private val loopState: LoopState,
         private val onPause: Boolean,
         private val currentPosition: Int
     ) : PlayerState {
@@ -57,12 +58,7 @@ interface PlayerState {
                     if (isRandom) selectedColor else unselectedColor
                 )
             )
-            loopButton.setBackgroundColor(
-                ContextCompat.getColor(
-                    randomButton.context,
-                    if (isLoop) selectedColor else unselectedColor
-                )
-            )
+            loopState.show(loopButton)
         }
 
         private fun getTime(seconds: Int): String {
