@@ -18,7 +18,6 @@ import android.os.IBinder
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
-import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationCompat.PRIORITY_MAX
@@ -48,6 +47,7 @@ interface MediaService : StartAudio, Playable {
     class Base : Service(), MediaService {
         private var mediaPlayer: MediaPlayer? = null
         private var actualUri: Uri? = null
+        private lateinit var notificationManager: NotificationManager
 
         private val binder = MusicBinder()
 
@@ -76,7 +76,10 @@ interface MediaService : StartAudio, Playable {
                 mediaPlayer!!.seekTo(position.toLong(), MediaPlayer.SEEK_CLOSEST)
             else
                 mediaPlayer!!.seekTo(position)
-            makeNotification(cachedTitle, cachedArtist, cachedIcon, !mediaPlayer!!.isPlaying)
+            notificationManager.notify(
+                NOTIFICATION_ID,
+                makeNotification(cachedTitle, cachedArtist, cachedIcon, !mediaPlayer!!.isPlaying)
+            )
         }
 
         override fun setOnCompleteListener(action: () -> Unit) {
@@ -92,6 +95,8 @@ interface MediaService : StartAudio, Playable {
                 (applicationContext as ProvideDownBarTrackCommunication).downBarTrackCommunication()
             playerCommunication =
                 (applicationContext as ProvidePlayerCommunication).playerCommunication()
+            notificationManager =
+                this.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
                 createChannel()
             mediaSessionCompat = MediaSessionCompat(this, "tag")
@@ -157,8 +162,6 @@ interface MediaService : StartAudio, Playable {
                         mediaPlayer!!.currentPosition
                     )
                 )
-                val notificationManager =
-                    this.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
                 notificationManager.notify(
                     NOTIFICATION_ID,
                     makeNotification(cachedTitle, cachedArtist, cachedIcon, true)
@@ -327,7 +330,15 @@ interface MediaService : StartAudio, Playable {
             mediaSessionCompat.setCallback(object : MediaSessionCompat.Callback() {
                 override fun onSeekTo(pos: Long) {
                     mediaPlayer?.seekTo(pos.toInt())
-                    Log.d("MyLog", "seek to")
+                    playerCommunication.update(
+                        PlayerState.Base(
+                            manageOrder.actualTrack(),
+                            manageOrder.isRandom,
+                            manageOrder.loopState(),
+                            isPause,
+                            mediaPlayer!!.currentPosition
+                        )
+                    )
                 }
 
                 override fun onCustomAction(action: String?, extras: Bundle?) {
