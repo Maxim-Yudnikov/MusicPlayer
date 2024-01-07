@@ -43,7 +43,7 @@ class PlayerViewModel(
         handle({
             manageOrder.actualTrack().changeFavorite(favoriteListRepository)
         }) {
-            manageOrder.changeActualFavorite()
+            manageOrder.changeActualFavorite(mediaServiceProvider.mediaService())
             communication.update(
                 PlayerState.Base(
                     manageOrder.actualTrack(),

@@ -1,6 +1,7 @@
 package com.maxim.musicplayer.player.media
 
 import android.media.MediaPlayer
+import android.util.Log
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
@@ -28,7 +29,7 @@ interface ManageOrder {
     fun observeActualTrackPosition(owner: LifecycleOwner, observer: Observer<Int>)
     fun observeActualTrackFavoritePosition(owner: LifecycleOwner, observer: Observer<Int>)
 
-    fun changeActualFavorite()
+    fun changeActualFavorite(playable: Playable)
 
     class Base(private val storage: SimpleStorage) : ManageOrder {
         private var loopState: LoopState = storage.read(LOOP_KEY, LoopState.Base)
@@ -64,6 +65,7 @@ interface ManageOrder {
                 0
             } else {
                 actualOrder.addAll(defaultOrder)
+                Log.d("MyLog", "actual order size: ${actualOrder.size}, pos argument: $position")
                 position
             }
         }
@@ -120,6 +122,8 @@ interface ManageOrder {
         override fun setActualTrackFavorite(position: Int) {
             actualTrackFavoritePositionLiveData.value = position
             actualTrackPositionLiveData.value = -1
+            Log.d("MyLog", "actual order: $actualOrder")
+            Log.d("MyLog", "set pos: $position, actual: $actualPosition")
         }
 
         override fun observeActualTrackPosition(owner: LifecycleOwner, observer: Observer<Int>) {
@@ -143,9 +147,16 @@ interface ManageOrder {
             loopState.handle(mediaPlayer)
         }
 
-        override fun changeActualFavorite() {
-            trackMap[actualOrder[actualPosition]] =
-                trackMap[actualOrder[actualPosition]]!!.changeFavorite()
+        override fun changeActualFavorite(playable: Playable) {
+            val isFavoriteOrder = actualTrackFavoritePositionLiveData.value != -1
+            val newTrack = trackMap[actualOrder[actualPosition]]!!.changeFavorite()
+            trackMap[actualOrder[actualPosition]] = newTrack
+            if (isFavoriteOrder && newTrack is AudioUi.Base) {
+                val removed = actualOrder.removeAt(actualPosition)
+                defaultOrder.removeAt(defaultOrder.indexOf(removed))
+                actualPosition--
+                playable.next()
+            }
         }
 
         override fun loopState() = loopState

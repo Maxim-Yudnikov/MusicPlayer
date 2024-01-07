@@ -19,7 +19,7 @@ interface FavoriteListRepository : FavoritesActions {
             livedata = dao.favoriteTracksLiveData()
             livedata.observeForever { list ->
                 data.clear()
-                data.addAll(list.map {
+                data.addAll(list.sortedBy { it.title }.map {
                     AudioDomain.Favorite(
                         it.id, it.title, it.artist, it.duration, it.album, it.artUri, it.uri
                     )
