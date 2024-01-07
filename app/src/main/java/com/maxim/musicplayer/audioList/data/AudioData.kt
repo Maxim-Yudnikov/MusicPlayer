@@ -1,5 +1,6 @@
 package com.maxim.musicplayer.audioList.data
 
+import android.graphics.Bitmap
 import android.net.Uri
 
 data class AudioData(
@@ -8,7 +9,7 @@ data class AudioData(
     private val artist: String,
     private val duration: Long,
     private val album: String,
-    private val artUri: Uri,
+    private val artBitmap: Bitmap?,
     private val uri: Uri
 ) {
     interface Mapper<T> {
@@ -18,10 +19,10 @@ data class AudioData(
             artist: String,
             duration: Long,
             album: String,
-            artUri: Uri,
+            artBitmap: Bitmap?,
             uri: Uri
         ): T
     }
 
-    fun <T> map(mapper: Mapper<T>) = mapper.map(id, title, artist, duration, album, artUri, uri)
+    fun <T> map(mapper: Mapper<T>) = mapper.map(id, title, artist, duration, album, artBitmap, uri)
 }

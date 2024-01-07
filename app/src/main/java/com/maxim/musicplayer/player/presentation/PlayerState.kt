@@ -2,17 +2,17 @@ package com.maxim.musicplayer.player.presentation
 
 import android.annotation.SuppressLint
 import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.SeekBar
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import com.maxim.musicplayer.R
-import com.maxim.musicplayer.audioList.presentation.ArtImageView
 import com.maxim.musicplayer.audioList.presentation.AudioUi
 import com.maxim.musicplayer.player.media.LoopState
 
 interface PlayerState {
     fun show(
-        artImageView: ArtImageView,
+        artImageView: ImageView,
         titleTextView: TextView,
         artistTextView: TextView,
         playButton: ImageButton,
@@ -32,7 +32,7 @@ interface PlayerState {
     ) : PlayerState {
         @SuppressLint("SetTextI18n")
         override fun show(
-            artImageView: ArtImageView,
+            artImageView: ImageView,
             titleTextView: TextView,
             artistTextView: TextView,
             playButton: ImageButton,
@@ -46,7 +46,7 @@ interface PlayerState {
             seekBar.progress = currentPosition
             actualTimeTextView.text = getTime(currentPosition / 1000)
             audio.showDuration(durationTextView)
-            audio.showArt(artImageView, true)
+            audio.showArt(artImageView)
             audio.showTitle(titleTextView)
             audio.showArtist(artistTextView)
             playButton.setImageResource(if (onPause) R.drawable.play_24 else R.drawable.pause_24)

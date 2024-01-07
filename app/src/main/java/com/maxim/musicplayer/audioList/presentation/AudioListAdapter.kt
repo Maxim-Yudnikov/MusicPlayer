@@ -29,8 +29,7 @@ class AudioListAdapter(
         override fun bind(item: AudioUi, listener: Listener, position: Int, actualPosition: Int) {
             item.showTitle(binding.titleTextView)
             item.showDescription(binding.descriptionTextView)
-            binding.artImageView.notifyArtChanged()
-            item.showArt(binding.artImageView, false)
+            item.showArt(binding.artImageView)
             itemView.setOnClickListener {
                 listener.open(
                     item,
