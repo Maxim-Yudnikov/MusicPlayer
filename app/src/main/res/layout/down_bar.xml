@@ -8,7 +8,8 @@
     android:clickable="true"
     android:focusable="true"
     android:orientation="horizontal"
-    android:padding="8dp">
+    android:padding="8dp"
+    android:layout_margin="10dp">
 
     <com.maxim.musicplayer.audioList.presentation.ArtImageView
         android:id="@+id/artImageView"

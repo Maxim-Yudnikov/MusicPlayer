@@ -9,20 +9,37 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModel
+import com.google.android.material.tabs.TabLayoutMediator
 import com.maxim.musicplayer.R
 import com.maxim.musicplayer.cope.App
 import com.maxim.musicplayer.cope.sl.ProvideViewModel
+import com.maxim.musicplayer.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity(), ProvideViewModel {
     private lateinit var viewModel: MainViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        val binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        binding.viewPager.adapter = ViewPagerAdapter(this)
+        TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, pos ->
+             when(pos) {
+                0 -> {
+                    tab.setIcon(R.drawable.baseline_audiotrack_24)
+                    //tab.text = "Music"
+                }
+                else -> {
+                    tab.setIcon(R.drawable.favorite_24)
+                    //tab.text = "Favorites"
+                }
+            }
+        }.attach()
 
         viewModel = viewModel(MainViewModel::class.java)
         viewModel.observe(this) {
-            it.show(supportFragmentManager, R.id.container)
+            it.show(supportFragmentManager, R.id.container, binding.tabLayout)
         }
 
         viewModel.init(savedInstanceState == null)

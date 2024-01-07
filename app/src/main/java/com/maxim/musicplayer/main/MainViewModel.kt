@@ -3,7 +3,6 @@ package com.maxim.musicplayer.main
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
-import com.maxim.musicplayer.audioList.presentation.AudioListScreen
 import com.maxim.musicplayer.cope.presentation.Communication
 import com.maxim.musicplayer.cope.presentation.Init
 import com.maxim.musicplayer.cope.presentation.Navigation
@@ -14,8 +13,8 @@ class MainViewModel(
     private val navigation: Navigation.Mutable
 ) : ViewModel(), Init, Communication.Observe<Screen> {
     override fun init(isFirstRun: Boolean) {
-        if (isFirstRun)
-            navigation.update(AudioListScreen)
+        //if (isFirstRun)
+            //navigation.update(AudioListScreen)
     }
 
     fun openPlayer() {
