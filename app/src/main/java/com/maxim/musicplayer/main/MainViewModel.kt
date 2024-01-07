@@ -8,6 +8,7 @@ import com.maxim.musicplayer.cope.Communication
 import com.maxim.musicplayer.cope.Init
 import com.maxim.musicplayer.cope.Navigation
 import com.maxim.musicplayer.cope.Screen
+import com.maxim.musicplayer.player.presentation.PlayerScreen
 
 class MainViewModel(
     private val navigation: Navigation.Mutable
@@ -15,6 +16,10 @@ class MainViewModel(
     override fun init(isFirstRun: Boolean) {
         if (isFirstRun)
             navigation.update(AudioListScreen)
+    }
+
+    fun openPlayer() {
+        navigation.update(PlayerScreen)
     }
 
     override fun observe(owner: LifecycleOwner, observer: Observer<Screen>) {

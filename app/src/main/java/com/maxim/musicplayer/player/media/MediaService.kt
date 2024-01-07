@@ -27,6 +27,8 @@ import com.maxim.musicplayer.cope.ProvideDownBarTrackCommunication
 import com.maxim.musicplayer.cope.ProvideManageOrder
 import com.maxim.musicplayer.cope.ProvidePlayerCommunication
 import com.maxim.musicplayer.downBar.DownBarTrackCommunication
+import com.maxim.musicplayer.main.MainActivity
+import com.maxim.musicplayer.main.MainActivity.Companion.OPEN_PLAYER_ACTION
 import com.maxim.musicplayer.player.presentation.PlayerCommunication
 import com.maxim.musicplayer.player.presentation.PlayerState
 
@@ -269,6 +271,16 @@ interface MediaService : StartAudio, Playable {
                 )
             }
 
+            val onClickIntent = Intent(this, MainActivity::class.java).apply {
+                action = OPEN_PLAYER_ACTION
+            }
+            val onClickPendingIntent = PendingIntent.getActivity(
+                applicationContext,
+                0,
+                onClickIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            )
+
             val largeIcon = if (icon != null) icon
             else {
                 val drawable =
@@ -323,6 +335,7 @@ interface MediaService : StartAudio, Playable {
                         .setShowActionsInCompactView(0, 1, 2)
                         .setMediaSession(mediaSessionCompat.sessionToken)
                 )
+                .setContentIntent(onClickPendingIntent)
                 .build()
         }
 

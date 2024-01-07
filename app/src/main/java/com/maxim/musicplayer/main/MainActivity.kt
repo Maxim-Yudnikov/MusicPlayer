@@ -1,5 +1,6 @@
 package com.maxim.musicplayer.main
 
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
@@ -25,6 +26,17 @@ class MainActivity : AppCompatActivity(), ProvideViewModel {
         }
 
         viewModel.init(savedInstanceState == null)
+
+        if (intent?.action == OPEN_PLAYER_ACTION) {
+            viewModel.openPlayer()
+        }
+    }
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        if (intent?.action == OPEN_PLAYER_ACTION) {
+            viewModel.openPlayer()
+        }
     }
 
     override fun onResume() { //todo refactor
@@ -109,4 +121,8 @@ class MainActivity : AppCompatActivity(), ProvideViewModel {
 
     override fun <T : ViewModel> viewModel(clasz: Class<T>) =
         (application as ProvideViewModel).viewModel(clasz)
+
+    companion object {
+        const val OPEN_PLAYER_ACTION = "OPEN_PLAYER_ACTION"
+    }
 }

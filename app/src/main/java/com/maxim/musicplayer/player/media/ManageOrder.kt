@@ -18,8 +18,6 @@ interface ManageOrder {
     fun canGoPrevious(): Boolean
 
     fun actualTrack(): AudioUi
-    fun makeEmpty()
-    fun syncActualTrack()
     fun actualAbsolutePosition(): Int
 
     fun setActualTrack(position: Int)
@@ -105,13 +103,6 @@ interface ManageOrder {
             actualPosition != 0 || isLoop
 
         override fun actualTrack() = actualTrack
-        override fun makeEmpty() {
-            actualTrack = AudioUi.Empty
-        }
-
-        override fun syncActualTrack() {
-            actualTrack = actualOrder[actualPosition]
-        }
 
         override fun actualAbsolutePosition() = tracksListInNormalOrder.indexOf(actualTrack)
 

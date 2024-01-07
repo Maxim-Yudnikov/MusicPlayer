@@ -3,7 +3,6 @@ package com.maxim.musicplayer.player.presentation
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
-import com.maxim.musicplayer.audioList.presentation.AudioUi
 import com.maxim.musicplayer.cope.Communication
 import com.maxim.musicplayer.cope.ProvideMediaService
 import com.maxim.musicplayer.downBar.DownBarTrackCommunication
@@ -20,24 +19,16 @@ class PlayerViewModel(
     fun init(isFirstRun: Boolean) {
         if (isFirstRun) {
             val track = manageOrder.actualTrack()
-            if (track != AudioUi.Empty) {
-                communication.update(
-                    PlayerState.Base(track, manageOrder.isRandom, manageOrder.isLoop, false, 0)
+            downBarTrackCommunication.setTrack(track, mediaServiceProvider.mediaService())
+            communication.update(
+                PlayerState.Base(
+                    manageOrder.actualTrack(),
+                    manageOrder.isRandom,
+                    manageOrder.isLoop,
+                    !mediaServiceProvider.mediaService().isPlaying(),
+                    mediaServiceProvider.mediaService().currentPosition()
                 )
-                track.start(mediaServiceProvider.mediaService())
-                downBarTrackCommunication.setTrack(track, this)
-            } else {
-                manageOrder.syncActualTrack()
-                communication.update(
-                    PlayerState.Base(
-                        manageOrder.actualTrack(),
-                        manageOrder.isRandom,
-                        manageOrder.isLoop,
-                        !mediaServiceProvider.mediaService().isPlaying(),
-                        mediaServiceProvider.mediaService().currentPosition()
-                    )
-                )
-            }
+            )
         }
     }
 
