@@ -1,7 +1,6 @@
 package com.maxim.musicplayer.player.media
 
 import android.media.MediaPlayer
-import android.util.Log
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
@@ -65,7 +64,6 @@ interface ManageOrder {
                 0
             } else {
                 actualOrder.addAll(defaultOrder)
-                Log.d("MyLog", "actual order size: ${actualOrder.size}, pos argument: $position")
                 position
             }
         }
@@ -122,8 +120,6 @@ interface ManageOrder {
         override fun setActualTrackFavorite(position: Int) {
             actualTrackFavoritePositionLiveData.value = position
             actualTrackPositionLiveData.value = -1
-            Log.d("MyLog", "actual order: $actualOrder")
-            Log.d("MyLog", "set pos: $position, actual: $actualPosition")
         }
 
         override fun observeActualTrackPosition(owner: LifecycleOwner, observer: Observer<Int>) {
