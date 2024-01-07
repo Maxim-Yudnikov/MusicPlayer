@@ -10,7 +10,7 @@
     android:orientation="horizontal"
     android:padding="8dp">
 
-    <ImageView
+    <com.maxim.musicplayer.audioList.presentation.ArtImageView
         android:id="@+id/artImageView"
         android:layout_width="50dp"
         android:layout_height="50dp"
