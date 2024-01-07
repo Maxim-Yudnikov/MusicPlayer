@@ -19,13 +19,17 @@ class FavoriteListFragment: BaseFragment<FragmentFavoriteListBinding, FavoriteLi
         super.onViewCreated(view, savedInstanceState)
         val adapter = AudioListAdapter(object : AudioListAdapter.Listener {
             override fun open(audioUi: AudioUi, position: Int, mediaService: MediaService) {
-                TODO("Not yet implemented")
+                viewModel.open(audioUi, position, mediaService)
             }
         })
         binding.favoriteRecyclerView.adapter = adapter
 
         viewModel.observe(this) {
             it.showList(adapter)
+        }
+
+        viewModel.observePosition(this) {
+            viewModel.setPosition(it)
         }
 
         viewModel.init(savedInstanceState == null)

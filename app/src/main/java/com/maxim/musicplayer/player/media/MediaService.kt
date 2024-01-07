@@ -38,7 +38,7 @@ interface MediaService : StartAudio, Playable {
     fun currentPosition(): Int
     fun seekTo(position: Int)
     fun setOnCompleteListener(action: () -> Unit)
-    fun open(list: List<AudioUi.Abstract>, audio: AudioUi, position: Int)
+    fun open(list: List<AudioUi.Abstract>, audio: AudioUi, position: Int, isFavoriteOrder: Boolean)
     fun stop()
     fun isPlaying(): Boolean
     fun changeRandom()
@@ -56,6 +56,7 @@ interface MediaService : StartAudio, Playable {
         private var cachedIcon: Bitmap? = null
 
         private var isPlaying = false
+        private var isFavoriteOrder = false
 
         private lateinit var manageOrder: ManageOrder
         private lateinit var downBarTrackCommunication: DownBarTrackCommunication
@@ -182,10 +183,13 @@ interface MediaService : StartAudio, Playable {
                     PlayerState.Base(
                         track,
                         manageOrder.isRandom,
-                        manageOrder.loopState(), false, 0
+                        manageOrder.loopState(), false, -1
                     )
                 )
-                manageOrder.setActualTrack(manageOrder.actualAbsolutePosition())
+                if (isFavoriteOrder)
+                    manageOrder.setActualTrackFavorite(manageOrder.actualAbsolutePosition())
+                else
+                    manageOrder.setActualTrack(manageOrder.actualAbsolutePosition())
                 downBarTrackCommunication.setTrack(track, this)
             }
         }
@@ -199,7 +203,10 @@ interface MediaService : StartAudio, Playable {
                 isPlaying = true
                 val track = manageOrder.previous()
                 track.start(this)
-                manageOrder.setActualTrack(manageOrder.actualAbsolutePosition())
+                if (isFavoriteOrder)
+                    manageOrder.setActualTrackFavorite(manageOrder.actualAbsolutePosition())
+                else
+                    manageOrder.setActualTrack(manageOrder.actualAbsolutePosition())
                 downBarTrackCommunication.setTrack(track, this)
                 playerCommunication.update(
                     PlayerState.Base(track, manageOrder.isRandom, manageOrder.loopState(), false, 0)
@@ -213,9 +220,15 @@ interface MediaService : StartAudio, Playable {
             }
         }
 
-        override fun open(list: List<AudioUi.Abstract>, audio: AudioUi, position: Int) {
+        override fun open(
+            list: List<AudioUi.Abstract>,
+            audio: AudioUi,
+            position: Int,
+            isFavoriteOrder: Boolean
+        ) {
             isPlaying = true
             manageOrder.generate(list, position)
+            this.isFavoriteOrder = isFavoriteOrder
             audio.start(this)
         }
 

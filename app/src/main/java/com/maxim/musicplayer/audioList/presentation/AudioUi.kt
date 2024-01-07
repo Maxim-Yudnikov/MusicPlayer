@@ -86,7 +86,7 @@ abstract class AudioUi : Serializable {
         override fun same(item: AudioUi) = item is Base && item.baseId == baseId
 
         override fun showFavorite(imageView: ImageView) {
-            imageView.setImageResource(R.drawable.favorite_24)
+            imageView.setImageResource(R.drawable.favorite_border_24)
         }
 
         override suspend fun changeFavorite(favoritesActions: FavoritesActions) {
@@ -109,7 +109,7 @@ abstract class AudioUi : Serializable {
         override fun same(item: AudioUi) = item is Favorite && item.favoriteId == favoriteId
 
         override fun showFavorite(imageView: ImageView) {
-            imageView.setImageResource(R.drawable.favorite_full_24)
+            imageView.setImageResource(R.drawable.favorite_24)
         }
 
         override suspend fun changeFavorite(favoritesActions: FavoritesActions) {

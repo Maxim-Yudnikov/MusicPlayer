@@ -24,7 +24,9 @@ interface ManageOrder {
     fun actualAbsolutePosition(): Int
 
     fun setActualTrack(position: Int)
+    fun setActualTrackFavorite(position: Int)
     fun observeActualTrackPosition(owner: LifecycleOwner, observer: Observer<Int>)
+    fun observeActualTrackFavoritePosition(owner: LifecycleOwner, observer: Observer<Int>)
 
     fun changeActualFavorite()
 
@@ -42,6 +44,7 @@ interface ManageOrder {
         private val actualOrder = mutableListOf<Long>()
         private var actualPosition = 0
         private val actualTrackPositionLiveData = MutableLiveData<Int>()
+        private val actualTrackFavoritePositionLiveData = MutableLiveData<Int>()
 
         override fun generate(tracks: List<AudioUi.Abstract>, position: Int) {
             defaultOrder.clear()
@@ -111,10 +114,23 @@ interface ManageOrder {
 
         override fun setActualTrack(position: Int) {
             actualTrackPositionLiveData.value = position
+            actualTrackFavoritePositionLiveData.value = -1
+        }
+
+        override fun setActualTrackFavorite(position: Int) {
+            actualTrackFavoritePositionLiveData.value = position
+            actualTrackPositionLiveData.value = -1
         }
 
         override fun observeActualTrackPosition(owner: LifecycleOwner, observer: Observer<Int>) {
             actualTrackPositionLiveData.observe(owner, observer)
+        }
+
+        override fun observeActualTrackFavoritePosition(
+            owner: LifecycleOwner,
+            observer: Observer<Int>
+        ) {
+            actualTrackFavoritePositionLiveData.observe(owner, observer)
         }
 
         override fun initLoop(mediaPlayer: MediaPlayer) {
@@ -128,7 +144,8 @@ interface ManageOrder {
         }
 
         override fun changeActualFavorite() {
-            trackMap[actualOrder[actualPosition]] = trackMap[actualOrder[actualPosition]]!!.changeFavorite()
+            trackMap[actualOrder[actualPosition]] =
+                trackMap[actualOrder[actualPosition]]!!.changeFavorite()
         }
 
         override fun loopState() = loopState

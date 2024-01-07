@@ -11,5 +11,7 @@ class FavoriteModule(private val core: Core): Module<FavoriteListViewModel> {
         core.favoriteRepository(),
         MapperDomainToUi(),
         AudioListCommunication.Base(),
+        core.manageOrder(),
+        core.navigation()
     )
 }
