@@ -11,18 +11,19 @@ import android.widget.SeekBar
 import android.widget.TextView
 import com.maxim.musicplayer.R
 import com.maxim.musicplayer.favoriteList.data.FavoritesActions
+import com.maxim.musicplayer.main.TimeTextView
 import com.maxim.musicplayer.player.media.StartAudio
 import java.io.Serializable
 
 abstract class AudioUi : Serializable {
     abstract fun same(item: AudioUi): Boolean
     abstract fun showTitle(textView: TextView)
-    open fun showDescription(textView: TextView) = Unit
+    open fun showDescription(textView: TimeTextView) = Unit
     open fun showArtist(textView: TextView) = Unit
     open fun showArt(artImageView: ArtImageView, fullQuality: Boolean) = Unit
     open fun start(startAudio: StartAudio, contentResolver: ContentResolver) = Unit
     open fun startAgain(startAudio: StartAudio, contentResolver: ContentResolver) = Unit
-    open fun showDuration(textView: TextView) = Unit
+    open fun showDuration(textView: TimeTextView) = Unit
     open fun setMaxDuration(seekBar: SeekBar) = Unit
     open fun showFavorite(imageView: ImageView) = Unit
     open suspend fun changeFavorite(favoritesActions: FavoritesActions) = Unit
@@ -41,9 +42,8 @@ abstract class AudioUi : Serializable {
             textView.text = title
         }
 
-        override fun showDescription(textView: TextView) {
-            val text = "$artist - ${getTime((duration / 1000).toInt())}"
-            textView.text = text
+        override fun showDescription(textView: TimeTextView) {
+            textView.showStringAndTime("$artist - ", (duration / 1000).toInt())
         }
 
         override fun showArtist(textView: TextView) {
@@ -62,8 +62,8 @@ abstract class AudioUi : Serializable {
             startAudio.start(title, artist, uri, getBitmap(artUri, contentResolver), true)
         }
 
-        override fun showDuration(textView: TextView) {
-            textView.text = getTime((duration / 1000).toInt())
+        override fun showDuration(textView: TimeTextView) {
+            textView.showTime((duration / 1000).toInt())
         }
 
         override fun setMaxDuration(seekBar: SeekBar) {
@@ -79,13 +79,6 @@ abstract class AudioUi : Serializable {
             } catch (_: Exception) {
                 null
             }
-        }
-
-        //todo custom view timeTextView
-        private fun getTime(seconds: Int): String {
-            val minutes = seconds / 60
-            val second = seconds % 60
-            return "$minutes:${if (second < 10) "0$second" else second}"
         }
     }
 

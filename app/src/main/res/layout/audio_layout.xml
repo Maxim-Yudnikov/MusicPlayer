@@ -31,7 +31,7 @@
             android:textAppearance="@style/TextAppearance.AppCompat.Title"
             tools:text="Some title" />
 
-        <TextView
+        <com.maxim.musicplayer.main.TimeTextView
             android:id="@+id/descriptionTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

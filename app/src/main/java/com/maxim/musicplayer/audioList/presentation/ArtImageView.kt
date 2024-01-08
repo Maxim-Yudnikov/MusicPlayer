@@ -13,7 +13,6 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-
 class ArtImageView : androidx.appcompat.widget.AppCompatImageView {
     //region constructors
     constructor(context: Context) : super(context)

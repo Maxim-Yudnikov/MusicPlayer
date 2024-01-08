@@ -32,7 +32,7 @@
                 android:layout_height="wrap_content"
                 tools:text="Track name" />
 
-            <TextView
+            <com.maxim.musicplayer.main.TimeTextView
                 android:id="@+id/descriptionTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

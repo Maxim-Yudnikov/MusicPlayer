@@ -9,6 +9,7 @@ import com.maxim.musicplayer.R
 import com.maxim.musicplayer.audioList.presentation.ArtImageView
 import com.maxim.musicplayer.audioList.presentation.AudioUi
 import com.maxim.musicplayer.cope.sl.GoBack
+import com.maxim.musicplayer.main.TimeTextView
 import com.maxim.musicplayer.player.media.LoopState
 
 interface PlayerState {
@@ -20,8 +21,8 @@ interface PlayerState {
         randomButton: ImageButton,
         loopButton: ImageButton,
         seekBar: SeekBar,
-        actualTimeTextView: TextView,
-        durationTextView: TextView,
+        actualTimeTextView: TimeTextView,
+        durationTextView: TimeTextView,
         favoriteImageView: ImageButton
     ) = Unit
     fun finish(goBack: GoBack) = Unit
@@ -42,13 +43,13 @@ interface PlayerState {
             randomButton: ImageButton,
             loopButton: ImageButton,
             seekBar: SeekBar,
-            actualTimeTextView: TextView,
-            durationTextView: TextView,
+            actualTimeTextView: TimeTextView,
+            durationTextView: TimeTextView,
             favoriteImageView: ImageButton
         ) {
             audio.setMaxDuration(seekBar)
             seekBar.progress = currentPosition
-            actualTimeTextView.text = getTime(currentPosition / 1000)
+            actualTimeTextView.showTime(currentPosition / 1000)
             audio.showDuration(durationTextView)
             audio.showArt(artImageView, true)
             audio.showTitle(titleTextView)
@@ -64,12 +65,6 @@ interface PlayerState {
                 )
             )
             loopState.show(loopButton)
-        }
-
-        private fun getTime(seconds: Int): String {
-            val minutes = seconds / 60
-            val second = seconds % 60
-            return "$minutes:${if (second < 10) "0$second" else second}"
         }
     }
 

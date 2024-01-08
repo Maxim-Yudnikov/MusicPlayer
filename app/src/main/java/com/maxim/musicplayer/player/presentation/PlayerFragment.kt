@@ -76,8 +76,7 @@ class PlayerFragment : BaseFragment<FragmentPlayerBinding, PlayerViewModel>() {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                 if (fromUser) {
                     mediaService.seekTo(progress)
-                    binding.actualTimeTextView.text =
-                        getTime(mediaService.currentPosition() / 1000)
+                    binding.actualTimeTextView.showTime(mediaService.currentPosition() / 1000)
                 }
             }
 
@@ -93,7 +92,7 @@ class PlayerFragment : BaseFragment<FragmentPlayerBinding, PlayerViewModel>() {
                     if (mediaService.isPlaying()) {
                         val currentPosition = mediaService.currentPosition()
                         binding.seekBar.progress = currentPosition
-                        binding.actualTimeTextView.text = getTime(currentPosition / 1000)
+                        binding.actualTimeTextView.showTime(currentPosition / 1000)
                     }
                 }
                 delay(1000)
@@ -106,12 +105,5 @@ class PlayerFragment : BaseFragment<FragmentPlayerBinding, PlayerViewModel>() {
     override fun onDestroyView() {
         coroutineIsRunning = false
         super.onDestroyView()
-    }
-
-    //todo private function and the same in audioUi and state
-    private fun getTime(seconds: Int): String {
-        val minutes = seconds / 60
-        val second = seconds % 60
-        return "$minutes:${if (second < 10) "0$second" else second}"
     }
 }
