@@ -75,9 +75,7 @@ class PlayerViewModel(
         mediaServiceProvider.mediaService().previous()
     }
 
-    override fun finish() {
-        TODO("Not yet implemented")
-    }
+    override fun finish() = Unit
 
     fun changeRandom() {
         mediaServiceProvider.mediaService().changeRandom()

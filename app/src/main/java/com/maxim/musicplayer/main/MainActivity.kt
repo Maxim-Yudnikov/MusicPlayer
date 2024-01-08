@@ -63,7 +63,7 @@ class MainActivity : AppCompatActivity(), ProvideViewModel {
             viewModel.openPlayer()
         }
 
-        if (true) return
+        if ((application as App).isMock) return
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             val readResult = ContextCompat.checkSelfPermission(

@@ -225,8 +225,13 @@ interface MediaService : StartAudio, Playable {
         override fun finish() {
             mediaPlayer?.stop()
             mediaPlayer?.release()
+            mediaPlayer = null
             playerCommunication.update(PlayerState.Finish)
             downBarTrackCommunication.close()
+            notificationManager.notify(
+                NOTIFICATION_ID,
+                makeEmptyNotification()
+            )
         }
 
         override fun open(
@@ -283,6 +288,11 @@ interface MediaService : StartAudio, Playable {
         }
 
         private lateinit var mediaSessionCompat: MediaSessionCompat
+
+        private fun makeEmptyNotification(): Notification {
+            return NotificationCompat.Builder(applicationContext, CHANNEL_ID)
+                .setSmallIcon(R.drawable.ic_launcher_foreground).build()
+        }
 
         private fun makeNotification(
             title: String,
