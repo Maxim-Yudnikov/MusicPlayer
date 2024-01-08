@@ -1,6 +1,5 @@
 package com.maxim.musicplayer.album.presentation
 
-import android.util.Log
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import com.maxim.musicplayer.album.data.OpenAlbumStorage
@@ -48,12 +47,12 @@ class AlbumViewModel(
     }
 
     fun setPosition(position: Int, albumUi: AlbumUi) { //todo magic +1
-        actualPosition = position + 1
-        Log.d("MyLog", "$actualPosition")
-        if (albumUi == storage.read())
+        if (albumUi.same(storage.read())) {
+            actualPosition = position + 1
             communication.update(
                 AlbumState.Base(storage.read(), actualPosition)
             )
+        }
     }
 
     fun more(audioUi: AudioUi) {
@@ -67,6 +66,7 @@ class AlbumViewModel(
     }
 
     fun open(track: AudioUi, position: Int, mediaService: MediaService) {
+        storage.saveActual(storage.read())
         manageOrder.setActualAlbumTrack(position, storage.read())
         actualPosition = position + 1
         val list = (storage.read() as AlbumUi.Base).tracks

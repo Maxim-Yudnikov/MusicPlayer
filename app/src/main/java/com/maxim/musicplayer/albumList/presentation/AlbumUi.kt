@@ -1,6 +1,5 @@
 package com.maxim.musicplayer.albumList.presentation
 
-import android.util.Log
 import android.widget.TextView
 import com.maxim.musicplayer.R
 import com.maxim.musicplayer.audioList.presentation.ArtImageView
@@ -64,7 +63,6 @@ abstract class AlbumUi {
                         rewrite.add(Pair(i, favorite))
                 }
             }
-            Log.d("MyLog", "updated at ${rewrite.map { it.first }}")
             rewrite.forEach {
                 newList[it.first] = it.second
             }
