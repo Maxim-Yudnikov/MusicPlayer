@@ -25,7 +25,7 @@ class AlbumViewModel(
 ) : ViewModel(), GoBack, Init, Communication.Observe<AlbumState> {
 
     override fun init(isFirstRun: Boolean) {
-        communication.update(AlbumState.Base(storage.read()))
+        communication.update(AlbumState.Base(storage.read(), -1))
     }
 
     override fun goBack() {
@@ -33,8 +33,19 @@ class AlbumViewModel(
         clearViewModel.clear(AlbumViewModel::class.java)
     }
 
+    fun setPosition(position: Int, albumUi: AlbumUi) { //todo magic +1
+        if (albumUi == storage.read())
+            communication.update(
+                AlbumState.Base(storage.read(), position + 1)
+            )
+    }
+
+    fun observePosition(owner: LifecycleOwner, observer: Observer<Pair<Int, AlbumUi>>) {
+        manageOrder.observeActualAlbumTrackPosition(owner, observer)
+    }
+
     fun open(track: AudioUi, position: Int, mediaService: MediaService) {
-        manageOrder.setActualTrack(position)
+        manageOrder.setActualAlbumTrack(position, storage.read())
         //actualPosition = position
         val list = (storage.read() as AlbumUi.Base).tracks
         mediaService.open(list as List<AudioUi.Abstract>, track, position, false)

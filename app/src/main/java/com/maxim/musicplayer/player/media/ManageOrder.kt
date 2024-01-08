@@ -4,6 +4,7 @@ import android.media.MediaPlayer
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
+import com.maxim.musicplayer.albumList.presentation.AlbumUi
 import com.maxim.musicplayer.audioList.presentation.AudioUi
 import com.maxim.musicplayer.core.data.SimpleStorage
 
@@ -25,8 +26,10 @@ interface ManageOrder {
 
     fun setActualTrack(position: Int)
     fun setActualTrackFavorite(position: Int)
+    fun setActualAlbumTrack(position: Int, albumUi: AlbumUi)
     fun observeActualTrackPosition(owner: LifecycleOwner, observer: Observer<Int>)
     fun observeActualTrackFavoritePosition(owner: LifecycleOwner, observer: Observer<Int>)
+    fun observeActualAlbumTrackPosition(owner: LifecycleOwner, observer: Observer<Pair<Int, AlbumUi>>)
 
     fun changeActualFavorite(playable: Playable): Boolean
     fun changeFavorite(id: Long, playable: Playable)
@@ -117,10 +120,20 @@ interface ManageOrder {
         override fun setActualTrack(position: Int) {
             actualTrackPositionLiveData.value = position
             actualTrackFavoritePositionLiveData.value = -1
+            actualAlbumTrackLiveData.value = Pair(-1, AlbumUi.Empty)
         }
 
         override fun setActualTrackFavorite(position: Int) {
             actualTrackFavoritePositionLiveData.value = position
+            actualTrackPositionLiveData.value = -1
+            actualAlbumTrackLiveData.value = Pair(-1, AlbumUi.Empty)
+        }
+
+        private val actualAlbumTrackLiveData = MutableLiveData<Pair<Int, AlbumUi>>()
+
+        override fun setActualAlbumTrack(position: Int, albumUi: AlbumUi) {
+            actualAlbumTrackLiveData.value = Pair(position, albumUi)
+            actualTrackFavoritePositionLiveData.value = -1
             actualTrackPositionLiveData.value = -1
         }
 
@@ -133,6 +146,13 @@ interface ManageOrder {
             observer: Observer<Int>
         ) {
             actualTrackFavoritePositionLiveData.observe(owner, observer)
+        }
+
+        override fun observeActualAlbumTrackPosition(
+            owner: LifecycleOwner,
+            observer: Observer<Pair<Int, AlbumUi>>
+        ) {
+            actualAlbumTrackLiveData.observe(owner, observer)
         }
 
         override fun initLoop(mediaPlayer: MediaPlayer) {

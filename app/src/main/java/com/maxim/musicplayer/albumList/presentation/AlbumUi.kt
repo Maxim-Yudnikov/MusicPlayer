@@ -6,14 +6,14 @@ import com.maxim.musicplayer.audioList.presentation.ArtImageView
 import com.maxim.musicplayer.audioList.presentation.AudioListAdapter
 import com.maxim.musicplayer.audioList.presentation.AudioUi
 
-interface AlbumUi {
-    fun same(item: AlbumUi): Boolean
-    fun showArt(artImageView: ArtImageView)
-    fun showTitle(textView: TextView)
-    fun showArtist(textView: TextView)
-    fun showDescription(textView: TextView)
-    fun showCount(textView: TextView)
-    fun showTracks(adapter: AudioListAdapter)
+abstract class AlbumUi {
+    abstract fun same(item: AlbumUi): Boolean
+    open fun showArt(artImageView: ArtImageView) = Unit
+    open fun showTitle(textView: TextView) = Unit
+    open fun showArtist(textView: TextView) = Unit
+    open fun showDescription(textView: TextView) = Unit
+    open fun showCount(textView: TextView) = Unit
+    open fun showTracks(adapter: AudioListAdapter) = Unit
 
     data class Base(
         private val id: Long,
@@ -21,7 +21,7 @@ interface AlbumUi {
         private val artist: String,
         //todo public field, use in viewModel
         val tracks: List<AudioUi>
-    ): AlbumUi {
+    ): AlbumUi() {
         override fun same(item: AlbumUi) = item is Base && item.id == id
         override fun showArt(artImageView: ArtImageView) {
             tracks.first().showArt(artImageView, false)
@@ -48,5 +48,9 @@ interface AlbumUi {
         override fun showTracks(adapter: AudioListAdapter) {
             adapter.update(tracks, -1)
         }
+    }
+
+    object Empty: AlbumUi() {
+        override fun same(item: AlbumUi) = item is Empty
     }
 }

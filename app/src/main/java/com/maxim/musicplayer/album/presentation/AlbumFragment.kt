@@ -8,13 +8,13 @@ import androidx.activity.OnBackPressedCallback
 import com.maxim.musicplayer.audioList.presentation.AudioListAdapter
 import com.maxim.musicplayer.audioList.presentation.AudioUi
 import com.maxim.musicplayer.core.presentation.BaseFragment
-import com.maxim.musicplayer.databinding.FragmentFavoriteListBinding
+import com.maxim.musicplayer.databinding.FragmentAlbumBinding
 import com.maxim.musicplayer.player.media.MediaService
 
-class AlbumFragment: BaseFragment<FragmentFavoriteListBinding, AlbumViewModel>() {
+class AlbumFragment: BaseFragment<FragmentAlbumBinding, AlbumViewModel>() {
     override fun viewModelClass() = AlbumViewModel::class.java
     override fun bind(inflater: LayoutInflater, container: ViewGroup?) =
-        FragmentFavoriteListBinding.inflate(inflater, container, false)
+        FragmentAlbumBinding.inflate(inflater, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         onBackPressedCallback = object : OnBackPressedCallback(true) {
@@ -37,6 +37,10 @@ class AlbumFragment: BaseFragment<FragmentFavoriteListBinding, AlbumViewModel>()
 
         viewModel.observe(this) {
             it.show(adapter)
+        }
+
+        viewModel.observePosition(this) {
+            viewModel.setPosition(it.first, it.second)
         }
 
         viewModel.init(savedInstanceState == null)

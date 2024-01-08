@@ -55,6 +55,10 @@ interface ContentResolverWrapper {
                 }
             }
 
+            albums.forEach {
+                it.value.sortBy { track -> track.title }
+            }
+
             return albums.map {
                 AlbumDomain.Base(
                     it.key,
