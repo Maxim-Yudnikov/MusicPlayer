@@ -8,6 +8,7 @@ import com.maxim.musicplayer.cope.presentation.Communication
 import com.maxim.musicplayer.cope.presentation.Navigation
 import com.maxim.musicplayer.cope.presentation.Screen
 import com.maxim.musicplayer.cope.sl.ClearViewModel
+import com.maxim.musicplayer.cope.sl.GoBack
 import com.maxim.musicplayer.downBar.DownBarTrackCommunication
 import com.maxim.musicplayer.favoriteList.data.FavoriteListRepository
 import com.maxim.musicplayer.player.media.ManageOrder
@@ -21,7 +22,7 @@ class PlayerViewModel(
     private val navigation: Navigation.Update,
     private val clearViewModel: ClearViewModel,
     private val favoriteListRepository: FavoriteListRepository
-) : BaseViewModel(), Communication.Observe<PlayerState>, Playable {
+) : BaseViewModel(), Communication.Observe<PlayerState>, Playable, GoBack {
 
     fun init(isFirstRun: Boolean) {
         if (isFirstRun) {
@@ -43,20 +44,21 @@ class PlayerViewModel(
         handle({
             manageOrder.actualTrack().changeFavorite(favoriteListRepository)
         }) {
-            manageOrder.changeActualFavorite(mediaServiceProvider.mediaService())
-            communication.update(
-                PlayerState.Base(
-                    manageOrder.actualTrack(),
-                    manageOrder.isRandom,
-                    manageOrder.loopState(),
-                    !mediaServiceProvider.mediaService().isPlaying(),
-                    mediaServiceProvider.mediaService().currentPosition()
+            val isLast = manageOrder.changeActualFavorite(mediaServiceProvider.mediaService())
+            if (!isLast)
+                communication.update(
+                    PlayerState.Base(
+                        manageOrder.actualTrack(),
+                        manageOrder.isRandom,
+                        manageOrder.loopState(),
+                        !mediaServiceProvider.mediaService().isPlaying(),
+                        mediaServiceProvider.mediaService().currentPosition()
+                    )
                 )
-            )
         }
     }
 
-    fun back() {
+    override fun goBack() {
         navigation.update(Screen.Pop)
         clearViewModel.clear(PlayerViewModel::class.java)
     }
@@ -71,6 +73,10 @@ class PlayerViewModel(
 
     override fun previous() {
         mediaServiceProvider.mediaService().previous()
+    }
+
+    override fun finish() {
+        TODO("Not yet implemented")
     }
 
     fun changeRandom() {

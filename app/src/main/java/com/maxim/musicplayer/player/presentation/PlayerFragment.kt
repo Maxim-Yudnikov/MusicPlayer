@@ -25,7 +25,7 @@ class PlayerFragment : BaseFragment<FragmentPlayerBinding, PlayerViewModel>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         onBackPressedCallback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                viewModel.back()
+                viewModel.goBack()
             }
         }
 
@@ -44,6 +44,7 @@ class PlayerFragment : BaseFragment<FragmentPlayerBinding, PlayerViewModel>() {
                 binding.durationTextView,
                 binding.favoriteButton
             )
+            it.finish(viewModel)
         }
 
         binding.favoriteButton.setOnClickListener {

@@ -22,6 +22,10 @@ class DownBarViewModel(
         communication.update(if (isPlaying) DownBarState.IsPlaying(track) else DownBarState.IsSopped(track))
     }
 
+    override fun stop() {
+        communication.update(DownBarState.Stop)
+    }
+
     fun init() {
         trackCommunication.init(this)
     }
@@ -37,4 +41,5 @@ class DownBarViewModel(
 
 interface ReloadDownBar {
     fun reload(track: AudioUi, isPlaying: Boolean)
+    fun stop()
 }

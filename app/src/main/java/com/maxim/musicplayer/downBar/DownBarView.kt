@@ -39,9 +39,9 @@ class DownBarView : FrameLayout {
         val playButton = findViewById<ImageButton>(R.id.playButton)
         viewModel.observe(findViewTreeLifecycleOwner()!!) {
             visibility = View.VISIBLE
-            it.show(imageView, titleTextView, artistTextView, playButton)
+            it.show(this, imageView, titleTextView, artistTextView, playButton)
         }
-        findViewById<View>(R.id.root).setOnClickListener {
+        findViewById<View>(R.id.downBarRoot).setOnClickListener {
             viewModel.open()
         }
         playButton.setOnClickListener {

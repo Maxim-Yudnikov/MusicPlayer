@@ -8,6 +8,7 @@ import androidx.core.content.ContextCompat
 import com.maxim.musicplayer.R
 import com.maxim.musicplayer.audioList.presentation.ArtImageView
 import com.maxim.musicplayer.audioList.presentation.AudioUi
+import com.maxim.musicplayer.cope.sl.GoBack
 import com.maxim.musicplayer.player.media.LoopState
 
 interface PlayerState {
@@ -22,7 +23,8 @@ interface PlayerState {
         actualTimeTextView: TextView,
         durationTextView: TextView,
         favoriteImageView: ImageButton
-    )
+    ) = Unit
+    fun finish(goBack: GoBack) = Unit
 
     data class Base(
         private val audio: AudioUi,
@@ -68,6 +70,12 @@ interface PlayerState {
             val minutes = seconds / 60
             val second = seconds % 60
             return "$minutes:${if (second < 10) "0$second" else second}"
+        }
+    }
+
+    object Finish: PlayerState {
+        override fun finish(goBack: GoBack) {
+            goBack.goBack()
         }
     }
 }

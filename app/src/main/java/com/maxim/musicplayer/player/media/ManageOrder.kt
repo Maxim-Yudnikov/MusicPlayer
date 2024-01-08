@@ -28,9 +28,10 @@ interface ManageOrder {
     fun observeActualTrackPosition(owner: LifecycleOwner, observer: Observer<Int>)
     fun observeActualTrackFavoritePosition(owner: LifecycleOwner, observer: Observer<Int>)
 
-    fun changeActualFavorite(playable: Playable)
+    fun changeActualFavorite(playable: Playable): Boolean
 
-    class Base(private val storage: SimpleStorage, private val shuffleOrder: ShuffleOrder) : ManageOrder {
+    class Base(private val storage: SimpleStorage, private val shuffleOrder: ShuffleOrder) :
+        ManageOrder {
         private var loopState: LoopState = storage.read(LOOP_KEY, LoopState.Base)
         override var isRandom = storage.read(RANDOM_KEY, false)
             set(value) {
@@ -145,7 +146,7 @@ interface ManageOrder {
             }
         }
 
-        override fun changeActualFavorite(playable: Playable) {
+        override fun changeActualFavorite(playable: Playable): Boolean {
             val isFavoriteOrder = actualTrackFavoritePositionLiveData.value != -1
             val newTrack = trackMap[actualOrder[actualPosition]]!!.changeFavorite()
             trackMap[actualOrder[actualPosition]] = newTrack
@@ -153,8 +154,13 @@ interface ManageOrder {
                 val removed = actualOrder.removeAt(actualPosition)
                 defaultOrder.removeAt(defaultOrder.indexOf(removed))
                 actualPosition--
-                playable.next()
+                if (actualOrder.isEmpty()) {
+                    playable.finish()
+                    return true
+                } else
+                    playable.next()
             }
+            return false
         }
 
         override fun loopState() = loopState

@@ -177,6 +177,26 @@ class OrderTest: BaseTest() {
     }
 
     @Test
+    fun test_add_to_favorite_list_one_and_remove() {
+        openTrackFromRecyclerview(5)
+        checkTextInPlayer("Title 5")
+        favoriteButton()
+        checkIsFavorite(true)
+        back()
+
+        swipeToLeft()
+        Thread.sleep(500)
+
+        openTrackFromFavoriteRecyclerview(1)
+        checkTextInPlayer("Title 5")
+        checkIsFavorite(true)
+        favoriteButton()
+
+        checkPlayerIsNotOpened()
+        checkDownBarIsNotOpened()
+    }
+
+    @Test
     fun test_add_to_favorite_list_several_and_remove_one() {
         openTrackFromRecyclerview(5)
         favoriteButton()

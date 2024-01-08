@@ -222,6 +222,13 @@ interface MediaService : StartAudio, Playable {
             }
         }
 
+        override fun finish() {
+            mediaPlayer?.stop()
+            mediaPlayer?.release()
+            playerCommunication.update(PlayerState.Finish)
+            downBarTrackCommunication.close()
+        }
+
         override fun open(
             list: List<AudioUi.Abstract>,
             audio: AudioUi,
