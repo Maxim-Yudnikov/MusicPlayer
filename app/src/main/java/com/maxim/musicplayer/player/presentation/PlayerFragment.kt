@@ -6,11 +6,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.SeekBar
 import androidx.activity.OnBackPressedCallback
-import com.maxim.musicplayer.cope.presentation.BaseFragment
 import com.maxim.musicplayer.cope.ProvideMediaService
+import com.maxim.musicplayer.cope.presentation.BaseFragment
 import com.maxim.musicplayer.databinding.FragmentPlayerBinding
+import com.maxim.musicplayer.player.media.MediaService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -20,7 +22,7 @@ class PlayerFragment : BaseFragment<FragmentPlayerBinding, PlayerViewModel>() {
     override fun bind(inflater: LayoutInflater, container: ViewGroup?) =
         FragmentPlayerBinding.inflate(inflater, container, false)
 
-    private var coroutineIsRunning = true
+    private lateinit var mediaService: MediaService
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         onBackPressedCallback = object : OnBackPressedCallback(true) {
@@ -71,7 +73,7 @@ class PlayerFragment : BaseFragment<FragmentPlayerBinding, PlayerViewModel>() {
             viewModel.changeRandom()
         }
 
-        val mediaService = (requireContext().applicationContext as ProvideMediaService).mediaService()
+        mediaService = (requireContext().applicationContext as ProvideMediaService).mediaService()
         binding.seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                 if (fromUser) {
@@ -85,9 +87,16 @@ class PlayerFragment : BaseFragment<FragmentPlayerBinding, PlayerViewModel>() {
             override fun onStopTrackingTouch(seekBar: SeekBar?) = Unit
         })
 
-        CoroutineScope(Dispatchers.Default).launch {
+        viewModel.init(savedInstanceState == null)
+    }
+
+    private var job: Job? = null
+
+    override fun onStart() {
+        super.onStart()
+        job = CoroutineScope(Dispatchers.Default).launch {
             delay(1300)
-            while (coroutineIsRunning) {
+            while (true) {
                 withContext(Dispatchers.Main) {
                     if (mediaService.isPlaying()) {
                         val currentPosition = mediaService.currentPosition()
@@ -98,12 +107,11 @@ class PlayerFragment : BaseFragment<FragmentPlayerBinding, PlayerViewModel>() {
                 delay(1000)
             }
         }
-
-        viewModel.init(savedInstanceState == null)
     }
 
-    override fun onDestroyView() {
-        coroutineIsRunning = false
-        super.onDestroyView()
+    override fun onStop() {
+        super.onStop()
+        job?.cancel()
+        job = null
     }
 }

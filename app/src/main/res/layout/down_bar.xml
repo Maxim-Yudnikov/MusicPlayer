@@ -4,12 +4,13 @@
     android:id="@+id/downBarRoot"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginHorizontal="10dp"
+    android:layout_marginBottom="2dp"
     android:background="@drawable/rounded_corners"
     android:clickable="true"
     android:focusable="true"
     android:orientation="horizontal"
-    android:padding="8dp"
-    android:layout_margin="10dp">
+    android:padding="8dp">
 
     <com.maxim.musicplayer.audioList.presentation.ArtImageView
         android:id="@+id/artImageView"
