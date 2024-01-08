@@ -11,6 +11,7 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModel
 import com.google.android.material.tabs.TabLayoutMediator
 import com.maxim.musicplayer.R
+import com.maxim.musicplayer.audioList.presentation.AudioListViewModel
 import com.maxim.musicplayer.cope.App
 import com.maxim.musicplayer.cope.sl.ProvideViewModel
 import com.maxim.musicplayer.databinding.ActivityMainBinding
@@ -134,7 +135,7 @@ class MainActivity : AppCompatActivity(), ProvideViewModel {
                     finish()
                 }
             }
-            viewModel.init(true)
+            viewModel(AudioListViewModel::class.java).init(true)
         }
     }
 
