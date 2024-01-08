@@ -12,6 +12,8 @@ class AlbumListModule(private val core: Core): Module<AlbumListViewModel> {
     override fun viewModel() = AlbumListViewModel(
         AlbumListCommunication.Base(),
         AlbumListRepository.Base(core.contentResolverWrapper()),
-        AlbumMapperDomainToUi(MapperDomainToUi())
+        core.openAlbumStorage(),
+        AlbumMapperDomainToUi(MapperDomainToUi()),
+        core.navigation()
     )
 }

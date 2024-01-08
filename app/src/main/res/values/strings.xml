@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">Music player</string>
-    <string name="songs">%s songs</string>
+    <string name="tracks">%s tracks</string>
+    <string name="arist_and_tracks">%s - %s tracks</string>
 </resources>

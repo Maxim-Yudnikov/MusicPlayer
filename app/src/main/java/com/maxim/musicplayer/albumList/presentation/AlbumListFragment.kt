@@ -17,7 +17,11 @@ class AlbumListFragment: BaseFragment<FragmentAudioListBinding, AlbumListViewMod
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val adapter = AlbumListAdapter()
+        val adapter = AlbumListAdapter(object : AlbumListAdapter.Listener {
+            override fun open(album: AlbumUi) {
+                viewModel.open(album)
+            }
+        })
         binding.audioRecyclerView.adapter = adapter
         binding.audioRecyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
 

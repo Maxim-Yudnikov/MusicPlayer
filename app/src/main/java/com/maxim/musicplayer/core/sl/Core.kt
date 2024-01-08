@@ -1,6 +1,7 @@
 package com.maxim.musicplayer.core.sl
 
 import android.content.Context
+import com.maxim.musicplayer.album.data.OpenAlbumStorage
 import com.maxim.musicplayer.core.ProvideDownBarTrackCommunication
 import com.maxim.musicplayer.core.ProvideManageOrder
 import com.maxim.musicplayer.core.ProvideMediaService
@@ -26,6 +27,9 @@ class Core(private val context: Context, private val provideInstances: ProvideIn
 
     private val moreStorage = MoreStorage.Base()
     fun moreStorage() = moreStorage
+
+    private val openAlbumStorage = OpenAlbumStorage.Base()
+    fun openAlbumStorage() = openAlbumStorage
 
     fun init() {
         favoriteRepository = FavoriteListRepository.Base(database().dao())

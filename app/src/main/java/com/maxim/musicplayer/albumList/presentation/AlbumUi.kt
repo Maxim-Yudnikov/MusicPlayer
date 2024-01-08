@@ -1,6 +1,7 @@
 package com.maxim.musicplayer.albumList.presentation
 
 import android.widget.TextView
+import com.maxim.musicplayer.R
 import com.maxim.musicplayer.audioList.presentation.ArtImageView
 import com.maxim.musicplayer.audioList.presentation.AudioUi
 
@@ -8,7 +9,9 @@ interface AlbumUi {
     fun same(item: AlbumUi): Boolean
     fun showArt(artImageView: ArtImageView)
     fun showTitle(textView: TextView)
+    fun showArtist(textView: TextView)
     fun showDescription(textView: TextView)
+    fun showCount(textView: TextView)
 
     data class Base(
         private val id: Long,
@@ -25,8 +28,17 @@ interface AlbumUi {
             textView.text = title
         }
 
+        override fun showArtist(textView: TextView) {
+            textView.text = artist
+        }
+
         override fun showDescription(textView: TextView) {
-            val text = "$artist - ${tracks.size} songs"
+            val text = textView.context.getString(R.string.arist_and_tracks, artist, tracks.size.toString())
+            textView.text = text
+        }
+
+        override fun showCount(textView: TextView) {
+            val text = textView.context.getString(R.string.tracks, tracks.size.toString())
             textView.text = text
         }
     }

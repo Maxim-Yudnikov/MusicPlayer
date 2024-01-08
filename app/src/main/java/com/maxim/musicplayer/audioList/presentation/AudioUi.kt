@@ -132,7 +132,7 @@ abstract class AudioUi : Serializable {
         override fun same(item: AudioUi) = item is Count
 
         override fun showTitle(textView: TextView) {
-            val text = textView.context.getString(R.string.songs, size.toString())
+            val text = textView.context.getString(R.string.tracks, size.toString())
             textView.text = text
         }
     }

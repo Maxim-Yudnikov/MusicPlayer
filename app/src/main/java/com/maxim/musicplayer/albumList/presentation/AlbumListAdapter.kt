@@ -6,15 +6,20 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.maxim.musicplayer.databinding.AlbumLayoutBinding
 
-class AlbumListAdapter : RecyclerView.Adapter<AlbumListAdapter.ItemViewHolder>() {
+class AlbumListAdapter(
+    private val listener: Listener
+) : RecyclerView.Adapter<AlbumListAdapter.ItemViewHolder>() {
     private val list = mutableListOf<AlbumUi>()
 
     class ItemViewHolder(private val binding: AlbumLayoutBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(item: AlbumUi) {
+        fun bind(item: AlbumUi, listener: Listener) {
             item.showArt(binding.artImageView)
             item.showTitle(binding.titleTextView)
             item.showDescription(binding.descriptionTextView)
+            itemView.setOnClickListener {
+                listener.open(item)
+            }
         }
     }
 
@@ -26,7 +31,7 @@ class AlbumListAdapter : RecyclerView.Adapter<AlbumListAdapter.ItemViewHolder>()
     override fun getItemCount() = list.size
 
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
-        holder.bind(list[position])
+        holder.bind(list[position], listener)
     }
 
     fun update(newList: List<AlbumUi>) {
@@ -35,6 +40,10 @@ class AlbumListAdapter : RecyclerView.Adapter<AlbumListAdapter.ItemViewHolder>()
         list.clear()
         list.addAll(newList)
         result.dispatchUpdatesTo(this)
+    }
+
+    interface Listener {
+        fun open(album: AlbumUi)
     }
 }
 
