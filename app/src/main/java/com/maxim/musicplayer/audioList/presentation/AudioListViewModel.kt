@@ -27,8 +27,6 @@ class AudioListViewModel(
     private val favoriteListRepository: FavoriteListRepository,
     runAsync: RunAsync = RunAsync.Base()
 ) : BaseViewModel(runAsync), Init, Communication.Observe<AudioListState>, Reload {
-    private var refreshFinish: RefreshFinish? = null
-    private var isRefreshing = false
     private var actualPosition = -1
 
     override fun init(isFirstRun: Boolean) {
@@ -43,8 +41,7 @@ class AudioListViewModel(
     }
 
     fun refresh(refreshFinish: RefreshFinish) {
-        if (isRefreshing) this.refreshFinish = refreshFinish
-        else handle({ interactor.data() }) { list ->
+        handle({ interactor.data() }) { list ->
             communication.update(AudioListState.List(list.map { it.map(mapper) }, actualPosition))
             refreshFinish.finish()
         }
