@@ -31,8 +31,18 @@ abstract class BaseTest {
             .perform(click())
     }
 
+    protected fun openMoreFromRecyclerview(index: Int) {
+        onView(RecyclerViewMatcher(R.id.audioRecyclerView).viewHolderViewAtPosition(index, R.id.moreButton))
+            .perform(click())
+    }
+
     protected fun openTrackFromFavoriteRecyclerview(index: Int) {
         onView(RecyclerViewMatcher(R.id.favoriteRecyclerView).itemViewAtIndex(index))
+            .perform(click())
+    }
+
+    protected fun openMoreFromFavoriteRecyclerview(index: Int) {
+        onView(RecyclerViewMatcher(R.id.favoriteRecyclerView).viewHolderViewAtPosition(index, R.id.moreButton))
             .perform(click())
     }
 
@@ -83,10 +93,12 @@ abstract class BaseTest {
 
     protected fun swipeToRight() {
         onView(withId(R.id.viewPager)).perform(swipeRight())
+        Thread.sleep(500)
     }
 
     protected fun swipeToLeft() {
         onView(withId(R.id.viewPager)).perform(swipeLeft())
+        Thread.sleep(500)
     }
 
     private fun withDrawable(resourceId: Int): Matcher<View?> {

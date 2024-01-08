@@ -3,7 +3,7 @@ package com.maxim.musicplayer
 import org.junit.Test
 
 
-class OrderTest: BaseTest() {
+class OrderTest : BaseTest() {
 
     @Test
     fun test_next_and_previous_button() {
@@ -169,7 +169,6 @@ class OrderTest: BaseTest() {
         back()
 
         swipeToLeft()
-        Thread.sleep(500)
 
         openTrackFromFavoriteRecyclerview(1)
         checkTextInPlayer("Title 5")
@@ -185,7 +184,6 @@ class OrderTest: BaseTest() {
         back()
 
         swipeToLeft()
-        Thread.sleep(500)
 
         openTrackFromFavoriteRecyclerview(1)
         checkTextInPlayer("Title 5")
@@ -209,7 +207,6 @@ class OrderTest: BaseTest() {
         back()
 
         swipeToLeft()
-        Thread.sleep(500)
 
         openTrackFromFavoriteRecyclerview(1)
         checkTextInPlayer("Title 5")
@@ -232,5 +229,82 @@ class OrderTest: BaseTest() {
         checkTextInPlayer("Title 9")
         nextButton()
         checkTextInPlayer("Title 7")
+    }
+
+    @Test
+    fun test_add_to_favorite_from_more() {
+        openMoreFromRecyclerview(1)
+        favoriteButton()
+        back()
+        openTrackFromRecyclerview(1)
+        checkTextInPlayer("Title 1")
+        checkIsFavorite(true)
+    }
+
+    @Test
+    fun test_add_to_favorite_list_from_more_and_remove() {
+        for (i in 1..3) {
+            openMoreFromRecyclerview(i)
+            favoriteButton()
+            back()
+        }
+        swipeToLeft()
+        openTrackFromFavoriteRecyclerview(1)
+        checkTextInPlayer("Title 1")
+        nextButton()
+        checkTextInPlayer("Title 2")
+        nextButton()
+        checkTextInPlayer("Title 3")
+        nextButton()
+        checkTextInPlayer("Title 3")
+        back()
+
+        swipeToRight()
+        openMoreFromRecyclerview(2)
+        favoriteButton()
+        back()
+
+        swipeToLeft()
+        openTrackFromFavoriteRecyclerview(1)
+        checkTextInPlayer("Title 1")
+        nextButton()
+        checkTextInPlayer("Title 3")
+        nextButton()
+        checkTextInPlayer("Title 3")
+    }
+
+    @Test
+    fun test_remove_favorite_from_more_from_favorite_list() {
+        for (i in 1..3) {
+            openMoreFromRecyclerview(i)
+            favoriteButton()
+            back()
+        }
+        swipeToLeft()
+        openTrackFromFavoriteRecyclerview(1)
+        checkTextInPlayer("Title 1")
+        back()
+
+        openMoreFromFavoriteRecyclerview(1)
+        favoriteButton()
+        back()
+
+        openTrackFromFavoriteRecyclerview(1)
+        checkTextInPlayer("Title 2")
+        back()
+
+        openMoreFromFavoriteRecyclerview(1)
+        favoriteButton()
+        back()
+
+        openTrackFromFavoriteRecyclerview(1)
+        checkTextInPlayer("Title 3")
+        back()
+
+        openMoreFromFavoriteRecyclerview(1)
+        favoriteButton()
+        back()
+
+        checkDownBarIsNotOpened()
     }
 }
