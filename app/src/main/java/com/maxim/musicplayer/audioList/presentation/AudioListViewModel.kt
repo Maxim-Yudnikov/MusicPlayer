@@ -33,9 +33,9 @@ class AudioListViewModel(
 
     override fun init(isFirstRun: Boolean) {
         if (isFirstRun) {
-            handle({ interactor.data() }) { list ->
+            handle({ interactor.data().map { it.map(mapper) } }) { list ->
                 communication.update(
-                    AudioListState.List(list.map { it.map(mapper) }, actualPosition)
+                    AudioListState.List(list, actualPosition)
                 )
             }
             favoriteListRepository.init(this)
@@ -65,7 +65,8 @@ class AudioListViewModel(
 
     //todo make abstract list viewmodel
     fun more(audioUi: AudioUi) {
-        moreStorage.save(audioUi)
+        moreStorage.saveAudio(audioUi)
+        moreStorage.saveFromFavorite(false)
         navigation.update(MoreScreen)
     }
 

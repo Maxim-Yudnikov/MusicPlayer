@@ -53,7 +53,8 @@ class FavoriteListViewModel(
     }
 
     fun more(audioUi: AudioUi) {
-        moreStorage.save(audioUi)
+        moreStorage.saveAudio(audioUi)
+        moreStorage.saveFromFavorite(true)
         navigation.update(MoreScreen)
     }
 

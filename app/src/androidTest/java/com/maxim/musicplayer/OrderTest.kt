@@ -287,7 +287,6 @@ class OrderTest : BaseTest() {
 
         openMoreFromFavoriteRecyclerview(1)
         favoriteButton()
-        back()
 
         openTrackFromFavoriteRecyclerview(1)
         checkTextInPlayer("Title 2")
@@ -295,7 +294,6 @@ class OrderTest : BaseTest() {
 
         openMoreFromFavoriteRecyclerview(1)
         favoriteButton()
-        back()
 
         openTrackFromFavoriteRecyclerview(1)
         checkTextInPlayer("Title 3")
@@ -303,7 +301,6 @@ class OrderTest : BaseTest() {
 
         openMoreFromFavoriteRecyclerview(1)
         favoriteButton()
-        back()
 
         checkDownBarIsNotOpened()
     }

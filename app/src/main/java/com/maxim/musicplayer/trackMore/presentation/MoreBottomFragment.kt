@@ -28,6 +28,8 @@ class MoreBottomFragment : BottomSheetDialogFragment() {
 
         binding.favoriteButton.setOnClickListener {
             viewModel.saveToFavorites()
+            if (viewModel.fromFavorite())
+                dismiss()
         }
 
         viewModel.observe(this) {

@@ -39,7 +39,7 @@ interface Screen {
             tabLayout.visibility = View.GONE
         }
     }
-
+    
     abstract class Bottom(private val fragmentClass: Class<out BottomSheetDialogFragment>) :
         Screen {
         override fun show(fragmentManager: FragmentManager, containerId: Int, tabLayout: View) {

@@ -22,7 +22,7 @@ class App : Application(), ProvideViewModel, ProvideMediaService, ProvideManageO
     private lateinit var factory: ViewModelFactory
     private lateinit var manageOrder: ManageOrder
 
-    val isMock = true
+    val isMock = false
 
     override fun onCreate() {
         super.onCreate()
