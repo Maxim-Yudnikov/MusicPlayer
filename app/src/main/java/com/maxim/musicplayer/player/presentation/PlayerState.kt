@@ -55,6 +55,7 @@ interface PlayerState {
             audio.showTitle(titleTextView)
             audio.showArtist(artistTextView)
             audio.showFavorite(favoriteImageView)
+            favoriteImageView.isEnabled = true
             playButton.setImageResource(if (onPause) R.drawable.play_24 else R.drawable.pause_24)
             val selectedColor = R.color.green
             val unselectedColor = R.color.white

@@ -51,6 +51,7 @@ class PlayerFragment : BaseFragment<FragmentPlayerBinding, PlayerViewModel>() {
 
         binding.favoriteButton.setOnClickListener {
             viewModel.saveToFavorites()
+            binding.favoriteButton.isEnabled = false
         }
 
         binding.playButton.setOnClickListener {

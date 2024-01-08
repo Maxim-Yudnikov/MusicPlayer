@@ -75,10 +75,16 @@ class AlbumViewModel(
     }
 
     override fun reload() {
-        handle({ favoritesRepository.data() }) { list ->
-            storage.save(storage.read().updateTracks(list.map { it.map(mapper) }))
-            communication.update(AlbumState.Base(storage.read(), actualPosition))
-        }
+        //Log.d("MyLog", "storage read: ${(storage.read() as AlbumUi.Base).tracks}")
+        storage.save(
+            storage.read()
+                .updateTracks(favoritesRepository.data()
+                    .map {
+                        it.map(mapper)
+                    })
+        )
+        communication.update(AlbumState.Base(storage.read(), actualPosition))
+
     }
 
     override fun observe(owner: LifecycleOwner, observer: Observer<AlbumState>) {
