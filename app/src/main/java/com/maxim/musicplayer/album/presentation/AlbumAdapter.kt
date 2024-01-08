@@ -1,6 +1,5 @@
 package com.maxim.musicplayer.album.presentation
 
-import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
@@ -88,12 +87,10 @@ class AlbumAdapter(private val listener: AudioListAdapter.Listener) :
         else holder.bind(list[position] as AlbumUi)
     }
 
-    @SuppressLint("NotifyDataSetChanged")
     fun update(newList: List<Any>, actualPosition: Int) {
         list.clear()
         list.addAll(newList)
         this.actualPosition = actualPosition
-        //todo diffutil
         notifyDataSetChanged()
     }
 }

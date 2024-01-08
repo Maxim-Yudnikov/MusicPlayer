@@ -17,6 +17,7 @@ import java.io.Serializable
 
 abstract class AudioUi : Serializable {
     abstract fun same(item: AudioUi): Boolean
+    open fun sameId(item: AudioUi): Boolean = false
     abstract fun showTitle(textView: TextView)
     open fun showDescription(textView: TimeTextView) = Unit
     open fun showArtist(textView: TextView) = Unit
@@ -28,6 +29,7 @@ abstract class AudioUi : Serializable {
     open fun showFavorite(imageView: ImageView) = Unit
     open suspend fun changeFavorite(favoritesActions: FavoritesActions) = Unit
     open fun changeFavorite(): AudioUi = Empty
+    open fun toBase(): AudioUi = Empty
 
     abstract class Abstract(
         val id: Long,
@@ -38,6 +40,8 @@ abstract class AudioUi : Serializable {
         private val artUri: Uri,
         private var uri: Uri
     ) : AudioUi() {
+        override fun sameId(item: AudioUi) = item is Abstract && item.id == id
+
         override fun showTitle(textView: TextView) {
             textView.text = title
         }
@@ -103,6 +107,8 @@ abstract class AudioUi : Serializable {
         }
 
         override fun changeFavorite() = Favorite(baseId, title, artist, duration, album, artUri, uri)
+
+        override fun toBase() = this
     }
 
     data class Favorite(
@@ -126,6 +132,8 @@ abstract class AudioUi : Serializable {
         }
 
         override fun changeFavorite() = Base(favoriteId, title, artist, duration, album, artUri, uri)
+
+        override fun toBase() = Base(favoriteId, title, artist, duration, album, artUri, uri)
     }
 
     data class Count(private val size: Int) : AudioUi() {

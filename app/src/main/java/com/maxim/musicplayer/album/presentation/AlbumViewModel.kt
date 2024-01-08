@@ -1,31 +1,45 @@
 package com.maxim.musicplayer.album.presentation
 
+import android.util.Log
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModel
 import com.maxim.musicplayer.album.data.OpenAlbumStorage
 import com.maxim.musicplayer.albumList.presentation.AlbumUi
+import com.maxim.musicplayer.audioList.domain.AudioDomain
 import com.maxim.musicplayer.audioList.presentation.AudioUi
+import com.maxim.musicplayer.core.presentation.BaseViewModel
 import com.maxim.musicplayer.core.presentation.Communication
 import com.maxim.musicplayer.core.presentation.Init
 import com.maxim.musicplayer.core.presentation.Navigation
+import com.maxim.musicplayer.core.presentation.Reload
 import com.maxim.musicplayer.core.presentation.Screen
 import com.maxim.musicplayer.core.sl.ClearViewModel
 import com.maxim.musicplayer.core.sl.GoBack
+import com.maxim.musicplayer.favoriteList.data.FavoriteListRepository
 import com.maxim.musicplayer.player.media.ManageOrder
 import com.maxim.musicplayer.player.media.MediaService
+import com.maxim.musicplayer.player.media.OrderType
 import com.maxim.musicplayer.player.presentation.PlayerScreen
+import com.maxim.musicplayer.trackMore.presentation.MoreScreen
+import com.maxim.musicplayer.trackMore.presentation.MoreStorage
 
 class AlbumViewModel(
     private val communication: AlbumCommunication,
-    private val storage: OpenAlbumStorage.Read,
+    private val storage: OpenAlbumStorage.Mutable,
     private val manageOrder: ManageOrder,
+    private val moreStorage: MoreStorage.Save,
+    private val favoritesRepository: FavoriteListRepository,
+    private val mapper: AudioDomain.Mapper<AudioUi>,
     private val navigation: Navigation.Update,
     private val clearViewModel: ClearViewModel,
-) : ViewModel(), GoBack, Init, Communication.Observe<AlbumState> {
+) : BaseViewModel(), GoBack, Init, Communication.Observe<AlbumState>, Reload {
+    private var actualPosition = -1
 
     override fun init(isFirstRun: Boolean) {
-        communication.update(AlbumState.Base(storage.read(), -1))
+        if (isFirstRun) {
+            communication.update(AlbumState.Base(storage.read(), -1))
+            favoritesRepository.init(this)
+        }
     }
 
     override fun goBack() {
@@ -34,10 +48,18 @@ class AlbumViewModel(
     }
 
     fun setPosition(position: Int, albumUi: AlbumUi) { //todo magic +1
+        actualPosition = position + 1
+        Log.d("MyLog", "$actualPosition")
         if (albumUi == storage.read())
             communication.update(
-                AlbumState.Base(storage.read(), position + 1)
+                AlbumState.Base(storage.read(), actualPosition)
             )
+    }
+
+    fun more(audioUi: AudioUi) {
+        moreStorage.saveAudio(audioUi)
+        moreStorage.saveFromFavorite(false)
+        navigation.update(MoreScreen)
     }
 
     fun observePosition(owner: LifecycleOwner, observer: Observer<Pair<Int, AlbumUi>>) {
@@ -46,11 +68,17 @@ class AlbumViewModel(
 
     fun open(track: AudioUi, position: Int, mediaService: MediaService) {
         manageOrder.setActualAlbumTrack(position, storage.read())
-        //actualPosition = position
+        actualPosition = position + 1
         val list = (storage.read() as AlbumUi.Base).tracks
-        mediaService.open(list as List<AudioUi.Abstract>, track, position, false)
+        mediaService.open(list as List<AudioUi.Abstract>, track, position, OrderType.ALBUM)
         navigation.update(PlayerScreen)
+    }
 
+    override fun reload() {
+        handle({ favoritesRepository.data() }) { list ->
+            storage.save(storage.read().updateTracks(list.map { it.map(mapper) }))
+            communication.update(AlbumState.Base(storage.read(), actualPosition))
+        }
     }
 
     override fun observe(owner: LifecycleOwner, observer: Observer<AlbumState>) {

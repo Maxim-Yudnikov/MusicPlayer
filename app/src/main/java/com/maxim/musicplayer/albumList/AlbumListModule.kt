@@ -14,6 +14,7 @@ class AlbumListModule(private val core: Core): Module<AlbumListViewModel> {
         AlbumListRepository.Base(core.contentResolverWrapper()),
         core.openAlbumStorage(),
         AlbumMapperDomainToUi(MapperDomainToUi()),
+        core.favoriteRepository(),
         core.navigation()
     )
 }

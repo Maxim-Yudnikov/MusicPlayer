@@ -14,6 +14,7 @@ import com.maxim.musicplayer.core.presentation.RunAsync
 import com.maxim.musicplayer.favoriteList.data.FavoriteListRepository
 import com.maxim.musicplayer.player.media.ManageOrder
 import com.maxim.musicplayer.player.media.MediaService
+import com.maxim.musicplayer.player.media.OrderType
 import com.maxim.musicplayer.player.presentation.PlayerScreen
 import com.maxim.musicplayer.trackMore.presentation.MoreScreen
 import com.maxim.musicplayer.trackMore.presentation.MoreStorage
@@ -63,7 +64,7 @@ class FavoriteListViewModel(
         actualPosition = position
         val data = repository.data()
         mediaService.open(data.map { it.map(mapper) }
-            .subList(1, data.size) as List<AudioUi.Abstract>, track, position, true)
+            .subList(1, data.size) as List<AudioUi.Abstract>, track, position, OrderType.FAVORITE)
         navigation.update(PlayerScreen)
     }
 

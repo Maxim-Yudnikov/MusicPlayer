@@ -26,10 +26,13 @@ interface ManageOrder {
 
     fun setActualTrack(position: Int)
     fun setActualTrackFavorite(position: Int)
-    fun setActualAlbumTrack(position: Int, albumUi: AlbumUi)
+    fun setActualAlbumTrack(position: Int, albumUi: AlbumUi?)
     fun observeActualTrackPosition(owner: LifecycleOwner, observer: Observer<Int>)
     fun observeActualTrackFavoritePosition(owner: LifecycleOwner, observer: Observer<Int>)
-    fun observeActualAlbumTrackPosition(owner: LifecycleOwner, observer: Observer<Pair<Int, AlbumUi>>)
+    fun observeActualAlbumTrackPosition(
+        owner: LifecycleOwner,
+        observer: Observer<Pair<Int, AlbumUi>>
+    )
 
     fun changeActualFavorite(playable: Playable): Boolean
     fun changeFavorite(id: Long, playable: Playable)
@@ -131,8 +134,11 @@ interface ManageOrder {
 
         private val actualAlbumTrackLiveData = MutableLiveData<Pair<Int, AlbumUi>>()
 
-        override fun setActualAlbumTrack(position: Int, albumUi: AlbumUi) {
-            actualAlbumTrackLiveData.value = Pair(position, albumUi)
+        override fun setActualAlbumTrack(position: Int, albumUi: AlbumUi?) {
+            actualAlbumTrackLiveData.value = albumUi?.let { Pair(position, it) } ?: Pair(
+                position,
+                actualAlbumTrackLiveData.value!!.second
+            )
             actualTrackFavoritePositionLiveData.value = -1
             actualTrackPositionLiveData.value = -1
         }
@@ -200,7 +206,6 @@ interface ManageOrder {
                         actualTrackFavoritePositionLiveData.value = -1
                     } else
                         playable.next()
-                    //todo close more
                 }
             }
         }

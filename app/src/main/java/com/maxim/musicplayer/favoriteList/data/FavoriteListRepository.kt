@@ -14,18 +14,20 @@ interface FavoriteListRepository : FavoritesActions {
     class Base(private val dao: FavoriteDao) : FavoriteListRepository {
         private lateinit var livedata: LiveData<List<AudioRoom>>
         private val data = mutableListOf<AudioDomain>()
+        private val reloads = mutableListOf<Reload>()
 
         override fun init(reload: Reload) {
             livedata = dao.favoriteTracksLiveData()
-            livedata.observeForever { list ->
-                data.clear()
-                data.addAll(list.sortedBy { it.title }.map {
-                    AudioDomain.Favorite(
-                        it.id, it.title, it.artist, it.duration, it.album, it.artUri, it.uri
-                    )
-                })
-                reload.reload()
-            }
+            if (!reloads.contains(reload))
+                livedata.observeForever { list ->
+                    data.clear()
+                    data.addAll(list.sortedBy { it.title }.map {
+                        AudioDomain.Favorite(
+                            it.id, it.title, it.artist, it.duration, it.album, it.artUri, it.uri
+                        )
+                    })
+                    reload.reload()
+                }
         }
 
         override fun data(): List<AudioDomain> {
@@ -33,6 +35,7 @@ interface FavoriteListRepository : FavoritesActions {
             newList.add(0, AudioDomain.Count(data.size))
             return newList
         }
+
         override suspend fun singleDataIds() =
             dao.favoriteTracks().map { it.id }
 

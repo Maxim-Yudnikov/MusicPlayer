@@ -1,5 +1,6 @@
 package com.maxim.musicplayer.albumList.presentation
 
+import android.util.Log
 import android.widget.TextView
 import com.maxim.musicplayer.R
 import com.maxim.musicplayer.audioList.presentation.ArtImageView
@@ -14,6 +15,7 @@ abstract class AlbumUi {
     open fun showDescription(textView: TextView) = Unit
     open fun showCount(textView: TextView) = Unit
     open fun showTracks(adapter: AudioListAdapter) = Unit
+    open fun updateTracks(list: List<AudioUi>): AlbumUi = Empty
 
     data class Base(
         private val id: Long,
@@ -21,7 +23,7 @@ abstract class AlbumUi {
         private val artist: String,
         //todo public field, use in viewModel
         val tracks: List<AudioUi>
-    ): AlbumUi() {
+    ) : AlbumUi() {
         override fun same(item: AlbumUi) = item is Base && item.id == id
         override fun showArt(artImageView: ArtImageView) {
             tracks.first().showArt(artImageView, false)
@@ -36,7 +38,11 @@ abstract class AlbumUi {
         }
 
         override fun showDescription(textView: TextView) {
-            val text = textView.context.getString(R.string.arist_and_tracks, artist, tracks.size.toString())
+            val text = textView.context.getString(
+                R.string.arist_and_tracks,
+                artist,
+                tracks.size.toString()
+            )
             textView.text = text
         }
 
@@ -48,9 +54,25 @@ abstract class AlbumUi {
         override fun showTracks(adapter: AudioListAdapter) {
             adapter.update(tracks, -1)
         }
+
+        override fun updateTracks(list: List<AudioUi>): AlbumUi {
+            val newList = ArrayList(tracks.map { it.toBase() })
+            val rewrite = mutableListOf<Pair<Int, AudioUi>>()
+            newList.forEachIndexed { i, audio ->
+                list.forEach { favorite ->
+                    if (audio.sameId(favorite))
+                        rewrite.add(Pair(i, favorite))
+                }
+            }
+            Log.d("MyLog", "updated at ${rewrite.map { it.first }}")
+            rewrite.forEach {
+                newList[it.first] = it.second
+            }
+            return Base(id, title, artist, newList)
+        }
     }
 
-    object Empty: AlbumUi() {
+    object Empty : AlbumUi() {
         override fun same(item: AlbumUi) = item is Empty
     }
 }

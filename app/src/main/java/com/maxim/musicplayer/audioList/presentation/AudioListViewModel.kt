@@ -13,6 +13,7 @@ import com.maxim.musicplayer.core.presentation.RunAsync
 import com.maxim.musicplayer.favoriteList.data.FavoriteListRepository
 import com.maxim.musicplayer.player.media.ManageOrder
 import com.maxim.musicplayer.player.media.MediaService
+import com.maxim.musicplayer.player.media.OrderType
 import com.maxim.musicplayer.player.presentation.PlayerScreen
 import com.maxim.musicplayer.trackMore.presentation.MoreScreen
 import com.maxim.musicplayer.trackMore.presentation.MoreStorage
@@ -26,7 +27,7 @@ class AudioListViewModel(
     private val moreStorage: MoreStorage.Save,
     private val favoriteListRepository: FavoriteListRepository,
     runAsync: RunAsync = RunAsync.Base()
-) : BaseViewModel(runAsync), Init, Communication.Observe<AudioListState>, Reload {
+) : BaseViewModel(runAsync), Communication.Observe<AudioListState>, Init, Reload {
     private var actualPosition = -1
 
     override fun init(isFirstRun: Boolean) {
@@ -76,7 +77,7 @@ class AudioListViewModel(
         actualPosition = position
         handle({ interactor.cachedData() }) { list ->
             mediaService.open(list.map { it.map(mapper) }
-                .subList(1, list.size) as List<AudioUi.Abstract>, track, position, false)
+                .subList(1, list.size) as List<AudioUi.Abstract>, track, position, OrderType.BASE)
             navigation.update(PlayerScreen)
         }
     }

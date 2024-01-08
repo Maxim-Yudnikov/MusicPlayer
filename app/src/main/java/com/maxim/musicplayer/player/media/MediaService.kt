@@ -38,7 +38,7 @@ interface MediaService : StartAudio, Playable {
     fun currentPosition(): Int
     fun seekTo(position: Int)
     fun setOnCompleteListener(action: () -> Unit)
-    fun open(list: List<AudioUi.Abstract>, audio: AudioUi, position: Int, isFavoriteOrder: Boolean)
+    fun open(list: List<AudioUi.Abstract>, audio: AudioUi, position: Int, orderType: OrderType)
     fun stop()
     fun isPlaying(): Boolean
     fun changeRandom()
@@ -56,7 +56,7 @@ interface MediaService : StartAudio, Playable {
         private var cachedIcon: Bitmap? = null
 
         private var isPlaying = false
-        private var isFavoriteOrder = false
+        private var orderType = OrderType.BASE
 
         private lateinit var manageOrder: ManageOrder
         private lateinit var downBarTrackCommunication: DownBarTrackCommunication
@@ -188,10 +188,12 @@ interface MediaService : StartAudio, Playable {
                         manageOrder.loopState(), false, -1
                     )
                 )
-                if (isFavoriteOrder)
-                    manageOrder.setActualTrackFavorite(manageOrder.actualAbsolutePosition())
-                else
-                    manageOrder.setActualTrack(manageOrder.actualAbsolutePosition())
+                when (orderType) {
+                    OrderType.BASE -> manageOrder.setActualTrack(manageOrder.actualAbsolutePosition())
+                    OrderType.FAVORITE -> manageOrder.setActualTrackFavorite(manageOrder.actualAbsolutePosition())
+                    OrderType.ALBUM -> manageOrder.setActualAlbumTrack(manageOrder.actualAbsolutePosition(), null)
+                }
+
                 downBarTrackCommunication.setTrack(track, this)
             }
         }
@@ -205,10 +207,11 @@ interface MediaService : StartAudio, Playable {
                 isPlaying = true
                 val track = manageOrder.previous()
                 track.start(this, contentResolver)
-                if (isFavoriteOrder)
-                    manageOrder.setActualTrackFavorite(manageOrder.actualAbsolutePosition())
-                else
-                    manageOrder.setActualTrack(manageOrder.actualAbsolutePosition())
+                when (orderType) {
+                    OrderType.BASE -> manageOrder.setActualTrack(manageOrder.actualAbsolutePosition())
+                    OrderType.FAVORITE -> manageOrder.setActualTrackFavorite(manageOrder.actualAbsolutePosition())
+                    OrderType.ALBUM -> manageOrder.setActualAlbumTrack(manageOrder.actualAbsolutePosition(), null)
+                }
                 downBarTrackCommunication.setTrack(track, this)
                 playerCommunication.update(
                     PlayerState.Base(track, manageOrder.isRandom, manageOrder.loopState(), false, 0)
@@ -238,11 +241,11 @@ interface MediaService : StartAudio, Playable {
             list: List<AudioUi.Abstract>,
             audio: AudioUi,
             position: Int,
-            isFavoriteOrder: Boolean
+            orderType: OrderType
         ) {
             isPlaying = true
             manageOrder.generate(list, position)
-            this.isFavoriteOrder = isFavoriteOrder
+            this.orderType = orderType
             audio.start(this, contentResolver)
         }
 
@@ -430,4 +433,11 @@ interface MediaService : StartAudio, Playable {
             const val STOP_ACTION = "STOP"
         }
     }
+}
+
+//todo refactor enum clas
+enum class OrderType {
+    BASE,
+    FAVORITE,
+    ALBUM
 }

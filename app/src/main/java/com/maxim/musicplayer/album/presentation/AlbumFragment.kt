@@ -30,7 +30,7 @@ class AlbumFragment: BaseFragment<FragmentAlbumBinding, AlbumViewModel>() {
             }
 
             override fun more(audioUi: AudioUi) {
-                TODO("Not yet implemented")
+                viewModel.more(audioUi)
             }
         })
         binding.favoriteRecyclerView.adapter = adapter
