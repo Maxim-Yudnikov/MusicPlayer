@@ -12,8 +12,7 @@ interface AudioListRepository {
     ) : AudioListRepository {
 
         override fun data(): List<AudioDomain> {
-            val list: ArrayList<AudioDomain> = ArrayList(contentResolverWrapper.query(
-                MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
+            val list: ArrayList<AudioDomain> = ArrayList(contentResolverWrapper.tracks(
                 "${MediaStore.Audio.Media.TITLE} ASC"
             ).map { it.map(mapper) })
             list.add(0, AudioDomain.Count(list.size))

@@ -1,9 +1,10 @@
 package com.maxim.musicplayer.audioList.data
 
 import android.net.Uri
+import com.maxim.musicplayer.albumList.data.AlbumDomain
 
 class MockContentResolverWrapper : ContentResolverWrapper {
-    override fun query(sourceUri: Uri, sortOrder: String): List<AudioData> {
+    override fun tracks(sortOrder: String): List<AudioData> {
         val list = mutableListOf<AudioData>()
         for (i in 1..10) {
             list.add(
@@ -14,5 +15,9 @@ class MockContentResolverWrapper : ContentResolverWrapper {
             )
         }
         return list
+    }
+
+    override fun albums(sortOrder: String): List<AlbumDomain> {
+        TODO("Not yet implemented")
     }
 }
