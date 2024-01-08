@@ -31,7 +31,6 @@ interface FavoriteListRepository : FavoritesActions {
         override fun data(): List<AudioDomain> {
             val newList = ArrayList(data)
             newList.add(0, AudioDomain.Count(data.size))
-            newList.add(AudioDomain.Space)
             return newList
         }
         override suspend fun singleDataIds() =

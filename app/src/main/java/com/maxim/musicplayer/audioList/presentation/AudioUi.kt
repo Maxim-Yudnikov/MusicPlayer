@@ -137,12 +137,6 @@ abstract class AudioUi : Serializable {
         }
     }
 
-    object Space : AudioUi() {
-        override fun same(item: AudioUi) = item is Space
-
-        override fun showTitle(textView: TextView) = Unit
-    }
-
     object Empty : AudioUi() {
         override fun same(item: AudioUi) = item is Empty
 

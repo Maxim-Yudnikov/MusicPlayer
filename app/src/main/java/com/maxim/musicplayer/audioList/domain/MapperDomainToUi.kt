@@ -17,5 +17,4 @@ class MapperDomainToUi : AudioDomain.Mapper<AudioUi> {
     else AudioUi.Base(id, title, artist, duration, album, artUri, uri)
 
     override fun map(count: Int): AudioUi = AudioUi.Count(count)
-    override fun map() = AudioUi.Space
 }

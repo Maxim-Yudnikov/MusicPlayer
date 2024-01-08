@@ -11,7 +11,6 @@ import com.maxim.musicplayer.R
 import com.maxim.musicplayer.core.ProvideMediaService
 import com.maxim.musicplayer.databinding.AudioLayoutBinding
 import com.maxim.musicplayer.databinding.CountLayoutBinding
-import com.maxim.musicplayer.databinding.SpaceBinding
 import com.maxim.musicplayer.player.media.MediaService
 
 class AudioListAdapter(
@@ -55,23 +54,13 @@ class AudioListAdapter(
         }
     }
 
-    class SpaceViewHolder(binding: SpaceBinding) : ItemViewHolder(binding)
-
     override fun getItemViewType(position: Int) =
-        if (list[position] is AudioUi.Base || list[position] is AudioUi.Favorite) 0 else if (list[position] is AudioUi.Space) 1 else 2
+        if (list[position] is AudioUi.Base || list[position] is AudioUi.Favorite) 0 else 1
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
         return when (viewType) {
             0 -> BaseViewHolder(
                 AudioLayoutBinding.inflate(
-                    LayoutInflater.from(parent.context),
-                    parent,
-                    false
-                )
-            )
-
-            1 -> SpaceViewHolder(
-                SpaceBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
                     false

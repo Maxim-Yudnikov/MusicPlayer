@@ -18,7 +18,7 @@ interface AlbumUi {
     ): AlbumUi {
         override fun same(item: AlbumUi) = item is Base && item.id == id
         override fun showArt(artImageView: ArtImageView) {
-            tracks.first().showArt(artImageView, true)
+            tracks.first().showArt(artImageView, false)
         }
 
         override fun showTitle(textView: TextView) {

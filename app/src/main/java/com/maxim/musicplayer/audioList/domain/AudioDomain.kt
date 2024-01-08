@@ -17,11 +17,10 @@ interface AudioDomain {
         ): T
 
         fun map(count: Int): T
-        fun map(): T
     }
 
     fun containsId(list: List<Long>): Boolean = false
-    fun changeFavorite(): AudioDomain = Space
+    fun changeFavorite(): AudioDomain
     fun toBase(): AudioDomain
 
     data class Base(
@@ -62,11 +61,7 @@ interface AudioDomain {
 
     data class Count(private val count: Int) : AudioDomain {
         override fun <T> map(mapper: Mapper<T>) = mapper.map(count)
-        override fun toBase() = this
-    }
-
-    object Space: AudioDomain {
-        override fun <T> map(mapper: Mapper<T>) = mapper.map()
+        override fun changeFavorite() = Count(count)
         override fun toBase() = this
     }
 }

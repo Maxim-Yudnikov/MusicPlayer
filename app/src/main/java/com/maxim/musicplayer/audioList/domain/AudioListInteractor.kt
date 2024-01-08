@@ -21,7 +21,6 @@ interface AudioListInteractor {
             }
             cache.clear()
             cache.addAll(data)
-            cache.add(AudioDomain.Space)
             return cache
         }
 

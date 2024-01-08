@@ -76,7 +76,7 @@ class AudioListViewModel(
         actualPosition = position
         handle({ interactor.cachedData() }) { list ->
             mediaService.open(list.map { it.map(mapper) }
-                .subList(1, list.lastIndex) as List<AudioUi.Abstract>, track, position, false)
+                .subList(1, list.size) as List<AudioUi.Abstract>, track, position, false)
             navigation.update(PlayerScreen)
         }
     }

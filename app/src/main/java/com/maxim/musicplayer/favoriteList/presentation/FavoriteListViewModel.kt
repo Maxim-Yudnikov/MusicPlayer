@@ -63,7 +63,7 @@ class FavoriteListViewModel(
         actualPosition = position
         val data = repository.data()
         mediaService.open(data.map { it.map(mapper) }
-            .subList(1, data.lastIndex) as List<AudioUi.Abstract>, track, position, true)
+            .subList(1, data.size) as List<AudioUi.Abstract>, track, position, true)
         navigation.update(PlayerScreen)
     }
 
