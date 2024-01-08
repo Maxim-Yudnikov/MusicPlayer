@@ -54,6 +54,7 @@ dependencies {
     //implementation("android.arch.persistence.room:runtime:2.6.1")
 
     testImplementation("org.robolectric:robolectric:4.2.1")
+    androidTestImplementation("com.android.support.test.uiautomator:uiautomator-v18:2.1.3")
 
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.appcompat:appcompat:1.6.1")

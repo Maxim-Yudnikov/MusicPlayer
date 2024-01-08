@@ -30,7 +30,7 @@ interface ManageOrder {
 
     fun changeActualFavorite(playable: Playable)
 
-    class Base(private val storage: SimpleStorage) : ManageOrder {
+    class Base(private val storage: SimpleStorage, private val shuffleOrder: ShuffleOrder) : ManageOrder {
         private var loopState: LoopState = storage.read(LOOP_KEY, LoopState.Base)
         override var isRandom = storage.read(RANDOM_KEY, false)
             set(value) {
@@ -56,7 +56,7 @@ interface ManageOrder {
             actualOrder.clear()
 
             actualPosition = if (isRandom) {
-                val newOrder = ArrayList(defaultOrder.shuffled())
+                val newOrder = ArrayList(shuffleOrder.shuffle(defaultOrder))
                 val actualTrack =
                     newOrder.removeAt(newOrder.indexOf(defaultOrder[position]))
                 newOrder.add(0, actualTrack)
@@ -73,7 +73,7 @@ interface ManageOrder {
             actualOrder.clear()
 
             actualPosition = if (isRandom) {
-                val newOrder = ArrayList(defaultOrder.shuffled())
+                val newOrder = ArrayList(shuffleOrder.shuffle(defaultOrder))
                 val actualTrack = newOrder.removeAt(newOrder.indexOf(cachedActualTrack))
                 newOrder.add(0, actualTrack)
                 actualOrder.addAll(newOrder)

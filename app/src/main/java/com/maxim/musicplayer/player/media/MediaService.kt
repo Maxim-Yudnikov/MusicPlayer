@@ -250,8 +250,8 @@ interface MediaService : StartAudio, Playable {
                     manageOrder.actualTrack(),
                     manageOrder.isRandom,
                     manageOrder.loopState(),
-                    !mediaPlayer!!.isPlaying,
-                    mediaPlayer!!.currentPosition
+                    !(mediaPlayer?.isPlaying ?: false),
+                    mediaPlayer?.currentPosition ?: 0
                 )
             )
         }
@@ -263,7 +263,7 @@ interface MediaService : StartAudio, Playable {
                     manageOrder.actualTrack(),
                     manageOrder.isRandom,
                     manageOrder.loopState(),
-                    !(mediaPlayer?.isPlaying ?: true),
+                    !(mediaPlayer?.isPlaying ?: false),
                     mediaPlayer?.currentPosition ?: 0
                 )
             )

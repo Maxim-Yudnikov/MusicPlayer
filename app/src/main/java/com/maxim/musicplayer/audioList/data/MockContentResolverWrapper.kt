@@ -8,7 +8,7 @@ class MockContentResolverWrapper : ContentResolverWrapper {
         for (i in 1..10) {
             list.add(
                 AudioData(
-                    i.toLong(), "Title $i", "Artist $i", i * 10L, "Album $i",
+                    i.toLong(), "Title $i", "Artist $i", i * 10000L, "Album $i",
                     Uri.EMPTY, Uri.EMPTY
                 )
             )

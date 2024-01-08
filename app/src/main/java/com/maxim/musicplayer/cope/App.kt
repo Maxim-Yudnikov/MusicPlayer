@@ -7,7 +7,6 @@ import android.content.Intent
 import android.content.ServiceConnection
 import android.os.IBinder
 import androidx.lifecycle.ViewModel
-import com.maxim.musicplayer.cope.data.SimpleStorage
 import com.maxim.musicplayer.cope.sl.ClearViewModel
 import com.maxim.musicplayer.cope.sl.Core
 import com.maxim.musicplayer.cope.sl.ProvideInstances
@@ -40,7 +39,10 @@ class App : Application(), ProvideViewModel, ProvideMediaService, ProvideManageO
         })
         factory = ViewModelFactory.Base(provideViewModel)
         manageOrder =
-            ManageOrder.Base(SimpleStorage.Base(getSharedPreferences(STORAGE_NAME, MODE_PRIVATE)))
+            ManageOrder.Base(
+                provideInstances.simpleStorage(),
+                provideInstances.shuffleOrder()
+            )
     }
 
     private var isBound = false
@@ -69,10 +71,6 @@ class App : Application(), ProvideViewModel, ProvideMediaService, ProvideManageO
     override fun mediaService() = mediaService!!
     override fun manageOrder(): ManageOrder = manageOrder
     override fun <T : ViewModel> viewModel(clasz: Class<T>) = factory.viewModel(clasz)
-
-    companion object {
-        private const val STORAGE_NAME = "MUSIC_PLAYER_STORAGE"
-    }
 
     private val downBarTrackCommunication = DownBarTrackCommunication.Base()
     override fun downBarTrackCommunication() = downBarTrackCommunication
