@@ -10,6 +10,7 @@ class AlbumModule(private val core: Core, private val clearViewModel: ClearViewM
     override fun viewModel() = AlbumViewModel(
         AlbumCommunication.Base(),
         core.openAlbumStorage(),
+        core.manageOrder(),
         core.navigation(),
         clearViewModel
     )
