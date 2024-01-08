@@ -20,6 +20,10 @@ class AudioListFragment : BaseFragment<FragmentAudioListBinding, AudioListViewMo
             override fun open(audioUi: AudioUi, position: Int, mediaService: MediaService) {
                 viewModel.open(audioUi, position, mediaService)
             }
+
+            override fun more(audioUi: AudioUi) {
+                viewModel.more(audioUi)
+            }
         })
         binding.audioRecyclerView.adapter = adapter
 

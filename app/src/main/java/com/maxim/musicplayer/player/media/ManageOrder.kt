@@ -29,6 +29,7 @@ interface ManageOrder {
     fun observeActualTrackFavoritePosition(owner: LifecycleOwner, observer: Observer<Int>)
 
     fun changeActualFavorite(playable: Playable): Boolean
+    fun changeFavorite(id: Long, playable: Playable)
 
     class Base(private val storage: SimpleStorage, private val shuffleOrder: ShuffleOrder) :
         ManageOrder {
@@ -161,6 +162,14 @@ interface ManageOrder {
                     playable.next()
             }
             return false
+        }
+
+        override fun changeFavorite(id: Long, playable: Playable) {
+            //todo reload actual order?
+            trackMap[id]?.let { track ->
+                val newTrack = track.changeFavorite()
+                trackMap[id] = newTrack
+            }
         }
 
         override fun loopState() = loopState

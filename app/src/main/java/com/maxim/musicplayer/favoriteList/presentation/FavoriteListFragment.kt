@@ -21,6 +21,10 @@ class FavoriteListFragment: BaseFragment<FragmentFavoriteListBinding, FavoriteLi
             override fun open(audioUi: AudioUi, position: Int, mediaService: MediaService) {
                 viewModel.open(audioUi, position, mediaService)
             }
+
+            override fun more(audioUi: AudioUi) {
+                viewModel.more(audioUi)
+            }
         })
         binding.favoriteRecyclerView.adapter = adapter
 

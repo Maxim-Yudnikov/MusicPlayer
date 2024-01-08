@@ -11,6 +11,8 @@ import com.maxim.musicplayer.main.MainModule
 import com.maxim.musicplayer.main.MainViewModel
 import com.maxim.musicplayer.player.PlayerModule
 import com.maxim.musicplayer.player.presentation.PlayerViewModel
+import com.maxim.musicplayer.trackMore.MoreModule
+import com.maxim.musicplayer.trackMore.presentation.MoreViewModel
 
 interface ViewModelFactory : ClearViewModel,
     ProvideViewModel {
@@ -57,6 +59,7 @@ interface ProvideViewModel {
                 )
                 DownBarViewModel::class.java -> DownBarModule(core)
                 FavoriteListViewModel::class.java -> FavoriteModule(core)
+                MoreViewModel::class.java -> MoreModule(core)
                 else -> throw IllegalStateException("unknown viewModel $clasz")
             }.viewModel() as T
         }

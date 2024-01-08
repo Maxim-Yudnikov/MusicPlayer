@@ -38,6 +38,9 @@ class AudioListAdapter(
                     (binding.titleTextView.context.applicationContext as ProvideMediaService).mediaService()
                 )
             }
+            binding.moreButton.setOnClickListener {
+                listener.more(item)
+            }
             val color = ContextCompat.getColor(
                 binding.artImageView.context,
                 if (position == actualPosition) R.color.green else R.color.black
@@ -104,6 +107,7 @@ class AudioListAdapter(
 
     interface Listener {
         fun open(audioUi: AudioUi, position: Int, mediaService: MediaService)
+        fun more(audioUi: AudioUi)
     }
 }
 
