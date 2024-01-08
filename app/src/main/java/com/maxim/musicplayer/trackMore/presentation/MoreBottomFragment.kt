@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import com.maxim.musicplayer.cope.sl.ProvideViewModel
+import com.maxim.musicplayer.core.sl.ProvideViewModel
 import com.maxim.musicplayer.databinding.BottomFragmentMoreBinding
 
 class MoreBottomFragment : BottomSheetDialogFragment() {

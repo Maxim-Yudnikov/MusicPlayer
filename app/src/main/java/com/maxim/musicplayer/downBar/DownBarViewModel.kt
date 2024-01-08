@@ -4,8 +4,8 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import com.maxim.musicplayer.audioList.presentation.AudioUi
-import com.maxim.musicplayer.cope.presentation.Communication
-import com.maxim.musicplayer.cope.presentation.Navigation
+import com.maxim.musicplayer.core.presentation.Communication
+import com.maxim.musicplayer.core.presentation.Navigation
 import com.maxim.musicplayer.player.presentation.PlayerScreen
 
 class DownBarViewModel(

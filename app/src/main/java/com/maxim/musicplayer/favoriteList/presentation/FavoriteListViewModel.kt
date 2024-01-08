@@ -6,11 +6,11 @@ import com.maxim.musicplayer.audioList.domain.AudioDomain
 import com.maxim.musicplayer.audioList.presentation.AudioListCommunication
 import com.maxim.musicplayer.audioList.presentation.AudioListState
 import com.maxim.musicplayer.audioList.presentation.AudioUi
-import com.maxim.musicplayer.cope.presentation.BaseViewModel
-import com.maxim.musicplayer.cope.presentation.Communication
-import com.maxim.musicplayer.cope.presentation.Navigation
-import com.maxim.musicplayer.cope.presentation.Reload
-import com.maxim.musicplayer.cope.presentation.RunAsync
+import com.maxim.musicplayer.core.presentation.BaseViewModel
+import com.maxim.musicplayer.core.presentation.Communication
+import com.maxim.musicplayer.core.presentation.Navigation
+import com.maxim.musicplayer.core.presentation.Reload
+import com.maxim.musicplayer.core.presentation.RunAsync
 import com.maxim.musicplayer.favoriteList.data.FavoriteListRepository
 import com.maxim.musicplayer.player.media.ManageOrder
 import com.maxim.musicplayer.player.media.MediaService

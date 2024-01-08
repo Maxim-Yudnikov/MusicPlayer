@@ -9,7 +9,7 @@ import android.widget.TextView
 import androidx.lifecycle.findViewTreeLifecycleOwner
 import com.maxim.musicplayer.R
 import com.maxim.musicplayer.audioList.presentation.ArtImageView
-import com.maxim.musicplayer.cope.App
+import com.maxim.musicplayer.core.App
 
 class DownBarView : FrameLayout {
     //region constructors

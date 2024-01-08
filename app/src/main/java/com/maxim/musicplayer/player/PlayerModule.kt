@@ -1,9 +1,9 @@
 package com.maxim.musicplayer.player
 
-import com.maxim.musicplayer.cope.sl.ClearViewModel
-import com.maxim.musicplayer.cope.sl.Core
-import com.maxim.musicplayer.cope.sl.Module
-import com.maxim.musicplayer.cope.ProvideMediaService
+import com.maxim.musicplayer.core.sl.ClearViewModel
+import com.maxim.musicplayer.core.sl.Core
+import com.maxim.musicplayer.core.sl.Module
+import com.maxim.musicplayer.core.ProvideMediaService
 import com.maxim.musicplayer.favoriteList.data.FavoriteListRepository
 import com.maxim.musicplayer.player.presentation.PlayerViewModel
 

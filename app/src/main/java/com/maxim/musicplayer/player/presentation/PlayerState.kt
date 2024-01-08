@@ -8,7 +8,7 @@ import androidx.core.content.ContextCompat
 import com.maxim.musicplayer.R
 import com.maxim.musicplayer.audioList.presentation.ArtImageView
 import com.maxim.musicplayer.audioList.presentation.AudioUi
-import com.maxim.musicplayer.cope.sl.GoBack
+import com.maxim.musicplayer.core.sl.GoBack
 import com.maxim.musicplayer.main.TimeTextView
 import com.maxim.musicplayer.player.media.LoopState
 

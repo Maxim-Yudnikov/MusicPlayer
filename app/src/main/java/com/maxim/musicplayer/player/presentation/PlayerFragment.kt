@@ -6,8 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.SeekBar
 import androidx.activity.OnBackPressedCallback
-import com.maxim.musicplayer.cope.ProvideMediaService
-import com.maxim.musicplayer.cope.presentation.BaseFragment
+import com.maxim.musicplayer.core.ProvideMediaService
+import com.maxim.musicplayer.core.presentation.BaseFragment
 import com.maxim.musicplayer.databinding.FragmentPlayerBinding
 import com.maxim.musicplayer.player.media.MediaService
 import kotlinx.coroutines.CoroutineScope

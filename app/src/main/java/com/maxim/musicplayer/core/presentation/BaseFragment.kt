@@ -1,4 +1,4 @@
-package com.maxim.musicplayer.cope.presentation
+package com.maxim.musicplayer.core.presentation
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,7 +8,7 @@ import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import androidx.viewbinding.ViewBinding
-import com.maxim.musicplayer.cope.sl.ProvideViewModel
+import com.maxim.musicplayer.core.sl.ProvideViewModel
 
 abstract class BaseFragment<B: ViewBinding, V: ViewModel>: Fragment() {
     private var _binding: B? = null

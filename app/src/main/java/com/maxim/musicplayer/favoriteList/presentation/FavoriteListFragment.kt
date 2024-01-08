@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.maxim.musicplayer.audioList.presentation.AudioListAdapter
 import com.maxim.musicplayer.audioList.presentation.AudioUi
-import com.maxim.musicplayer.cope.presentation.BaseFragment
+import com.maxim.musicplayer.core.presentation.BaseFragment
 import com.maxim.musicplayer.databinding.FragmentFavoriteListBinding
 import com.maxim.musicplayer.player.media.MediaService
 

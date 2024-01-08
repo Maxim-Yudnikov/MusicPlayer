@@ -3,7 +3,7 @@ package com.maxim.musicplayer.albumList.presentation
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.maxim.musicplayer.audioList.presentation.AudioListViewModel
-import com.maxim.musicplayer.cope.presentation.BaseFragment
+import com.maxim.musicplayer.core.presentation.BaseFragment
 import com.maxim.musicplayer.databinding.FragmentAudioListBinding
 
 class AlbumListFragment: BaseFragment<FragmentAudioListBinding, AudioListViewModel>() {

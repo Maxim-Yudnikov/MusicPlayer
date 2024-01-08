@@ -1,12 +1,12 @@
-package com.maxim.musicplayer.cope.sl
+package com.maxim.musicplayer.core.sl
 
 import android.app.Application
 import android.content.Context
 import androidx.room.Room
 import com.maxim.musicplayer.audioList.data.ContentResolverWrapper
 import com.maxim.musicplayer.audioList.data.MockContentResolverWrapper
-import com.maxim.musicplayer.cope.data.MockSimpleStorage
-import com.maxim.musicplayer.cope.data.SimpleStorage
+import com.maxim.musicplayer.core.data.MockSimpleStorage
+import com.maxim.musicplayer.core.data.SimpleStorage
 import com.maxim.musicplayer.favoriteList.data.FavoriteDatabase
 import com.maxim.musicplayer.player.media.ShuffleOrder
 

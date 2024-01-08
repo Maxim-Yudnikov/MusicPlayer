@@ -5,7 +5,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import com.maxim.musicplayer.audioList.presentation.AudioUi
-import com.maxim.musicplayer.cope.data.SimpleStorage
+import com.maxim.musicplayer.core.data.SimpleStorage
 
 interface ManageOrder {
     fun generate(tracks: List<AudioUi.Abstract>, position: Int)

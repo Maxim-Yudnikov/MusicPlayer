@@ -1,7 +1,7 @@
 package com.maxim.musicplayer.downBar
 
-import com.maxim.musicplayer.cope.sl.Core
-import com.maxim.musicplayer.cope.sl.Module
+import com.maxim.musicplayer.core.sl.Core
+import com.maxim.musicplayer.core.sl.Module
 
 class DownBarModule(private val core: Core): Module<DownBarViewModel> {
     override fun viewModel() = DownBarViewModel(

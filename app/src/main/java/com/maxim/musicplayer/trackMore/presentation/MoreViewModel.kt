@@ -3,9 +3,9 @@ package com.maxim.musicplayer.trackMore.presentation
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import com.maxim.musicplayer.audioList.presentation.AudioUi
-import com.maxim.musicplayer.cope.ProvideMediaService
-import com.maxim.musicplayer.cope.presentation.BaseViewModel
-import com.maxim.musicplayer.cope.presentation.Communication
+import com.maxim.musicplayer.core.ProvideMediaService
+import com.maxim.musicplayer.core.presentation.BaseViewModel
+import com.maxim.musicplayer.core.presentation.Communication
 import com.maxim.musicplayer.favoriteList.data.FavoriteListRepository
 import com.maxim.musicplayer.player.media.ManageOrder
 

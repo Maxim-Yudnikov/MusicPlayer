@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import androidx.viewbinding.ViewBinding
 import com.maxim.musicplayer.R
-import com.maxim.musicplayer.cope.ProvideMediaService
+import com.maxim.musicplayer.core.ProvideMediaService
 import com.maxim.musicplayer.databinding.AudioLayoutBinding
 import com.maxim.musicplayer.databinding.CountLayoutBinding
 import com.maxim.musicplayer.databinding.SpaceBinding

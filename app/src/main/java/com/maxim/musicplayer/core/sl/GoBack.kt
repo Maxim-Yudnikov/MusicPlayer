@@ -1,4 +1,4 @@
-package com.maxim.musicplayer.cope.sl
+package com.maxim.musicplayer.core.sl
 
 interface GoBack {
     fun goBack()

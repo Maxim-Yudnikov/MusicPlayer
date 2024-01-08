@@ -1,4 +1,4 @@
-package com.maxim.musicplayer.cope.data
+package com.maxim.musicplayer.core.data
 
 import android.content.SharedPreferences
 import com.maxim.musicplayer.player.media.LoopState

@@ -1,4 +1,4 @@
-package com.maxim.musicplayer.cope.sl
+package com.maxim.musicplayer.core.sl
 
 import androidx.lifecycle.ViewModel
 import com.maxim.musicplayer.audioList.AudioListModule

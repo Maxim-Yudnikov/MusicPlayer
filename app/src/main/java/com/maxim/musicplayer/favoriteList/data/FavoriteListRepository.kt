@@ -3,7 +3,7 @@ package com.maxim.musicplayer.favoriteList.data
 import android.net.Uri
 import androidx.lifecycle.LiveData
 import com.maxim.musicplayer.audioList.domain.AudioDomain
-import com.maxim.musicplayer.cope.presentation.Reload
+import com.maxim.musicplayer.core.presentation.Reload
 
 //todo someday make interactor
 interface FavoriteListRepository : FavoritesActions {

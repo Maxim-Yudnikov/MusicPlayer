@@ -1,11 +1,11 @@
-package com.maxim.musicplayer.cope.sl
+package com.maxim.musicplayer.core.sl
 
 import android.content.Context
-import com.maxim.musicplayer.cope.ProvideDownBarTrackCommunication
-import com.maxim.musicplayer.cope.ProvideManageOrder
-import com.maxim.musicplayer.cope.ProvideMediaService
-import com.maxim.musicplayer.cope.ProvidePlayerCommunication
-import com.maxim.musicplayer.cope.presentation.Navigation
+import com.maxim.musicplayer.core.ProvideDownBarTrackCommunication
+import com.maxim.musicplayer.core.ProvideManageOrder
+import com.maxim.musicplayer.core.ProvideMediaService
+import com.maxim.musicplayer.core.ProvidePlayerCommunication
+import com.maxim.musicplayer.core.presentation.Navigation
 import com.maxim.musicplayer.favoriteList.data.FavoriteListRepository
 import com.maxim.musicplayer.trackMore.presentation.MoreStorage
 

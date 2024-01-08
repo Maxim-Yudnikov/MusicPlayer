@@ -24,9 +24,9 @@ import androidx.core.app.NotificationCompat.PRIORITY_MAX
 import androidx.core.content.ContextCompat
 import com.maxim.musicplayer.R
 import com.maxim.musicplayer.audioList.presentation.AudioUi
-import com.maxim.musicplayer.cope.ProvideDownBarTrackCommunication
-import com.maxim.musicplayer.cope.ProvideManageOrder
-import com.maxim.musicplayer.cope.ProvidePlayerCommunication
+import com.maxim.musicplayer.core.ProvideDownBarTrackCommunication
+import com.maxim.musicplayer.core.ProvideManageOrder
+import com.maxim.musicplayer.core.ProvidePlayerCommunication
 import com.maxim.musicplayer.downBar.DownBarTrackCommunication
 import com.maxim.musicplayer.main.MainActivity
 import com.maxim.musicplayer.main.MainActivity.Companion.OPEN_PLAYER_ACTION

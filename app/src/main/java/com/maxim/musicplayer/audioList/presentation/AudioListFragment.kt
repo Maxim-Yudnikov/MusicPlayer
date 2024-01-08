@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.maxim.musicplayer.cope.presentation.BaseFragment
+import com.maxim.musicplayer.core.presentation.BaseFragment
 import com.maxim.musicplayer.databinding.FragmentAudioListBinding
 import com.maxim.musicplayer.player.media.MediaService
 

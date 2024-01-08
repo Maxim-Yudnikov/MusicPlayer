@@ -2,13 +2,13 @@ package com.maxim.musicplayer.player.presentation
 
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
-import com.maxim.musicplayer.cope.ProvideMediaService
-import com.maxim.musicplayer.cope.presentation.BaseViewModel
-import com.maxim.musicplayer.cope.presentation.Communication
-import com.maxim.musicplayer.cope.presentation.Navigation
-import com.maxim.musicplayer.cope.presentation.Screen
-import com.maxim.musicplayer.cope.sl.ClearViewModel
-import com.maxim.musicplayer.cope.sl.GoBack
+import com.maxim.musicplayer.core.ProvideMediaService
+import com.maxim.musicplayer.core.presentation.BaseViewModel
+import com.maxim.musicplayer.core.presentation.Communication
+import com.maxim.musicplayer.core.presentation.Navigation
+import com.maxim.musicplayer.core.presentation.Screen
+import com.maxim.musicplayer.core.sl.ClearViewModel
+import com.maxim.musicplayer.core.sl.GoBack
 import com.maxim.musicplayer.downBar.DownBarTrackCommunication
 import com.maxim.musicplayer.favoriteList.data.FavoriteListRepository
 import com.maxim.musicplayer.player.media.ManageOrder

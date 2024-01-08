@@ -1,4 +1,4 @@
-package com.maxim.musicplayer.cope
+package com.maxim.musicplayer.core
 
 import android.app.Application
 import android.content.ComponentName
@@ -7,11 +7,11 @@ import android.content.Intent
 import android.content.ServiceConnection
 import android.os.IBinder
 import androidx.lifecycle.ViewModel
-import com.maxim.musicplayer.cope.sl.ClearViewModel
-import com.maxim.musicplayer.cope.sl.Core
-import com.maxim.musicplayer.cope.sl.ProvideInstances
-import com.maxim.musicplayer.cope.sl.ProvideViewModel
-import com.maxim.musicplayer.cope.sl.ViewModelFactory
+import com.maxim.musicplayer.core.sl.ClearViewModel
+import com.maxim.musicplayer.core.sl.Core
+import com.maxim.musicplayer.core.sl.ProvideInstances
+import com.maxim.musicplayer.core.sl.ProvideViewModel
+import com.maxim.musicplayer.core.sl.ViewModelFactory
 import com.maxim.musicplayer.downBar.DownBarTrackCommunication
 import com.maxim.musicplayer.player.media.ManageOrder
 import com.maxim.musicplayer.player.media.MediaService
