@@ -114,6 +114,8 @@ interface MediaService : StartAudio, Playable {
             icon: Bitmap?,
             ignoreSame: Boolean
         ) {
+            if (uri == Uri.EMPTY) return
+
             actualUri?.let {
                 if (uri != actualUri || ignoreSame) {
                     mediaPlayer?.reset()
@@ -255,14 +257,14 @@ interface MediaService : StartAudio, Playable {
         }
 
         override fun changeLoop() {
-            manageOrder.changeLoop(mediaPlayer!!)
+            manageOrder.changeLoop(mediaPlayer)
             playerCommunication.update(
                 PlayerState.Base(
                     manageOrder.actualTrack(),
                     manageOrder.isRandom,
                     manageOrder.loopState(),
-                    !mediaPlayer!!.isPlaying,
-                    mediaPlayer!!.currentPosition
+                    !(mediaPlayer?.isPlaying ?: true),
+                    mediaPlayer?.currentPosition ?: 0
                 )
             )
         }

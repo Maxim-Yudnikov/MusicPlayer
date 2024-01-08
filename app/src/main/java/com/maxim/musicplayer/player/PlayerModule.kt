@@ -19,6 +19,6 @@ class PlayerModule(
         provideMediaService,
         core.navigation(),
         clearViewModel,
-        FavoriteListRepository.Base(core.dao())
+        FavoriteListRepository.Base(core.database().dao())
     )
 }

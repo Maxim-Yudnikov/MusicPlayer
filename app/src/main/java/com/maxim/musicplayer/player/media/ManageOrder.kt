@@ -13,7 +13,7 @@ interface ManageOrder {
     fun next(): AudioUi
     fun previous(): AudioUi
     fun initLoop(mediaPlayer: MediaPlayer)
-    fun changeLoop(mediaPlayer: MediaPlayer)
+    fun changeLoop(mediaPlayer: MediaPlayer?)
     fun loopState(): LoopState
     var isRandom: Boolean
 
@@ -137,10 +137,12 @@ interface ManageOrder {
             loopState.handle(mediaPlayer)
         }
 
-        override fun changeLoop(mediaPlayer: MediaPlayer) {
+        override fun changeLoop(mediaPlayer: MediaPlayer?) {
             loopState = loopState.next()
             storage.save(LOOP_KEY, loopState)
-            loopState.handle(mediaPlayer)
+            mediaPlayer?.let {
+                loopState.handle(mediaPlayer)
+            }
         }
 
         override fun changeActualFavorite(playable: Playable) {

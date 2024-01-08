@@ -8,8 +8,9 @@ import android.content.ServiceConnection
 import android.os.IBinder
 import androidx.lifecycle.ViewModel
 import com.maxim.musicplayer.cope.data.SimpleStorage
-import com.maxim.musicplayer.cope.sl.Core
 import com.maxim.musicplayer.cope.sl.ClearViewModel
+import com.maxim.musicplayer.cope.sl.Core
+import com.maxim.musicplayer.cope.sl.ProvideInstances
 import com.maxim.musicplayer.cope.sl.ProvideViewModel
 import com.maxim.musicplayer.cope.sl.ViewModelFactory
 import com.maxim.musicplayer.downBar.DownBarTrackCommunication
@@ -22,9 +23,14 @@ class App : Application(), ProvideViewModel, ProvideMediaService, ProvideManageO
     private lateinit var factory: ViewModelFactory
     private lateinit var manageOrder: ManageOrder
 
+    private val isMock = true
+
     override fun onCreate() {
         super.onCreate()
-        val core = Core(this)
+        val provideInstances =
+            if (isMock) ProvideInstances.Mock(this) else ProvideInstances.Release(this)
+
+        val core = Core(this, provideInstances)
         core.init()
         factory = ViewModelFactory.Empty
         val provideViewModel = ProvideViewModel.Base(core, object : ClearViewModel {

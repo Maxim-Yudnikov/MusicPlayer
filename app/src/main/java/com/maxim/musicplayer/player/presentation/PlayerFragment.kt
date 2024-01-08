@@ -34,7 +34,7 @@ class PlayerFragment : BaseFragment<FragmentPlayerBinding, PlayerViewModel>() {
         viewModel.observe(this) {
             it.show(
                 binding.artImageView,
-                binding.titleTextView,
+                binding.playerTitleTextView,
                 binding.artistTextView,
                 binding.playButton,
                 binding.randomOrderButton,
