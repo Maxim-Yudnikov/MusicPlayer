@@ -4,7 +4,7 @@ import com.maxim.musicplayer.audioList.data.AudioListRepository
 import com.maxim.musicplayer.favoriteList.data.FavoriteListRepository
 
 interface AudioListInteractor {
-    suspend fun dataWithImages(): List<AudioDomain>
+    suspend fun data(): List<AudioDomain>
     suspend fun cachedData(): List<AudioDomain>
 
     class Base(
@@ -12,7 +12,7 @@ interface AudioListInteractor {
         private val favoriteRepository: FavoriteListRepository
     ) : AudioListInteractor {
         private val cache = mutableListOf<AudioDomain>()
-        override suspend fun dataWithImages(): List<AudioDomain> {
+        override suspend fun data(): List<AudioDomain> {
             val data = repository.data().toMutableList()
             val favoritesIds = favoriteRepository.singleDataIds()
             for (i in data.indices) {

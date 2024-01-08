@@ -7,6 +7,7 @@ import com.maxim.musicplayer.cope.ProvideMediaService
 import com.maxim.musicplayer.cope.ProvidePlayerCommunication
 import com.maxim.musicplayer.cope.presentation.Navigation
 import com.maxim.musicplayer.favoriteList.data.FavoriteListRepository
+import com.maxim.musicplayer.trackMore.presentation.MoreStorage
 
 class Core(private val context: Context, private val provideInstances: ProvideInstances) {
     private val navigation = Navigation.Base()
@@ -22,6 +23,9 @@ class Core(private val context: Context, private val provideInstances: ProvideIn
     fun favoriteRepository() = favoriteRepository
 
     fun database() = provideInstances.database()
+
+    private val moreStorage = MoreStorage.Base()
+    fun moreStorage() = moreStorage
 
     fun init() {
         favoriteRepository = FavoriteListRepository.Base(database().dao())

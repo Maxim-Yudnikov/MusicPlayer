@@ -3,6 +3,7 @@ package com.maxim.musicplayer.cope.presentation
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
 interface Screen {
     fun show(fragmentManager: FragmentManager, containerId: Int, tabLayout: View)
@@ -36,6 +37,14 @@ interface Screen {
                 .replace(containerId, fragmentClass.getDeclaredConstructor().newInstance())
                 .commit()
             tabLayout.visibility = View.GONE
+        }
+    }
+
+    abstract class Bottom(private val fragmentClass: Class<out BottomSheetDialogFragment>) :
+        Screen {
+        override fun show(fragmentManager: FragmentManager, containerId: Int, tabLayout: View) {
+            fragmentClass.getDeclaredConstructor().newInstance()
+                .show(fragmentManager, fragmentClass.simpleName)
         }
     }
 

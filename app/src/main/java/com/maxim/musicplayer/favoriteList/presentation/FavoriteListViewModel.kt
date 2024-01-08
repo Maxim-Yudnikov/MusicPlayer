@@ -15,6 +15,7 @@ import com.maxim.musicplayer.favoriteList.data.FavoriteListRepository
 import com.maxim.musicplayer.player.media.ManageOrder
 import com.maxim.musicplayer.player.media.MediaService
 import com.maxim.musicplayer.player.presentation.PlayerScreen
+import com.maxim.musicplayer.trackMore.presentation.MoreScreen
 
 class FavoriteListViewModel(
     private val repository: FavoriteListRepository,
@@ -47,6 +48,10 @@ class FavoriteListViewModel(
                 position
             )
         )
+    }
+
+    fun more(audioUi: AudioUi) {
+        navigation.update(MoreScreen)
     }
 
     fun open(track: AudioUi, position: Int, mediaService: MediaService) {
