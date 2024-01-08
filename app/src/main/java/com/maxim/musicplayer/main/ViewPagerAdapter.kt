@@ -12,8 +12,8 @@ class ViewPagerAdapter(fragment: FragmentActivity): FragmentStateAdapter(fragmen
 
     override fun createFragment(position: Int): Fragment {
         return when (position) {
-            0 -> AlbumListFragment()
-            1 -> AudioListFragment()
+            0 -> AudioListFragment()
+            1 -> AlbumListFragment()
             else -> FavoriteListFragment()
         }
     }

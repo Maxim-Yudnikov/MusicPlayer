@@ -25,18 +25,17 @@ class MainActivity : AppCompatActivity(), ProvideViewModel {
         setContentView(binding.root)
 
         binding.viewPager.adapter = ViewPagerAdapter(this)
-        binding.viewPager.currentItem = 1
         TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, pos ->
             when (pos) {
                 0 -> {
-                    tab.setIcon(R.drawable.album_24)
-                }
-
-                1 -> {
                     tab.setIcon(R.drawable.baseline_audiotrack_24)
                 }
 
-                else -> {
+                1 -> {
+                    tab.setIcon(R.drawable.album_24)
+                }
+
+                2 -> {
                     tab.setIcon(R.drawable.favorite_24)
                 }
             }

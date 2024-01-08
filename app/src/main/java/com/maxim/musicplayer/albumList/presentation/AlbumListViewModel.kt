@@ -11,10 +11,11 @@ class AlbumListViewModel(
     private val communication: AlbumListCommunication,
     private val repository: AlbumListRepository,
     private val mapper: AlbumDomain.Mapper<AlbumUi>
-): ViewModel(), Communication.Observe<AlbumListState> {
+) : ViewModel(), Communication.Observe<AlbumListState> {
 
-    fun init() {
-        communication.update(AlbumListState.Base(repository.data().map { it.map(mapper) }))
+    fun init(isFirstRun: Boolean) {
+        if (isFirstRun)
+            communication.update(AlbumListState.Base(repository.data().map { it.map(mapper) }))
     }
 
     override fun observe(owner: LifecycleOwner, observer: Observer<AlbumListState>) {

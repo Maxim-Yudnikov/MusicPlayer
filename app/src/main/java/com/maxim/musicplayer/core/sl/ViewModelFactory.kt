@@ -1,6 +1,8 @@
 package com.maxim.musicplayer.core.sl
 
 import androidx.lifecycle.ViewModel
+import com.maxim.musicplayer.albumList.AlbumListModule
+import com.maxim.musicplayer.albumList.presentation.AlbumListViewModel
 import com.maxim.musicplayer.audioList.AudioListModule
 import com.maxim.musicplayer.audioList.presentation.AudioListViewModel
 import com.maxim.musicplayer.downBar.DownBarModule
@@ -60,6 +62,7 @@ interface ProvideViewModel {
                 DownBarViewModel::class.java -> DownBarModule(core)
                 FavoriteListViewModel::class.java -> FavoriteModule(core)
                 MoreViewModel::class.java -> MoreModule(core)
+                AlbumListViewModel::class.java -> AlbumListModule(core)
                 else -> throw IllegalStateException("unknown viewModel $clasz")
             }.viewModel() as T
         }

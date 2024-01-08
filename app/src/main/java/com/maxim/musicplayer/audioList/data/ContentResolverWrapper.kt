@@ -43,17 +43,23 @@ interface ContentResolverWrapper {
             val tracks = allTracks(sortOrder)
             val albums = mutableMapOf<Long, ArrayList<Audio>>()
             val titles = mutableMapOf<Long, String>()
+            val artists = mutableMapOf<Long, String>()
             tracks.forEach { audio ->
-                albums[audio.albumId]?.add(audio) ?: {
+                if (albums[audio.albumId] == null) {
                     albums[audio.albumId] = arrayListOf(audio)
+                    titles[audio.albumId] = audio.album
+                    artists[audio.albumId] = audio.artist
                 }
-                titles[audio.albumId] = audio.album
+                else {
+                    albums[audio.albumId]!!.add(audio)
+                }
             }
 
             return albums.map {
                 AlbumDomain.Base(
                     it.key,
                     titles[it.key]!!,
+                    artists[it.key]!!,
                     it.value.map { audio ->
                         AudioDomain.Base(
                             audio.id, audio.title, audio.artist, audio.duration,
@@ -97,11 +103,4 @@ private data class Audio(
     val albumId: Long,
     val artUri: Uri,
     val uri: Uri
-)
-
-private data class Album(
-    val id: Long,
-    val title: String,
-    val artist: String,
-    val tracks: List<AudioData>
 )
