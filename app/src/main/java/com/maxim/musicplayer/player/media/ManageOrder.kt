@@ -165,10 +165,20 @@ interface ManageOrder {
         }
 
         override fun changeFavorite(id: Long, playable: Playable) {
-            //todo reload actual order?
+            val isFavoriteOrder = actualTrackFavoritePositionLiveData.value != -1
             trackMap[id]?.let { track ->
                 val newTrack = track.changeFavorite()
                 trackMap[id] = newTrack
+                if (isFavoriteOrder && newTrack is AudioUi.Base) {
+                    actualOrder.remove(id)
+                    defaultOrder.remove(id)
+                    actualPosition--
+                    if (actualOrder.isEmpty()) {
+                        playable.finish()
+                        actualTrackFavoritePositionLiveData.value = -1
+                    } else
+                        playable.next()
+                }
             }
         }
 

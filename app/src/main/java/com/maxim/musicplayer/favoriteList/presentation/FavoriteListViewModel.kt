@@ -16,6 +16,7 @@ import com.maxim.musicplayer.player.media.ManageOrder
 import com.maxim.musicplayer.player.media.MediaService
 import com.maxim.musicplayer.player.presentation.PlayerScreen
 import com.maxim.musicplayer.trackMore.presentation.MoreScreen
+import com.maxim.musicplayer.trackMore.presentation.MoreStorage
 
 class FavoriteListViewModel(
     private val repository: FavoriteListRepository,
@@ -23,6 +24,7 @@ class FavoriteListViewModel(
     private val audioListCommunication: AudioListCommunication,
     private val manageOrder: ManageOrder,
     private val navigation: Navigation.Update,
+    private val moreStorage: MoreStorage.Save,
     runAsync: RunAsync = RunAsync.Base()
 ) : BaseViewModel(runAsync), Communication.Observe<AudioListState>, Reload {
     private var actualPosition = -1
@@ -51,6 +53,7 @@ class FavoriteListViewModel(
     }
 
     fun more(audioUi: AudioUi) {
+        moreStorage.save(audioUi)
         navigation.update(MoreScreen)
     }
 
