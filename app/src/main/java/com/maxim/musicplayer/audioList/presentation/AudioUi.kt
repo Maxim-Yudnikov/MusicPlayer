@@ -17,6 +17,7 @@ import com.maxim.musicplayer.player.media.StartAudio
 import java.io.Serializable
 
 abstract class AudioUi : Serializable {
+    open fun id(): Long = -1
     abstract fun same(item: AudioUi): Boolean
     open fun sameId(item: AudioUi): Boolean = false
     abstract fun showTitle(textView: TextView)
@@ -36,7 +37,7 @@ abstract class AudioUi : Serializable {
     open fun duration(): Long = 0
 
     abstract class Abstract(
-        val id: Long,
+        private val id: Long,
         private val title: String,
         private val artist: String,
         private val duration: Long,
@@ -44,6 +45,8 @@ abstract class AudioUi : Serializable {
         private val artUri: Uri,
         private var uri: Uri,
     ) : AudioUi() {
+        override fun id() = id
+
         override fun sameId(item: AudioUi) = item is Abstract && item.id == id
 
         override fun showTitle(textView: TextView) {

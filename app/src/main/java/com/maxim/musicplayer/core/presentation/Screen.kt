@@ -1,6 +1,7 @@
 package com.maxim.musicplayer.core.presentation
 
 import android.view.View
+import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -42,6 +43,13 @@ interface Screen {
 
     abstract class Bottom(private val fragmentClass: Class<out BottomSheetDialogFragment>) :
         Screen {
+        override fun show(fragmentManager: FragmentManager, containerId: Int, tabLayout: View) {
+            fragmentClass.getDeclaredConstructor().newInstance()
+                .show(fragmentManager, fragmentClass.simpleName)
+        }
+    }
+
+    abstract class Dialog(private val fragmentClass: Class<out DialogFragment>) : Screen {
         override fun show(fragmentManager: FragmentManager, containerId: Int, tabLayout: View) {
             fragmentClass.getDeclaredConstructor().newInstance()
                 .show(fragmentManager, fragmentClass.simpleName)

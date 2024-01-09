@@ -66,13 +66,13 @@ interface ManageOrder {
         override fun init(allTracks: List<AudioUi.Abstract>) {
             trackMap.clear()
             allTracks.forEach {
-                trackMap[it.id] = it
+                trackMap[it.id()] = it
             }
         }
 
         override fun generate(tracks: List<AudioUi.Abstract>, position: Int) {
             defaultOrder.clear()
-            defaultOrder.addAll(tracks.map { it.id })
+            defaultOrder.addAll(tracks.map { it.id() })
             actualOrder.clear()
 
             actualPosition = if (isRandom) {
@@ -236,7 +236,7 @@ interface ManageOrder {
         }
 
         override fun playNext(audioUi: AudioUi) {
-            val id = (audioUi as AudioUi.Abstract).id
+            val id = audioUi.id()
             if (id == actualOrder[actualPosition])
                 return
             if (actualOrder.contains(id))

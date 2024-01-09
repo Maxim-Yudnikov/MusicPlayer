@@ -175,7 +175,7 @@
                     android:textColor="@color/gray"
                     android:textSize="16sp" />
 
-                <TextView
+                <com.maxim.musicplayer.main.TimeTextView
                     android:id="@+id/lengthTextView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

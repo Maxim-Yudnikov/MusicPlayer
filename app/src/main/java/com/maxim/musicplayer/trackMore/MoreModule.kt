@@ -12,5 +12,7 @@ class MoreModule(private val core: Core): Module<MoreViewModel> {
         core.manageOrder(),
         core.provideMediaService(),
         core.favoriteRepository(),
+        core.detailsStorage(),
+        core.navigation()
     )
 }

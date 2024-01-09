@@ -8,6 +8,7 @@ import com.maxim.musicplayer.core.ProvideManageOrder
 import com.maxim.musicplayer.core.ProvideMediaService
 import com.maxim.musicplayer.core.ProvidePlayerCommunication
 import com.maxim.musicplayer.core.presentation.Navigation
+import com.maxim.musicplayer.details.presentation.DetailsStorage
 import com.maxim.musicplayer.favoriteList.data.FavoriteListRepository
 import com.maxim.musicplayer.trackMore.presentation.MoreStorage
 
@@ -35,4 +36,7 @@ class Core(private val context: Context, private val provideInstances: ProvideIn
     fun init() {
         favoriteRepository = FavoriteListRepository.Base(database().dao())
     }
+
+    private val detailsStorage = DetailsStorage.Base()
+    fun detailsStorage() = detailsStorage
 }
