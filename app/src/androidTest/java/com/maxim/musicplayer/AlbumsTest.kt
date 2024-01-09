@@ -48,4 +48,32 @@ class AlbumsTest: BaseTest() {
         previousButton()
         checkIsFavorite(true)
     }
+
+    @Test
+    fun test_add_to_favorite_list_from_album() {
+        albumsScreen()
+        openAlbumAtPosition(0)
+        openTrackFromFavoriteRecyclerview(1)
+        favoriteButton()
+        back()
+        back()
+        favoritesScreen()
+        openTrackFromFavoriteRecyclerview(1)
+        checkIsFavorite(true)
+        checkTextInPlayer("Title 1")
+    }
+
+    @Test
+    fun test_add_to_favorite_from_more_from_album() {
+        albumsScreen()
+        openAlbumAtPosition(0)
+        openMoreFromFavoriteRecyclerview(1)
+        favoriteButton()
+        back()
+        back()
+        favoritesScreen()
+        openTrackFromFavoriteRecyclerview(1)
+        checkIsFavorite(true)
+        checkTextInPlayer("Title 1")
+    }
 }
