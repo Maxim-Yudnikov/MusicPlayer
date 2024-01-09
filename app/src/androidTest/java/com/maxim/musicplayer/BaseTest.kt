@@ -4,8 +4,6 @@ import android.support.test.uiautomator.UiDevice
 import android.view.View
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.action.ViewActions.swipeLeft
-import androidx.test.espresso.action.ViewActions.swipeRight
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
@@ -91,13 +89,18 @@ abstract class BaseTest {
         onView(withId(R.id.favoriteButton)).check(matches(withDrawable(drawable)))
     }
 
-    protected fun swipeToRight() {
-        onView(withId(R.id.viewPager)).perform(swipeRight())
+    protected fun tracksScreen() {
+        onView(withId(R.id.tabLayout)).perform(selectTabAtPosition(0))
         Thread.sleep(500)
     }
 
-    protected fun swipeToLeft() {
-        onView(withId(R.id.viewPager)).perform(swipeLeft())
+    protected fun albumsScreen() {
+        onView(withId(R.id.tabLayout)).perform(selectTabAtPosition(1))
+        Thread.sleep(500)
+    }
+
+    protected fun favoritesScreen() {
+        onView(withId(R.id.tabLayout)).perform(selectTabAtPosition(2))
         Thread.sleep(500)
     }
 

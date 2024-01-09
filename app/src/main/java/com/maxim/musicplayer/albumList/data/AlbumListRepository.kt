@@ -1,15 +1,15 @@
 package com.maxim.musicplayer.albumList.data
 
 import android.provider.MediaStore
-import com.maxim.musicplayer.audioList.data.ContentResolverWrapper
+import com.maxim.musicplayer.audioList.data.TracksCacheDataSource
 
 interface AlbumListRepository {
     fun data(): List<AlbumDomain>
 
-    class Base(private val contentResolverWrapper: ContentResolverWrapper): AlbumListRepository {
+    class Base(private val trackCacheDataSource: TracksCacheDataSource): AlbumListRepository {
 
         override fun data(): List<AlbumDomain> {
-            return contentResolverWrapper.albums("${MediaStore.Audio.Media.ALBUM} ASC")
+            return trackCacheDataSource.albums("${MediaStore.Audio.Media.ALBUM} ASC")
         }
     }
 }

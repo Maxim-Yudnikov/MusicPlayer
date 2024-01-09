@@ -3,8 +3,8 @@ package com.maxim.musicplayer.core.sl
 import android.app.Application
 import android.content.Context
 import androidx.room.Room
-import com.maxim.musicplayer.audioList.data.ContentResolverWrapper
-import com.maxim.musicplayer.audioList.data.MockContentResolverWrapper
+import com.maxim.musicplayer.audioList.data.MockTracksProvider
+import com.maxim.musicplayer.audioList.data.TracksProvider
 import com.maxim.musicplayer.core.data.MockSimpleStorage
 import com.maxim.musicplayer.core.data.SimpleStorage
 import com.maxim.musicplayer.favoriteList.data.FavoriteDatabase
@@ -12,7 +12,7 @@ import com.maxim.musicplayer.player.media.ShuffleOrder
 
 interface ProvideInstances {
     fun database(): FavoriteDatabase
-    fun contentResolverWrapper(): ContentResolverWrapper
+    fun tacksProvider(): TracksProvider
     fun shuffleOrder(): ShuffleOrder
     fun simpleStorage(): SimpleStorage
 
@@ -23,7 +23,7 @@ interface ProvideInstances {
 
         override fun database() = database
 
-        override fun contentResolverWrapper() = ContentResolverWrapper.Base(context.contentResolver)
+        override fun tacksProvider() = TracksProvider.Base(context.contentResolver)
         override fun shuffleOrder() = ShuffleOrder.Base()
         override fun simpleStorage() = SimpleStorage.Base(context.getSharedPreferences(STORAGE_NAME,
             Application.MODE_PRIVATE
@@ -37,7 +37,7 @@ interface ProvideInstances {
 
         override fun database() = database
 
-        override fun contentResolverWrapper() = MockContentResolverWrapper()
+        override fun tacksProvider() = MockTracksProvider()
         override fun shuffleOrder() = ShuffleOrder.Mock()
         override fun simpleStorage() = MockSimpleStorage()
     }

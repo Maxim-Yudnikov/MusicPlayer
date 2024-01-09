@@ -2,6 +2,7 @@ package com.maxim.musicplayer.core.sl
 
 import android.content.Context
 import com.maxim.musicplayer.album.data.OpenAlbumStorage
+import com.maxim.musicplayer.audioList.data.TracksCacheDataSource
 import com.maxim.musicplayer.core.ProvideDownBarTrackCommunication
 import com.maxim.musicplayer.core.ProvideManageOrder
 import com.maxim.musicplayer.core.ProvideMediaService
@@ -13,7 +14,7 @@ import com.maxim.musicplayer.trackMore.presentation.MoreStorage
 class Core(private val context: Context, private val provideInstances: ProvideInstances) {
     private val navigation = Navigation.Base()
     fun navigation() = navigation
-    fun contentResolverWrapper() = provideInstances.contentResolverWrapper()
+    fun tracksCacheDataSource() = TracksCacheDataSource.Base(provideInstances.tacksProvider())
     fun manageOrder() = (context.applicationContext as ProvideManageOrder).manageOrder()
     fun provideMediaService() = (context.applicationContext as ProvideMediaService)
     fun downBarTrackCommunication() =

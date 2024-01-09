@@ -13,7 +13,7 @@ class AudioListModule(private val core: Core) : Module<AudioListViewModel> {
     override fun viewModel() = AudioListViewModel(
         AudioListInteractor.Base(
             AudioListRepository.Base(
-                core.contentResolverWrapper(),
+                core.tracksCacheDataSource(),
                 MapperDataToDomain(),
             ),
             core.favoriteRepository(),

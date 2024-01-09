@@ -11,7 +11,7 @@ import com.maxim.musicplayer.core.sl.Module
 class AlbumListModule(private val core: Core): Module<AlbumListViewModel> {
     override fun viewModel() = AlbumListViewModel(
         AlbumListCommunication.Base(),
-        AlbumListRepository.Base(core.contentResolverWrapper()),
+        AlbumListRepository.Base(core.tracksCacheDataSource()),
         core.openAlbumStorage(),
         AlbumMapperDomainToUi(MapperDomainToUi()),
         core.favoriteRepository(),

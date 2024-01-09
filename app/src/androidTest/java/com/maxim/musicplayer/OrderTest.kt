@@ -168,7 +168,7 @@ class OrderTest : BaseTest() {
         checkIsFavorite(true)
         back()
 
-        swipeToLeft()
+        favoritesScreen()
 
         openTrackFromFavoriteRecyclerview(1)
         checkTextInPlayer("Title 5")
@@ -183,7 +183,7 @@ class OrderTest : BaseTest() {
         checkIsFavorite(true)
         back()
 
-        swipeToLeft()
+        favoritesScreen()
 
         openTrackFromFavoriteRecyclerview(1)
         checkTextInPlayer("Title 5")
@@ -206,7 +206,7 @@ class OrderTest : BaseTest() {
         favoriteButton()
         back()
 
-        swipeToLeft()
+        favoritesScreen()
 
         openTrackFromFavoriteRecyclerview(1)
         checkTextInPlayer("Title 5")
@@ -248,7 +248,7 @@ class OrderTest : BaseTest() {
             favoriteButton()
             back()
         }
-        swipeToLeft()
+        favoritesScreen()
         openTrackFromFavoriteRecyclerview(1)
         checkTextInPlayer("Title 1")
         nextButton()
@@ -259,12 +259,12 @@ class OrderTest : BaseTest() {
         checkTextInPlayer("Title 3")
         back()
 
-        swipeToRight()
+        tracksScreen()
         openMoreFromRecyclerview(2)
         favoriteButton()
         back()
 
-        swipeToLeft()
+        favoritesScreen()
         openTrackFromFavoriteRecyclerview(1)
         checkTextInPlayer("Title 1")
         nextButton()
@@ -280,7 +280,8 @@ class OrderTest : BaseTest() {
             favoriteButton()
             back()
         }
-        swipeToLeft()
+        favoritesScreen()
+
         openTrackFromFavoriteRecyclerview(1)
         checkTextInPlayer("Title 1")
         back()
