@@ -7,6 +7,7 @@ import androidx.lifecycle.Observer
 import com.maxim.musicplayer.albumList.presentation.AlbumUi
 import com.maxim.musicplayer.audioList.presentation.AudioUi
 import com.maxim.musicplayer.core.data.SimpleStorage
+import com.maxim.musicplayer.core.presentation.Reload
 
 interface ManageOrder {
     fun generate(tracks: List<AudioUi.Abstract>, position: Int)
@@ -36,6 +37,7 @@ interface ManageOrder {
         owner: LifecycleOwner,
         observer: Observer<Pair<Int, AlbumUi>>
     )
+    fun observeAnyPosition(reload: Reload)
 
     fun changeActualFavorite(playable: Playable): Boolean
     fun changeFavorite(id: Long, playable: Playable)
@@ -132,12 +134,14 @@ interface ManageOrder {
             actualTrackPositionLiveData.value = position
             actualTrackFavoritePositionLiveData.value = -1
             actualAlbumTrackLiveData.value = Pair(-1, AlbumUi.Empty)
+            anyPositionReload?.reload()
         }
 
         override fun setActualTrackFavorite(position: Int) {
             actualTrackFavoritePositionLiveData.value = position
             actualTrackPositionLiveData.value = -1
             actualAlbumTrackLiveData.value = Pair(-1, AlbumUi.Empty)
+            anyPositionReload?.reload()
         }
 
         private val actualAlbumTrackLiveData = MutableLiveData<Pair<Int, AlbumUi>>()
@@ -149,6 +153,7 @@ interface ManageOrder {
             )
             actualTrackFavoritePositionLiveData.value = -1
             actualTrackPositionLiveData.value = -1
+            anyPositionReload?.reload()
         }
 
         override fun observeActualTrackPosition(owner: LifecycleOwner, observer: Observer<Int>) {
@@ -167,6 +172,11 @@ interface ManageOrder {
             observer: Observer<Pair<Int, AlbumUi>>
         ) {
             actualAlbumTrackLiveData.observe(owner, observer)
+        }
+
+        private var anyPositionReload: Reload? = null
+        override fun observeAnyPosition(reload: Reload) {
+            anyPositionReload = reload
         }
 
         override fun initLoop(mediaPlayer: MediaPlayer) {

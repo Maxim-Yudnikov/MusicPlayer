@@ -7,6 +7,7 @@ import com.maxim.musicplayer.audioList.presentation.AudioUi
 import com.maxim.musicplayer.core.presentation.Communication
 import com.maxim.musicplayer.core.presentation.Init
 import com.maxim.musicplayer.core.presentation.Navigation
+import com.maxim.musicplayer.core.presentation.Reload
 import com.maxim.musicplayer.core.presentation.Screen
 import com.maxim.musicplayer.core.sl.ClearViewModel
 import com.maxim.musicplayer.core.sl.GoBack
@@ -17,13 +18,12 @@ class OrderViewModel(
     private val manageOrder: ManageOrder,
     private val navigation: Navigation.Update,
     private val clearViewModel: ClearViewModel,
-): ViewModel(), GoBack, Communication.Observe<OrderState>, Init {
+) : ViewModel(), GoBack, Communication.Observe<OrderState>, Init, Reload {
 
     override fun init(isFirstRun: Boolean) {
         if (isFirstRun) {
-            val list = ArrayList<AudioUi>(manageOrder.actualOrder())
-            list.add(0, AudioUi.OrderTitle(manageOrder.actualPosition() + 1, list.size))
-            communication.update(OrderState.Base(list))
+            reload()
+            manageOrder.observeAnyPosition(this)
         }
     }
 
@@ -34,10 +34,16 @@ class OrderViewModel(
 
     fun remove(id: Long) {
         manageOrder.removeTrackFromActualOrder(id)
-        init(true)
+        reload()
     }
 
     override fun observe(owner: LifecycleOwner, observer: Observer<OrderState>) {
         communication.observe(owner, observer)
+    }
+
+    override fun reload() {
+        val list = ArrayList<AudioUi>(manageOrder.actualOrder())
+        list.add(0, AudioUi.OrderTitle(manageOrder.actualPosition() + 1, list.size))
+        communication.update(OrderState.Base(list, manageOrder.actualPosition()))
     }
 }
