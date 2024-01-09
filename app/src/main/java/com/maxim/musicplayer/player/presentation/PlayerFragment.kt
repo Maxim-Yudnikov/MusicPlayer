@@ -74,6 +74,10 @@ class PlayerFragment : BaseFragment<FragmentPlayerBinding, PlayerViewModel>() {
             viewModel.changeRandom()
         }
 
+        binding.orderButton.setOnClickListener {
+            viewModel.order()
+        }
+
         mediaService = (requireContext().applicationContext as ProvideMediaService).mediaService()
         binding.seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {

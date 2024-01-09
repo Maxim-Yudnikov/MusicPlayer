@@ -32,9 +32,9 @@ class AudioListViewModel(
 
     override fun init(isFirstRun: Boolean) {
         if (isFirstRun) {
-            handle({ interactor.data().map { it.map(mapper) } }) { list ->
+            handle({ interactor.data() }) { list ->
                 communication.update(
-                    AudioListState.List(list, actualPosition)
+                    AudioListState.List(list.map { it.map(mapper) }, actualPosition)
                 )
             }
             favoriteListRepository.init(this)

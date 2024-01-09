@@ -11,6 +11,7 @@ import com.maxim.musicplayer.core.sl.ClearViewModel
 import com.maxim.musicplayer.core.sl.GoBack
 import com.maxim.musicplayer.downBar.DownBarTrackCommunication
 import com.maxim.musicplayer.favoriteList.data.FavoriteListRepository
+import com.maxim.musicplayer.order.presentation.OrderScreen
 import com.maxim.musicplayer.player.media.ManageOrder
 import com.maxim.musicplayer.player.media.Playable
 
@@ -38,6 +39,10 @@ class PlayerViewModel(
                 )
             )
         }
+    }
+
+    fun order() {
+        navigation.update(OrderScreen)
     }
 
     fun saveToFavorites() {

@@ -13,6 +13,8 @@ import com.maxim.musicplayer.favoriteList.FavoriteModule
 import com.maxim.musicplayer.favoriteList.presentation.FavoriteListViewModel
 import com.maxim.musicplayer.main.MainModule
 import com.maxim.musicplayer.main.MainViewModel
+import com.maxim.musicplayer.order.OrderModule
+import com.maxim.musicplayer.order.presentation.OrderViewModel
 import com.maxim.musicplayer.player.PlayerModule
 import com.maxim.musicplayer.player.presentation.PlayerViewModel
 import com.maxim.musicplayer.trackMore.MoreModule
@@ -66,6 +68,7 @@ interface ProvideViewModel {
                 MoreViewModel::class.java -> MoreModule(core)
                 AlbumListViewModel::class.java -> AlbumListModule(core)
                 AlbumViewModel::class.java -> AlbumModule(core, clearViewModel)
+                OrderViewModel::class.java -> OrderModule(core, clearViewModel)
                 else -> throw IllegalStateException("unknown viewModel $clasz")
             }.viewModel() as T
         }
