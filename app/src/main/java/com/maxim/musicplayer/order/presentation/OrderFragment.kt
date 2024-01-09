@@ -6,12 +6,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import com.maxim.musicplayer.core.presentation.BaseFragment
-import com.maxim.musicplayer.databinding.FragmentAudioListBinding
+import com.maxim.musicplayer.databinding.FragmentFavoriteListBinding
 
-class OrderFragment: BaseFragment<FragmentAudioListBinding, OrderViewModel>() {
+class OrderFragment: BaseFragment<FragmentFavoriteListBinding, OrderViewModel>() {
     override fun viewModelClass() = OrderViewModel::class.java
     override fun bind(inflater: LayoutInflater, container: ViewGroup?) =
-        FragmentAudioListBinding.inflate(inflater, container, false)
+        FragmentFavoriteListBinding.inflate(inflater, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         onBackPressedCallback = object : OnBackPressedCallback(true) {
@@ -26,7 +26,7 @@ class OrderFragment: BaseFragment<FragmentAudioListBinding, OrderViewModel>() {
                 viewModel.remove(id)
             }
         })
-        binding.audioRecyclerView.adapter = adapter
+        binding.favoriteRecyclerView.adapter = adapter
 
         viewModel.observe(this) {
             it.show(adapter)
