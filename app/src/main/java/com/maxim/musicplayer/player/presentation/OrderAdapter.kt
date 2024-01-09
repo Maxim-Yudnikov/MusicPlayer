@@ -2,6 +2,7 @@ package com.maxim.musicplayer.player.presentation
 
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
@@ -32,6 +33,7 @@ class OrderAdapter(
             item.showArt(binding.artImageView, false)
             item.showTitle(binding.titleTextView)
             item.showDescription(binding.descriptionTextView)
+            binding.removeFromOrderButton.visibility = if (position == actualPosition) View.GONE else View.VISIBLE
             binding.removeFromOrderButton.setOnClickListener {
                 item.removeListener(listener)
             }
