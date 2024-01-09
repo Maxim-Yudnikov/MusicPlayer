@@ -12,8 +12,8 @@ import android.widget.TextView
 import com.maxim.musicplayer.R
 import com.maxim.musicplayer.favoriteList.data.FavoritesActions
 import com.maxim.musicplayer.main.TimeTextView
+import com.maxim.musicplayer.order.presentation.OrderAdapter
 import com.maxim.musicplayer.player.media.StartAudio
-import com.maxim.musicplayer.player.presentation.OrderAdapter
 import java.io.Serializable
 
 abstract class AudioUi : Serializable {
@@ -33,6 +33,8 @@ abstract class AudioUi : Serializable {
     open fun toBase(): AudioUi = Empty
     open fun removeListener(listener: OrderAdapter.Listener) = Unit
 
+    open fun duration(): Long = 0
+
     abstract class Abstract(
         val id: Long,
         private val title: String,
@@ -40,7 +42,7 @@ abstract class AudioUi : Serializable {
         private val duration: Long,
         private val album: String,
         private val artUri: Uri,
-        private var uri: Uri
+        private var uri: Uri,
     ) : AudioUi() {
         override fun sameId(item: AudioUi) = item is Abstract && item.id == id
 
@@ -90,6 +92,8 @@ abstract class AudioUi : Serializable {
         override fun removeListener(listener: OrderAdapter.Listener) {
             listener.remove(id)
         }
+
+        override fun duration() = duration
     }
 
     data class Base(
@@ -112,7 +116,8 @@ abstract class AudioUi : Serializable {
             favoritesActions.addToFavorite(baseId, title, artist, duration, album, artUri, uri)
         }
 
-        override fun changeFavorite() = Favorite(baseId, title, artist, duration, album, artUri, uri)
+        override fun changeFavorite() =
+            Favorite(baseId, title, artist, duration, album, artUri, uri)
 
         override fun toBase() = this
     }
@@ -137,17 +142,22 @@ abstract class AudioUi : Serializable {
             favoritesActions.removeFromFavorites(favoriteId)
         }
 
-        override fun changeFavorite() = Base(favoriteId, title, artist, duration, album, artUri, uri)
+        override fun changeFavorite() =
+            Base(favoriteId, title, artist, duration, album, artUri, uri)
 
         override fun toBase() = Base(favoriteId, title, artist, duration, album, artUri, uri)
     }
 
-    data class OrderTitle(private val actualPosition: Int, private val count: Int): AudioUi() {
+    data class OrderTitle(
+        private val actualPosition: Int,
+        private val count: Int,
+        private val totalDuration: Int
+    ) : AudioUi() {
         override fun same(item: AudioUi) = item is OrderTitle
+        override fun showTitle(textView: TextView) = Unit
 
-        override fun showTitle(textView: TextView) {
-            val text = "$actualPosition/$count"
-            textView.text = text
+        override fun showDescription(textView: TimeTextView) {
+            textView.showStringAndTime("$actualPosition/$count - ", totalDuration / 1000)
         }
     }
 

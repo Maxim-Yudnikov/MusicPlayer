@@ -1,4 +1,4 @@
-package com.maxim.musicplayer.player.presentation
+package com.maxim.musicplayer.order.presentation
 
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
@@ -49,7 +49,7 @@ class OrderAdapter(
 
     class TitleViewHolder(private val binding: OrderTitleLayoutBinding) : ItemViewHolder(binding) {
         override fun bind(item: AudioUi, position: Int, actualPosition: Int) {
-            item.showTitle(binding.orderDescriptionTextView)
+            item.showDescription(binding.orderDescriptionTextView)
         }
     }
 

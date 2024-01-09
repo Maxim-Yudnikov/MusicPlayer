@@ -17,7 +17,7 @@
         android:text="Current order"
         android:textSize="30sp" />
 
-    <TextView
+    <com.maxim.musicplayer.main.TimeTextView
         android:id="@+id/orderDescriptionTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

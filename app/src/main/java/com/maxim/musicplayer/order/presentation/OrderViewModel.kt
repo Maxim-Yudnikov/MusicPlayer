@@ -43,7 +43,11 @@ class OrderViewModel(
 
     override fun reload() {
         val list = ArrayList<AudioUi>(manageOrder.actualOrder())
-        list.add(0, AudioUi.OrderTitle(manageOrder.actualPosition() + 1, list.size))
+        var duration = 0L
+        list.forEach {
+            duration += it.duration()
+        }
+        list.add(0, AudioUi.OrderTitle(manageOrder.actualPosition() + 1, list.size, duration.toInt()))
         communication.update(OrderState.Base(list, manageOrder.actualPosition()))
     }
 }
