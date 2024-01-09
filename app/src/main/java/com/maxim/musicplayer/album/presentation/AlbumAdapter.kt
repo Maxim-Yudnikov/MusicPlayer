@@ -28,7 +28,7 @@ class AlbumAdapter(private val listener: AudioListAdapter.Listener) :
         ItemViewHolder(binding) {
         override fun bind(item: AlbumUi) {
             item.showArt(binding.artImageView)
-            item.showTitle(binding.titleTextView)
+            item.showTitle(binding.albumTitleTextView)
             item.showArtist(binding.artistTextView)
             item.showCount(binding.descriptionTextView)
         }

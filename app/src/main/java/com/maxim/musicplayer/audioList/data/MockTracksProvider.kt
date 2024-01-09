@@ -9,8 +9,8 @@ class MockTracksProvider : TracksProvider {
         for (i in 1..10) {
             list.add(
                 Audio(
-                    i.toLong(), "Title $i", "Artist $i", i * 10000L, "Album ${i % 5}",
-                    i * 10L, Uri.EMPTY, Uri.EMPTY
+                    i.toLong(), "Title $i", "Artist $i", i * 10000L, "Album ${i / 5}",
+                    (i / 5L), Uri.EMPTY, Uri.EMPTY
                 )
             )
         }

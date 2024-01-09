@@ -30,7 +30,12 @@ abstract class BaseTest {
     }
 
     protected fun openMoreFromRecyclerview(index: Int) {
-        onView(RecyclerViewMatcher(R.id.audioRecyclerView).viewHolderViewAtPosition(index, R.id.moreButton))
+        onView(
+            RecyclerViewMatcher(R.id.audioRecyclerView).viewHolderViewAtPosition(
+                index,
+                R.id.moreButton
+            )
+        )
             .perform(click())
     }
 
@@ -40,7 +45,12 @@ abstract class BaseTest {
     }
 
     protected fun openMoreFromFavoriteRecyclerview(index: Int) {
-        onView(RecyclerViewMatcher(R.id.favoriteRecyclerView).viewHolderViewAtPosition(index, R.id.moreButton))
+        onView(
+            RecyclerViewMatcher(R.id.favoriteRecyclerView).viewHolderViewAtPosition(
+                index,
+                R.id.moreButton
+            )
+        )
             .perform(click())
     }
 
@@ -91,17 +101,29 @@ abstract class BaseTest {
 
     protected fun tracksScreen() {
         onView(withId(R.id.tabLayout)).perform(selectTabAtPosition(0))
-        Thread.sleep(500)
+        Thread.sleep(1000)
     }
 
     protected fun albumsScreen() {
         onView(withId(R.id.tabLayout)).perform(selectTabAtPosition(1))
-        Thread.sleep(500)
+        Thread.sleep(1000)
     }
 
     protected fun favoritesScreen() {
         onView(withId(R.id.tabLayout)).perform(selectTabAtPosition(2))
-        Thread.sleep(500)
+        Thread.sleep(1000)
+    }
+
+    protected fun openAlbumAtPosition(index: Int) {
+        onView(
+            RecyclerViewMatcher.recyclerViewWithId(R.id.audioRecyclerView).itemViewAtIndex(index)
+        ).perform(
+            click()
+        )
+    }
+
+    protected fun checkAlbumTitle(expected: String) {
+        onView(withId(R.id.albumTitleTextView)).check(matches(withText(expected)))
     }
 
     private fun withDrawable(resourceId: Int): Matcher<View?> {
