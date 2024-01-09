@@ -4,27 +4,31 @@ import android.content.ContentResolver
 import android.content.ContentUris
 import android.net.Uri
 import android.provider.MediaStore
+import com.maxim.musicplayer.details.data.DetailsData
 
 interface TracksProvider {
     fun allTracks(sortOrder: String): List<Audio>
+    fun track(id: Long): DetailsData
 
-    class Base(private val contentResolver: ContentResolver): TracksProvider {
-        private val projection = arrayOf(
-            MediaStore.Audio.Media._ID,
-            MediaStore.Audio.Media.TITLE,
-            MediaStore.Audio.Media.ARTIST,
-            MediaStore.Audio.Media.DURATION,
-            MediaStore.Audio.Media.ALBUM,
-            MediaStore.Audio.Media.ALBUM_ID,
-        )
-        private val idIndex = 0
-        private val titleIndex = 1
-        private val artistIndex = 2
-        private val durationIndex = 3
-        private val albumIndex = 4
-        private val albumIdIndex = 5
+    class Base(private val contentResolver: ContentResolver) : TracksProvider {
 
         override fun allTracks(sortOrder: String): List<Audio> {
+            val projection = arrayOf(
+                MediaStore.Audio.Media._ID,
+                MediaStore.Audio.Media.TITLE,
+                MediaStore.Audio.Media.ARTIST,
+                MediaStore.Audio.Media.DURATION,
+                MediaStore.Audio.Media.ALBUM,
+                MediaStore.Audio.Media.ALBUM_ID,
+            )
+
+            val idIndex = 0
+            val titleIndex = 1
+            val artistIndex = 2
+            val durationIndex = 3
+            val albumIndex = 4
+            val albumIdIndex = 5
+
             val list = mutableListOf<Audio>()
             contentResolver.query(
                 MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, projection, null, null, sortOrder
@@ -45,6 +49,52 @@ interface TracksProvider {
                 }
             }
             return list
+        }
+
+        override fun track(id: Long): DetailsData {
+            val projection = arrayOf(
+                MediaStore.Audio.Media._ID,
+                MediaStore.Audio.Media.TITLE,
+                MediaStore.Images.Media.DATA,
+                MediaStore.Audio.Media.BITRATE,
+                MediaStore.Audio.Media.SIZE,
+                MediaStore.Audio.Media.DURATION,
+                MediaStore.Audio.Media.ALBUM,
+                MediaStore.Audio.Media.ARTIST,
+            )
+
+            contentResolver.query(
+                MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, projection, null, null, ""
+            )?.use { cursor ->
+                while (cursor.moveToNext()) {
+                    if (cursor.getLong(0) != id) continue
+
+                    val artUri = Uri.parse("content://media/external/audio/media/$id/albumart")
+                    val title = cursor.getString(1)
+                    val data = cursor.getString(2)
+                    val bitrate = cursor.getString(3)
+                    val size = cursor.getString(4)
+                    val duration = cursor.getLong(5)
+                    val album = cursor.getString(6)
+                    val artist = cursor.getString(7)
+
+
+                    return DetailsData(
+                        artUri,
+                        title,
+                        data,
+                        "todo",
+                        bitrate,
+                        "todo",
+                        size,
+                        duration,
+                        album,
+                        artist
+                    )
+                }
+            }
+
+            throw IllegalStateException("track not found")
         }
     }
 }

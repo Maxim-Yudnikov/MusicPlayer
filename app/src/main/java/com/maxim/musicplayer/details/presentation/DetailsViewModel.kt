@@ -7,15 +7,17 @@ import com.maxim.musicplayer.core.presentation.Communication
 import com.maxim.musicplayer.core.presentation.Init
 import com.maxim.musicplayer.core.sl.ClearViewModel
 import com.maxim.musicplayer.core.sl.GoBack
+import com.maxim.musicplayer.details.data.DetailsRepository
 
 class DetailsViewModel(
     private val communication: DetailsCommunication,
     private val storage: DetailsStorage.Read,
+    private val repository: DetailsRepository,
     private val clear: ClearViewModel
 ) : ViewModel(), Communication.Observe<DetailsState>, Init, GoBack {
     override fun init(isFirstRun: Boolean) {
         if (isFirstRun) {
-
+            communication.update(DetailsState.Base(repository.data(storage.read()).toUi()))
         }
     }
 

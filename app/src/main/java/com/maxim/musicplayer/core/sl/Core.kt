@@ -15,7 +15,9 @@ import com.maxim.musicplayer.trackMore.presentation.MoreStorage
 class Core(private val context: Context, private val provideInstances: ProvideInstances) {
     private val navigation = Navigation.Base()
     fun navigation() = navigation
-    fun tracksCacheDataSource() = TracksCacheDataSource.Base(provideInstances.tacksProvider())
+    private val tracksProvider = provideInstances.tacksProvider()
+    fun tracksCacheDataSource() = TracksCacheDataSource.Base(tracksProvider)
+    fun tracksProvider() = tracksProvider
     fun manageOrder() = (context.applicationContext as ProvideManageOrder).manageOrder()
     fun provideMediaService() = (context.applicationContext as ProvideMediaService)
     fun downBarTrackCommunication() =
