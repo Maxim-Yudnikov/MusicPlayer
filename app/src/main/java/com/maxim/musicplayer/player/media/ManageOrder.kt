@@ -10,6 +10,8 @@ import com.maxim.musicplayer.core.data.SimpleStorage
 import com.maxim.musicplayer.core.presentation.Reload
 
 interface ManageOrder {
+    fun init(allTracks: List<AudioUi.Abstract>)
+
     fun generate(tracks: List<AudioUi.Abstract>, position: Int)
     fun regenerate()
     fun next(): AudioUi
@@ -42,6 +44,8 @@ interface ManageOrder {
     fun changeActualFavorite(playable: Playable): Boolean
     fun changeFavorite(id: Long, playable: Playable)
 
+    fun playNext(audioUi: AudioUi)
+
     class Base(private val storage: SimpleStorage, private val shuffleOrder: ShuffleOrder) :
         ManageOrder {
         private var loopState: LoopState = storage.read(LOOP_KEY, LoopState.Base)
@@ -59,13 +63,16 @@ interface ManageOrder {
         private val actualTrackPositionLiveData = MutableLiveData<Int>()
         private val actualTrackFavoritePositionLiveData = MutableLiveData<Int>()
 
+        override fun init(allTracks: List<AudioUi.Abstract>) {
+            trackMap.clear()
+            allTracks.forEach {
+                trackMap[it.id] = it
+            }
+        }
+
         override fun generate(tracks: List<AudioUi.Abstract>, position: Int) {
             defaultOrder.clear()
             defaultOrder.addAll(tracks.map { it.id })
-            trackMap.clear()
-            tracks.forEach {
-                trackMap[it.id] = it
-            }
             actualOrder.clear()
 
             actualPosition = if (isRandom) {
@@ -226,6 +233,15 @@ interface ManageOrder {
                         playable.next()
                 }
             }
+        }
+
+        override fun playNext(audioUi: AudioUi) {
+            val id = (audioUi as AudioUi.Abstract).id
+            if (id == actualOrder[actualPosition])
+                return
+            if (actualOrder.contains(id))
+                actualOrder.remove(id)
+            actualOrder.add(actualPosition + 1, id)
         }
 
         override fun actualOrder() = actualOrder.map { trackMap[it]!! }

@@ -36,6 +36,7 @@ class AudioListViewModel(
                 communication.update(
                     AudioListState.List(list.map { it.map(mapper) }, actualPosition)
                 )
+                manageOrder.init(list.subList(1, list.size).map { it.map(mapper) } as List<AudioUi.Abstract>)
             }
             favoriteListRepository.init(this)
         }

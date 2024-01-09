@@ -32,6 +32,11 @@ class MoreBottomFragment : BottomSheetDialogFragment() {
                 dismiss()
         }
 
+        binding.playNextButton.setOnClickListener {
+            viewModel.playNext()
+            dismiss()
+        }
+
         viewModel.observe(this) {
             it.show(
                 binding.artImageView,

@@ -23,6 +23,10 @@ class MoreViewModel( //todo clearViewModel
 
     fun fromFavorite() = storage.fromFavorite()
 
+    fun playNext() {
+        manageOrder.playNext(storage.readAudio())
+    }
+
     fun saveToFavorites() {
         handle({
             storage.readAudio().changeFavorite(favoriteListRepository)

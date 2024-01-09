@@ -2,7 +2,6 @@ package com.maxim.musicplayer.main
 
 import android.content.Context
 import android.util.AttributeSet
-import android.util.Log
 
 class TimeTextView : androidx.appcompat.widget.AppCompatTextView {
     //region constructors
@@ -23,7 +22,6 @@ class TimeTextView : androidx.appcompat.widget.AppCompatTextView {
     }
 
     fun showStringAndTime(string: String, seconds: Int) {
-        Log.d("MyLog", "total: $seconds")
         val minutes = seconds / 60
         val second = seconds % 60
         val timeUi = "$string$minutes:${if (second < 10) "0$second" else second}"
