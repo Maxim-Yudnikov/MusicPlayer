@@ -13,6 +13,7 @@ import com.maxim.musicplayer.R
 import com.maxim.musicplayer.favoriteList.data.FavoritesActions
 import com.maxim.musicplayer.main.TimeTextView
 import com.maxim.musicplayer.player.media.StartAudio
+import com.maxim.musicplayer.player.presentation.OrderAdapter
 import java.io.Serializable
 
 abstract class AudioUi : Serializable {
@@ -30,6 +31,7 @@ abstract class AudioUi : Serializable {
     open suspend fun changeFavorite(favoritesActions: FavoritesActions) = Unit
     open fun changeFavorite(): AudioUi = Empty
     open fun toBase(): AudioUi = Empty
+    open fun removeListener(listener: OrderAdapter.Listener) = Unit
 
     abstract class Abstract(
         val id: Long,
@@ -84,6 +86,10 @@ abstract class AudioUi : Serializable {
                 null
             }
         }
+
+        override fun removeListener(listener: OrderAdapter.Listener) {
+            listener.remove(id)
+        }
     }
 
     data class Base(
@@ -134,6 +140,15 @@ abstract class AudioUi : Serializable {
         override fun changeFavorite() = Base(favoriteId, title, artist, duration, album, artUri, uri)
 
         override fun toBase() = Base(favoriteId, title, artist, duration, album, artUri, uri)
+    }
+
+    data class OrderTitle(private val actualPosition: Int, private val count: Int): AudioUi() {
+        override fun same(item: AudioUi) = item is OrderTitle
+
+        override fun showTitle(textView: TextView) {
+            val text = "$actualPosition/$count"
+            textView.text = text
+        }
     }
 
     data class Count(private val size: Int) : AudioUi() {

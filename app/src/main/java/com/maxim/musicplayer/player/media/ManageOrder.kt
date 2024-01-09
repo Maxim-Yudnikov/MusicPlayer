@@ -22,7 +22,10 @@ interface ManageOrder {
     fun canGoPrevious(): Boolean
 
     fun actualTrack(): AudioUi
+    fun actualOrder(): List<AudioUi>
+    fun actualPosition(): Int
     fun actualAbsolutePosition(): Int
+    fun removeTrackFromActualOrder(id: Long)
 
     fun setActualTrack(position: Int)
     fun setActualTrackFavorite(position: Int)
@@ -119,6 +122,11 @@ interface ManageOrder {
         override fun actualTrack() = trackMap[actualOrder[actualPosition]]!!
 
         override fun actualAbsolutePosition() = defaultOrder.indexOf(actualOrder[actualPosition])
+        override fun removeTrackFromActualOrder(id: Long) {
+            val actualTrack = actualOrder[actualPosition]
+            actualOrder.remove(id)
+            actualPosition = actualOrder.indexOf(actualTrack)
+        }
 
         override fun setActualTrack(position: Int) {
             actualTrackPositionLiveData.value = position
@@ -209,6 +217,9 @@ interface ManageOrder {
                 }
             }
         }
+
+        override fun actualOrder() = actualOrder.map { trackMap[it]!! }
+        override fun actualPosition() = actualPosition
 
         override fun loopState() = loopState
 

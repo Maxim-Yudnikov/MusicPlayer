@@ -1,18 +1,43 @@
 package com.maxim.musicplayer.order.presentation
 
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
+import com.maxim.musicplayer.audioList.presentation.AudioUi
+import com.maxim.musicplayer.core.presentation.Communication
+import com.maxim.musicplayer.core.presentation.Init
 import com.maxim.musicplayer.core.presentation.Navigation
 import com.maxim.musicplayer.core.presentation.Screen
 import com.maxim.musicplayer.core.sl.ClearViewModel
 import com.maxim.musicplayer.core.sl.GoBack
+import com.maxim.musicplayer.player.media.ManageOrder
 
 class OrderViewModel(
+    private val communication: OrderCommunication,
+    private val manageOrder: ManageOrder,
     private val navigation: Navigation.Update,
     private val clearViewModel: ClearViewModel,
-): ViewModel(), GoBack {
+): ViewModel(), GoBack, Communication.Observe<OrderState>, Init {
+
+    override fun init(isFirstRun: Boolean) {
+        if (isFirstRun) {
+            val list = ArrayList<AudioUi>(manageOrder.actualOrder())
+            list.add(0, AudioUi.OrderTitle(manageOrder.actualPosition() + 1, list.size))
+            communication.update(OrderState.Base(list))
+        }
+    }
 
     override fun goBack() {
         navigation.update(Screen.Pop)
         clearViewModel.clear(OrderViewModel::class.java)
+    }
+
+    fun remove(id: Long) {
+        manageOrder.removeTrackFromActualOrder(id)
+        init(true)
+    }
+
+    override fun observe(owner: LifecycleOwner, observer: Observer<OrderState>) {
+        communication.observe(owner, observer)
     }
 }

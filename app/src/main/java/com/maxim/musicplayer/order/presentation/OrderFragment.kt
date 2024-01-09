@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import com.maxim.musicplayer.core.presentation.BaseFragment
 import com.maxim.musicplayer.databinding.FragmentAudioListBinding
+import com.maxim.musicplayer.player.presentation.OrderAdapter
 
 class OrderFragment: BaseFragment<FragmentAudioListBinding, OrderViewModel>() {
     override fun viewModelClass() = OrderViewModel::class.java
@@ -20,5 +21,18 @@ class OrderFragment: BaseFragment<FragmentAudioListBinding, OrderViewModel>() {
             }
         }
         super.onViewCreated(view, savedInstanceState)
+
+        val adapter = OrderAdapter(object : OrderAdapter.Listener {
+            override fun remove(id: Long) {
+                viewModel.remove(id)
+            }
+        })
+        binding.audioRecyclerView.adapter = adapter
+
+        viewModel.observe(this) {
+            it.show(adapter)
+        }
+
+        viewModel.init(savedInstanceState == null)
     }
 }
