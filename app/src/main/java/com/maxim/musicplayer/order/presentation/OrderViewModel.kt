@@ -11,6 +11,7 @@ import com.maxim.musicplayer.core.presentation.Reload
 import com.maxim.musicplayer.core.presentation.Screen
 import com.maxim.musicplayer.core.sl.ClearViewModel
 import com.maxim.musicplayer.core.sl.GoBack
+import com.maxim.musicplayer.player.media.OrderType
 import com.maxim.musicplayer.player.media.ManageOrder
 
 class OrderViewModel(
@@ -23,8 +24,11 @@ class OrderViewModel(
     override fun init(isFirstRun: Boolean) {
         if (isFirstRun) {
             reload()
-            manageOrder.observeAnyPosition(this)
         }
+    }
+
+    fun observePosition(owner: LifecycleOwner, observer: Observer<Pair<Int, OrderType>>) {
+        manageOrder.observePosition(owner, observer)
     }
 
     override fun goBack() {

@@ -39,11 +39,16 @@ class FavoriteListViewModel(
         audioListCommunication.observe(owner, observer)
     }
 
-    fun observePosition(owner: LifecycleOwner, observer: Observer<Int>) {
-        manageOrder.observeActualTrackFavoritePosition(owner, observer)
+    fun observePosition(owner: LifecycleOwner, observer: Observer<Pair<Int, OrderType>>) {
+        manageOrder.observePosition(owner, observer)
     }
 
-    fun setPosition(position: Int) {
+    fun setPosition(position: Int, orderType: OrderType) {
+        if (orderType != OrderType.Favorite) {
+            actualPosition = -1
+            return
+        }
+
         actualPosition = position
         audioListCommunication.update(
             AudioListState.List(
@@ -60,11 +65,10 @@ class FavoriteListViewModel(
     }
 
     fun open(track: AudioUi, position: Int, mediaService: MediaService) {
-        manageOrder.setActualTrackFavorite(position)
         actualPosition = position
         val data = repository.data()
         mediaService.open(data.map { it.map(mapper) }
-            .subList(1, data.size) as List<AudioUi.Abstract>, track, position, OrderType.FAVORITE)
+            .subList(1, data.size), track, position, OrderType.Favorite)
         navigation.update(PlayerScreen)
     }
 

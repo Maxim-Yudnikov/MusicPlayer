@@ -32,7 +32,7 @@ class PlayerViewModel(
             communication.update(
                 PlayerState.Base(
                     manageOrder.actualTrack(),
-                    manageOrder.isRandom,
+                    manageOrder.isRandom(),
                     manageOrder.loopState(),
                     !mediaServiceProvider.mediaService().isPlaying(),
                     mediaServiceProvider.mediaService().currentPosition()
@@ -54,7 +54,7 @@ class PlayerViewModel(
                 communication.update(
                     PlayerState.Base(
                         manageOrder.actualTrack(),
-                        manageOrder.isRandom,
+                        manageOrder.isRandom(),
                         manageOrder.loopState(),
                         !mediaServiceProvider.mediaService().isPlaying(),
                         mediaServiceProvider.mediaService().currentPosition()

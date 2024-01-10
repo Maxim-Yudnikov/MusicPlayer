@@ -7,19 +7,20 @@ import androidx.lifecycle.Observer
 import com.maxim.musicplayer.albumList.presentation.AlbumUi
 import com.maxim.musicplayer.audioList.presentation.AudioUi
 import com.maxim.musicplayer.core.data.SimpleStorage
-import com.maxim.musicplayer.core.presentation.Reload
 
 interface ManageOrder {
-    fun init(allTracks: List<AudioUi.Abstract>)
+    fun init(allTracks: List<AudioUi>)
 
-    fun generate(tracks: List<AudioUi.Abstract>, position: Int)
+    fun generate(tracks: List<AudioUi>, position: Int, orderType: OrderType)
     fun regenerate()
     fun next(): AudioUi
     fun previous(): AudioUi
     fun initLoop(mediaPlayer: MediaPlayer)
+
     fun changeLoop(mediaPlayer: MediaPlayer?)
     fun loopState(): LoopState
-    var isRandom: Boolean
+    fun changeRandom()
+    fun isRandom(): Boolean
 
     fun canGoNext(): Boolean
     fun canGoPrevious(): Boolean
@@ -27,19 +28,9 @@ interface ManageOrder {
     fun actualTrack(): AudioUi
     fun actualOrder(): List<AudioUi>
     fun actualPosition(): Int
-    fun actualAbsolutePosition(): Int
     fun removeTrackFromActualOrder(id: Long)
 
-    fun setActualTrack(position: Int)
-    fun setActualTrackFavorite(position: Int)
-    fun setActualAlbumTrack(position: Int, albumUi: AlbumUi?)
-    fun observeActualTrackPosition(owner: LifecycleOwner, observer: Observer<Int>)
-    fun observeActualTrackFavoritePosition(owner: LifecycleOwner, observer: Observer<Int>)
-    fun observeActualAlbumTrackPosition(
-        owner: LifecycleOwner,
-        observer: Observer<Pair<Int, AlbumUi>>
-    )
-    fun observeAnyPosition(reload: Reload)
+    fun observePosition(owner: LifecycleOwner, observer: Observer<Pair<Int, OrderType>>)
 
     fun changeActualFavorite(playable: Playable): Boolean
     fun changeFavorite(id: Long, playable: Playable)
@@ -48,33 +39,56 @@ interface ManageOrder {
 
     class Base(private val storage: SimpleStorage, private val shuffleOrder: ShuffleOrder) :
         ManageOrder {
+        private var isRandom = storage.read(RANDOM_KEY, false)
         private var loopState: LoopState = storage.read(LOOP_KEY, LoopState.Base)
-        override var isRandom = storage.read(RANDOM_KEY, false)
-            set(value) {
-                field = value
-                storage.save(RANDOM_KEY, isRandom)
-                regenerate()
-            }
 
+        private val tracksMap = mutableMapOf<Long, AudioUi>()
         private val defaultOrder = mutableListOf<Long>()
-        private val trackMap = mutableMapOf<Long, AudioUi>()
         private val actualOrder = mutableListOf<Long>()
         private var actualPosition = 0
-        private val actualTrackPositionLiveData = MutableLiveData<Int>()
-        private val actualTrackFavoritePositionLiveData = MutableLiveData<Int>()
 
-        override fun init(allTracks: List<AudioUi.Abstract>) {
-            trackMap.clear()
-            allTracks.forEach {
-                trackMap[it.id()] = it
+        private val absolutePositionLiveData = MutableLiveData<Pair<Int, OrderType>>()
+
+        override fun loopState() = loopState
+        override fun isRandom() = isRandom
+        override fun actualOrder() = actualOrder.map { tracksMap[it]!! }
+        override fun actualPosition() = actualPosition
+        override fun actualTrack() = tracksMap[actualOrder[actualPosition]]!!
+
+        override fun changeLoop(mediaPlayer: MediaPlayer?) {
+            loopState = loopState().next()
+            storage.save(LOOP_KEY, loopState)
+            mediaPlayer?.let {
+                loopState.handle(mediaPlayer)
             }
         }
 
-        override fun generate(tracks: List<AudioUi.Abstract>, position: Int) {
+        override fun initLoop(mediaPlayer: MediaPlayer) {
+            loopState.handle(mediaPlayer)
+        }
+
+        override fun changeRandom() {
+            isRandom = !isRandom
+            storage.save(RANDOM_KEY, isRandom)
+            regenerate()
+        }
+
+        override fun init(allTracks: List<AudioUi>) {
+            tracksMap.clear()
+            allTracks.forEach {
+                tracksMap[it.id()] = it
+            }
+        }
+
+        override fun generate(
+            tracks: List<AudioUi>,
+            position: Int,
+            orderType: OrderType
+        ) {
             defaultOrder.clear()
             defaultOrder.addAll(tracks.map { it.id() })
-            actualOrder.clear()
 
+            actualOrder.clear()
             actualPosition = if (isRandom) {
                 val newOrder = ArrayList(shuffleOrder.shuffle(defaultOrder))
                 val actualTrack =
@@ -86,15 +100,17 @@ interface ManageOrder {
                 actualOrder.addAll(defaultOrder)
                 position
             }
+            absolutePositionLiveData.value = Pair(position, orderType)
         }
 
         override fun regenerate() {
             val cachedActualTrack = actualOrder[actualPosition]
-            actualOrder.clear()
 
+            actualOrder.clear()
             actualPosition = if (isRandom) {
                 val newOrder = ArrayList(shuffleOrder.shuffle(defaultOrder))
-                val actualTrack = newOrder.removeAt(newOrder.indexOf(cachedActualTrack))
+                val actualTrack =
+                    newOrder.removeAt(newOrder.indexOf(cachedActualTrack))
                 newOrder.add(0, actualTrack)
                 actualOrder.addAll(newOrder)
                 0
@@ -110,7 +126,12 @@ interface ManageOrder {
             } else if (loopState == LoopState.LoopOrder) {
                 actualPosition = 0
             }
-            return trackMap[actualOrder[actualPosition]]!!
+            absolutePositionLiveData.value =
+                Pair(
+                    defaultOrder.indexOf(actualOrder[actualPosition]),
+                    absolutePositionLiveData.value!!.second
+                )
+            return tracksMap[actualOrder[actualPosition]]!!
         }
 
         override fun previous(): AudioUi {
@@ -119,7 +140,12 @@ interface ManageOrder {
             } else if (loopState == LoopState.LoopOrder) {
                 actualPosition = actualOrder.lastIndex
             }
-            return trackMap[actualOrder[actualPosition]]!!
+            absolutePositionLiveData.value =
+                Pair(
+                    defaultOrder.indexOf(actualOrder[actualPosition]),
+                    absolutePositionLiveData.value!!.second
+                )
+            return tracksMap[actualOrder[actualPosition]]!!
         }
 
         override fun canGoNext() =
@@ -128,111 +154,12 @@ interface ManageOrder {
         override fun canGoPrevious() =
             actualPosition != 0 || loopState == LoopState.LoopOrder
 
-        override fun actualTrack() = trackMap[actualOrder[actualPosition]]!!
-
-        override fun actualAbsolutePosition() = defaultOrder.indexOf(actualOrder[actualPosition])
         override fun removeTrackFromActualOrder(id: Long) {
             val actualTrack = actualOrder[actualPosition]
             actualOrder.remove(id)
             actualPosition = actualOrder.indexOf(actualTrack)
-        }
-
-        override fun setActualTrack(position: Int) {
-            actualTrackPositionLiveData.value = position
-            actualTrackFavoritePositionLiveData.value = -1
-            actualAlbumTrackLiveData.value = Pair(-1, AlbumUi.Empty)
-            anyPositionReload?.reload()
-        }
-
-        override fun setActualTrackFavorite(position: Int) {
-            actualTrackFavoritePositionLiveData.value = position
-            actualTrackPositionLiveData.value = -1
-            actualAlbumTrackLiveData.value = Pair(-1, AlbumUi.Empty)
-            anyPositionReload?.reload()
-        }
-
-        private val actualAlbumTrackLiveData = MutableLiveData<Pair<Int, AlbumUi>>()
-
-        override fun setActualAlbumTrack(position: Int, albumUi: AlbumUi?) {
-            actualAlbumTrackLiveData.value = albumUi?.let { Pair(position, it) } ?: Pair(
-                position,
-                actualAlbumTrackLiveData.value!!.second
-            )
-            actualTrackFavoritePositionLiveData.value = -1
-            actualTrackPositionLiveData.value = -1
-            anyPositionReload?.reload()
-        }
-
-        override fun observeActualTrackPosition(owner: LifecycleOwner, observer: Observer<Int>) {
-            actualTrackPositionLiveData.observe(owner, observer)
-        }
-
-        override fun observeActualTrackFavoritePosition(
-            owner: LifecycleOwner,
-            observer: Observer<Int>
-        ) {
-            actualTrackFavoritePositionLiveData.observe(owner, observer)
-        }
-
-        override fun observeActualAlbumTrackPosition(
-            owner: LifecycleOwner,
-            observer: Observer<Pair<Int, AlbumUi>>
-        ) {
-            actualAlbumTrackLiveData.observe(owner, observer)
-        }
-
-        private var anyPositionReload: Reload? = null
-        override fun observeAnyPosition(reload: Reload) {
-            anyPositionReload = reload
-        }
-
-        override fun initLoop(mediaPlayer: MediaPlayer) {
-            loopState.handle(mediaPlayer)
-        }
-
-        override fun changeLoop(mediaPlayer: MediaPlayer?) {
-            loopState = loopState.next()
-            storage.save(LOOP_KEY, loopState)
-            mediaPlayer?.let {
-                loopState.handle(mediaPlayer)
-            }
-        }
-
-        override fun changeActualFavorite(playable: Playable): Boolean {
-            val isFavoriteOrder = actualTrackFavoritePositionLiveData.value != -1
-            val newTrack = trackMap[actualOrder[actualPosition]]!!.changeFavorite()
-            trackMap[actualOrder[actualPosition]] = newTrack
-            if (isFavoriteOrder && newTrack is AudioUi.Base) {
-                val removed = actualOrder.removeAt(actualPosition)
-                defaultOrder.removeAt(defaultOrder.indexOf(removed))
-                actualPosition--
-                if (actualOrder.isEmpty()) {
-                    playable.finish()
-                    return true
-                } else
-                    playable.next()
-            }
-            return false
-        }
-
-        private var lastRemovedPositionAndTrack = Pair(0, 0L)
-        override fun changeFavorite(id: Long, playable: Playable) {
-            val isFavoriteOrder = actualTrackFavoritePositionLiveData.value != -1
-            trackMap[id]?.let { track ->
-                val newTrack = track.changeFavorite()
-                trackMap[id] = newTrack
-                if (isFavoriteOrder && newTrack is AudioUi.Base) {
-                    lastRemovedPositionAndTrack = Pair(actualOrder.indexOf(id), id)
-                    actualOrder.remove(id)
-                    defaultOrder.remove(id)
-                    actualPosition--
-                    if (actualOrder.isEmpty()) {
-                        playable.finish()
-                        actualTrackFavoritePositionLiveData.value = -1
-                    } else
-                        playable.next()
-                }
-            }
+            absolutePositionLiveData.value =
+                Pair(defaultOrder.indexOf(actualTrack), absolutePositionLiveData.value!!.second)
         }
 
         override fun playNext(audioUi: AudioUi) {
@@ -244,14 +171,73 @@ interface ManageOrder {
             actualOrder.add(actualPosition + 1, id)
         }
 
-        override fun actualOrder() = actualOrder.map { trackMap[it]!! }
-        override fun actualPosition() = actualPosition
+        override fun observePosition(
+            owner: LifecycleOwner,
+            observer: Observer<Pair<Int, OrderType>>
+        ) {
+            absolutePositionLiveData.observe(owner, observer)
+        }
 
-        override fun loopState() = loopState
+        override fun changeActualFavorite(playable: Playable): Boolean {
+            val isFavoriteOrder = absolutePositionLiveData.value?.second == OrderType.Favorite
+            val newTrack = tracksMap[actualOrder[actualPosition]]!!.changeFavorite()
+            tracksMap[actualOrder[actualPosition]] = newTrack
+            if (isFavoriteOrder && newTrack is AudioUi.Base) {
+                val removed = actualOrder.removeAt(actualPosition)
+                defaultOrder.removeAt(defaultOrder.indexOf(removed))
+                actualPosition--
+//                absolutePositionLiveData.value =
+//                    Pair(
+//                        defaultOrder.indexOf(actualOrder[actualPosition]),
+//                        absolutePositionLiveData.value!!.second
+//                    )
+                if (actualOrder.isEmpty()) {
+                    playable.finish()
+                    return true
+                } else
+                    playable.next()
+            }
+            return false
+        }
+
+        override fun changeFavorite(id: Long, playable: Playable) {
+            val isFavoriteOrder = absolutePositionLiveData.value?.second == OrderType.Favorite
+            tracksMap[id]?.let { track ->
+                val newTrack = track.changeFavorite()
+                tracksMap[id] = newTrack
+                if (isFavoriteOrder && newTrack is AudioUi.Base) {
+                    val actualTrack = actualOrder[actualPosition]
+                    actualOrder.remove(id)
+                    defaultOrder.remove(id)
+                    actualPosition = actualOrder.indexOf(actualTrack)
+                    if (actualOrder.isEmpty()) {
+                        playable.finish()
+                        absolutePositionLiveData.value = Pair(-1, OrderType.Empty)
+                    } else if (id == actualTrack)
+                        playable.next()
+                }
+                absolutePositionLiveData.value =
+                    Pair(
+                        defaultOrder.indexOf(actualOrder[actualPosition]),
+                        absolutePositionLiveData.value!!.second
+                    )
+            }
+        }
 
         companion object {
             private const val RANDOM_KEY = "RANDOM_KEY"
             private const val LOOP_KEY = "LOOP_KEY"
         }
+    }
+}
+
+interface OrderType {
+    fun same(albumUi: AlbumUi) = false
+
+    object Empty : OrderType
+    object Base : OrderType
+    object Favorite : OrderType
+    data class Album(private val albumUi: AlbumUi) : OrderType {
+        override fun same(albumUi: AlbumUi) = this.albumUi == albumUi
     }
 }

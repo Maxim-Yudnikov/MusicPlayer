@@ -11,9 +11,9 @@ import com.maxim.musicplayer.core.presentation.Navigation
 import com.maxim.musicplayer.core.presentation.Reload
 import com.maxim.musicplayer.core.presentation.RunAsync
 import com.maxim.musicplayer.favoriteList.data.FavoriteListRepository
+import com.maxim.musicplayer.player.media.OrderType
 import com.maxim.musicplayer.player.media.ManageOrder
 import com.maxim.musicplayer.player.media.MediaService
-import com.maxim.musicplayer.player.media.OrderType
 import com.maxim.musicplayer.player.presentation.PlayerScreen
 import com.maxim.musicplayer.trackMore.presentation.MoreScreen
 import com.maxim.musicplayer.trackMore.presentation.MoreStorage
@@ -36,7 +36,7 @@ class AudioListViewModel(
                 communication.update(
                     AudioListState.List(list.map { it.map(mapper) }, actualPosition)
                 )
-                manageOrder.init(list.subList(1, list.size).map { it.map(mapper) } as List<AudioUi.Abstract>)
+                manageOrder.init(list.subList(1, list.size).map { it.map(mapper) })
             }
             favoriteListRepository.init(this)
         }
@@ -53,9 +53,14 @@ class AudioListViewModel(
         communication.observe(owner, observer)
     }
 
-    fun setPosition(position: Int) {
+    fun setPosition(position: Int, orderType: OrderType) {
+        if (orderType != OrderType.Base) {
+            actualPosition = -1
+            return
+        }
+
         actualPosition = position
-        handle({interactor.cachedData()}) { list ->
+        handle({ interactor.cachedData() }) { list ->
             communication.update(
                 AudioListState.List(list.map { it.map(mapper) }, position)
             )
@@ -69,16 +74,19 @@ class AudioListViewModel(
         navigation.update(MoreScreen)
     }
 
-    fun observePosition(owner: LifecycleOwner, observer: Observer<Int>) {
-        manageOrder.observeActualTrackPosition(owner, observer)
+    fun observePosition(owner: LifecycleOwner, observer: Observer<Pair<Int, OrderType>>) {
+        manageOrder.observePosition(owner, observer)
     }
 
     fun open(track: AudioUi, position: Int, mediaService: MediaService) {
-        manageOrder.setActualTrack(position)
         actualPosition = position
         handle({ interactor.cachedData() }) { list ->
-            mediaService.open(list.map { it.map(mapper) }
-                .subList(1, list.size) as List<AudioUi.Abstract>, track, position, OrderType.BASE)
+            mediaService.open(
+                list.map { it.map(mapper) }.subList(1, list.size),
+                track,
+                position,
+                OrderType.Base
+            )
             navigation.update(PlayerScreen)
         }
     }

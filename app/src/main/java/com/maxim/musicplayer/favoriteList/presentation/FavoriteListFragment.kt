@@ -33,7 +33,7 @@ class FavoriteListFragment: BaseFragment<FragmentFavoriteListBinding, FavoriteLi
         }
 
         viewModel.observePosition(this) {
-            viewModel.setPosition(it)
+            viewModel.setPosition(it.first, it.second)
         }
 
         viewModel.init(savedInstanceState == null)

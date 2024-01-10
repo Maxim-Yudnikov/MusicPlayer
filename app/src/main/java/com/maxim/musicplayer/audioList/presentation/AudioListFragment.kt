@@ -36,7 +36,7 @@ class AudioListFragment : BaseFragment<FragmentAudioListBinding, AudioListViewMo
         }
 
         viewModel.observePosition(this) {
-            viewModel.setPosition(it)
+            viewModel.setPosition(it.first, it.second)
         }
 
         viewModel.init(savedInstanceState == null)

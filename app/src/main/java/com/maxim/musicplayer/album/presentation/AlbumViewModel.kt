@@ -15,9 +15,9 @@ import com.maxim.musicplayer.core.presentation.Screen
 import com.maxim.musicplayer.core.sl.ClearViewModel
 import com.maxim.musicplayer.core.sl.GoBack
 import com.maxim.musicplayer.favoriteList.data.FavoriteListRepository
+import com.maxim.musicplayer.player.media.OrderType
 import com.maxim.musicplayer.player.media.ManageOrder
 import com.maxim.musicplayer.player.media.MediaService
-import com.maxim.musicplayer.player.media.OrderType
 import com.maxim.musicplayer.player.presentation.PlayerScreen
 import com.maxim.musicplayer.trackMore.presentation.MoreScreen
 import com.maxim.musicplayer.trackMore.presentation.MoreStorage
@@ -46,8 +46,8 @@ class AlbumViewModel(
         clearViewModel.clear(AlbumViewModel::class.java)
     }
 
-    fun setPosition(position: Int, albumUi: AlbumUi) { //todo magic +1
-        if (albumUi.same(storage.read())) {
+    fun setPosition(position: Int, orderType: OrderType) { //todo magic +1
+        if (orderType.same(storage.read())) {
             actualPosition = position + 1
             communication.update(
                 AlbumState.Base(storage.read(), actualPosition)
@@ -61,21 +61,19 @@ class AlbumViewModel(
         navigation.update(MoreScreen)
     }
 
-    fun observePosition(owner: LifecycleOwner, observer: Observer<Pair<Int, AlbumUi>>) {
-        manageOrder.observeActualAlbumTrackPosition(owner, observer)
+    fun observePosition(owner: LifecycleOwner, observer: Observer<Pair<Int, OrderType>>) {
+        manageOrder.observePosition(owner, observer)
     }
 
     fun open(track: AudioUi, position: Int, mediaService: MediaService) {
         storage.saveActual(storage.read())
-        manageOrder.setActualAlbumTrack(position, storage.read())
         actualPosition = position + 1
         val list = (storage.read() as AlbumUi.Base).tracks
-        mediaService.open(list as List<AudioUi.Abstract>, track, position, OrderType.ALBUM)
+        mediaService.open(list, track, position, OrderType.Album(storage.read()))
         navigation.update(PlayerScreen)
     }
 
     override fun reload() {
-        //Log.d("MyLog", "storage read: ${(storage.read() as AlbumUi.Base).tracks}")
         storage.save(
             storage.read()
                 .updateTracks(favoritesRepository.data()

@@ -38,7 +38,7 @@ interface MediaService : StartAudio, Playable {
     fun currentPosition(): Int
     fun seekTo(position: Int)
     fun setOnCompleteListener(action: () -> Unit)
-    fun open(list: List<AudioUi.Abstract>, audio: AudioUi, position: Int, orderType: OrderType)
+    fun open(list: List<AudioUi>, audio: AudioUi, position: Int, orderType: OrderType)
     fun stop()
     fun isPlaying(): Boolean
     fun changeRandom()
@@ -56,7 +56,6 @@ interface MediaService : StartAudio, Playable {
         private var cachedIcon: Bitmap? = null
 
         private var isPlaying = false
-        private var orderType = OrderType.BASE
 
         private lateinit var manageOrder: ManageOrder
         private lateinit var downBarTrackCommunication: DownBarTrackCommunication
@@ -148,7 +147,7 @@ interface MediaService : StartAudio, Playable {
                 playerCommunication.update(
                     PlayerState.Base(
                         track,
-                        manageOrder.isRandom,
+                        manageOrder.isRandom(),
                         manageOrder.loopState(),
                         false,
                         mediaPlayer!!.currentPosition
@@ -159,7 +158,7 @@ interface MediaService : StartAudio, Playable {
                 playerCommunication.update(
                     PlayerState.Base(
                         track,
-                        manageOrder.isRandom,
+                        manageOrder.isRandom(),
                         manageOrder.loopState(),
                         true,
                         mediaPlayer!!.currentPosition
@@ -184,15 +183,10 @@ interface MediaService : StartAudio, Playable {
                 playerCommunication.update(
                     PlayerState.Base(
                         track,
-                        manageOrder.isRandom,
+                        manageOrder.isRandom(),
                         manageOrder.loopState(), false, -1
                     )
                 )
-                when (orderType) {
-                    OrderType.BASE -> manageOrder.setActualTrack(manageOrder.actualAbsolutePosition())
-                    OrderType.FAVORITE -> manageOrder.setActualTrackFavorite(manageOrder.actualAbsolutePosition())
-                    OrderType.ALBUM -> manageOrder.setActualAlbumTrack(manageOrder.actualAbsolutePosition(), null)
-                }
 
                 downBarTrackCommunication.setTrack(track, this)
             }
@@ -207,20 +201,15 @@ interface MediaService : StartAudio, Playable {
                 isPlaying = true
                 val track = manageOrder.previous()
                 track.start(this, contentResolver)
-                when (orderType) {
-                    OrderType.BASE -> manageOrder.setActualTrack(manageOrder.actualAbsolutePosition())
-                    OrderType.FAVORITE -> manageOrder.setActualTrackFavorite(manageOrder.actualAbsolutePosition())
-                    OrderType.ALBUM -> manageOrder.setActualAlbumTrack(manageOrder.actualAbsolutePosition(), null)
-                }
                 downBarTrackCommunication.setTrack(track, this)
                 playerCommunication.update(
-                    PlayerState.Base(track, manageOrder.isRandom, manageOrder.loopState(), false, 0)
+                    PlayerState.Base(track, manageOrder.isRandom(), manageOrder.loopState(), false, 0)
                 )
             } else {
                 val track = manageOrder.actualTrack()
                 track.startAgain(this, contentResolver)
                 playerCommunication.update(
-                    PlayerState.Base(track, manageOrder.isRandom, manageOrder.loopState(), false, 0)
+                    PlayerState.Base(track, manageOrder.isRandom(), manageOrder.loopState(), false, 0)
                 )
             }
         }
@@ -238,14 +227,13 @@ interface MediaService : StartAudio, Playable {
         }
 
         override fun open(
-            list: List<AudioUi.Abstract>,
+            list: List<AudioUi>,
             audio: AudioUi,
             position: Int,
             orderType: OrderType
         ) {
             isPlaying = true
-            manageOrder.generate(list, position)
-            this.orderType = orderType
+            manageOrder.generate(list, position, orderType)
             audio.start(this, contentResolver)
         }
 
@@ -259,11 +247,11 @@ interface MediaService : StartAudio, Playable {
         override fun isPlaying() = mediaPlayer?.isPlaying ?: false
 
         override fun changeRandom() {
-            manageOrder.isRandom = !manageOrder.isRandom
+            manageOrder.changeRandom()
             playerCommunication.update(
                 PlayerState.Base(
                     manageOrder.actualTrack(),
-                    manageOrder.isRandom,
+                    manageOrder.isRandom(),
                     manageOrder.loopState(),
                     !(mediaPlayer?.isPlaying ?: false),
                     mediaPlayer?.currentPosition ?: 0
@@ -276,7 +264,7 @@ interface MediaService : StartAudio, Playable {
             playerCommunication.update(
                 PlayerState.Base(
                     manageOrder.actualTrack(),
-                    manageOrder.isRandom,
+                    manageOrder.isRandom(),
                     manageOrder.loopState(),
                     !(mediaPlayer?.isPlaying ?: false),
                     mediaPlayer?.currentPosition ?: 0
@@ -368,7 +356,7 @@ interface MediaService : StartAudio, Playable {
                     playerCommunication.update(
                         PlayerState.Base(
                             manageOrder.actualTrack(),
-                            manageOrder.isRandom,
+                            manageOrder.isRandom(),
                             manageOrder.loopState(),
                             isPause,
                             mediaPlayer!!.currentPosition
@@ -433,11 +421,4 @@ interface MediaService : StartAudio, Playable {
             const val STOP_ACTION = "STOP"
         }
     }
-}
-
-//todo refactor enum clas
-enum class OrderType {
-    BASE,
-    FAVORITE,
-    ALBUM
 }

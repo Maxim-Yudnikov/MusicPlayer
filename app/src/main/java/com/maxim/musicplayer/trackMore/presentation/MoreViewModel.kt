@@ -18,7 +18,7 @@ class MoreViewModel( //todo clearViewModel
     private val mediaServiceProvider: ProvideMediaService,
     private val favoriteListRepository: FavoriteListRepository,
     private val detailsStorage: DetailsStorage.Save,
-    private val navigation: Navigation.Update
+    private val navigation: Navigation.Update,
 ): BaseViewModel(), Communication.Observe<MoreState> {
 
     fun init() {
@@ -39,7 +39,8 @@ class MoreViewModel( //todo clearViewModel
     fun saveToFavorites() {
         handle({
             storage.readAudio().changeFavorite(favoriteListRepository)
-        }) {
+            favoriteListRepository.data()
+        }) { list ->
             manageOrder.changeFavorite(storage.readAudio().id(), mediaServiceProvider.mediaService())
             storage.saveAudio(storage.readAudio().changeFavorite())
             communication.update(MoreState.Base(storage.readAudio()))

@@ -32,6 +32,10 @@ class OrderFragment: BaseFragment<FragmentFavoriteListBinding, OrderViewModel>()
             it.show(adapter)
         }
 
+        viewModel.observePosition(this) {
+            viewModel.reload()
+        }
+
         viewModel.init(savedInstanceState == null)
     }
 }
