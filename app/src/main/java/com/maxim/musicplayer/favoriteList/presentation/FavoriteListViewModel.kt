@@ -44,16 +44,12 @@ class FavoriteListViewModel(
     }
 
     fun setPosition(position: Int, orderType: OrderType) {
-        if (orderType != OrderType.Favorite) {
-            actualPosition = -1
-            return
-        }
+        actualPosition = if (orderType != OrderType.Favorite) -1 else position
 
-        actualPosition = position
         audioListCommunication.update(
             AudioListState.List(
                 repository.data().map { it.map(mapper) },
-                position
+                actualPosition, false
             )
         )
     }
@@ -74,6 +70,6 @@ class FavoriteListViewModel(
 
     override fun reload() {
         val list = repository.data().map { it.map(mapper) }
-        audioListCommunication.update(AudioListState.List(list, actualPosition))
+        audioListCommunication.update(AudioListState.List(list, actualPosition, true))
     }
 }

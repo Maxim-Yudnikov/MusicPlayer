@@ -11,9 +11,9 @@ import com.maxim.musicplayer.core.presentation.Navigation
 import com.maxim.musicplayer.core.presentation.Reload
 import com.maxim.musicplayer.core.presentation.RunAsync
 import com.maxim.musicplayer.favoriteList.data.FavoriteListRepository
-import com.maxim.musicplayer.player.media.OrderType
 import com.maxim.musicplayer.player.media.ManageOrder
 import com.maxim.musicplayer.player.media.MediaService
+import com.maxim.musicplayer.player.media.OrderType
 import com.maxim.musicplayer.player.presentation.PlayerScreen
 import com.maxim.musicplayer.trackMore.presentation.MoreScreen
 import com.maxim.musicplayer.trackMore.presentation.MoreStorage
@@ -34,7 +34,7 @@ class AudioListViewModel(
         if (isFirstRun) {
             handle({ interactor.data() }) { list ->
                 communication.update(
-                    AudioListState.List(list.map { it.map(mapper) }, actualPosition)
+                    AudioListState.List(list.map { it.map(mapper) }, actualPosition, false)
                 )
                 manageOrder.init(list.subList(1, list.size).map { it.map(mapper) })
             }
@@ -44,7 +44,7 @@ class AudioListViewModel(
 
     fun refresh(refreshFinish: RefreshFinish) {
         handle({ interactor.data() }) { list ->
-            communication.update(AudioListState.List(list.map { it.map(mapper) }, actualPosition))
+            communication.update(AudioListState.List(list.map { it.map(mapper) }, actualPosition, false))
             refreshFinish.finish()
         }
     }
@@ -54,15 +54,11 @@ class AudioListViewModel(
     }
 
     fun setPosition(position: Int, orderType: OrderType) {
-        if (orderType != OrderType.Base) {
-            actualPosition = -1
-            return
-        }
+        actualPosition = if (orderType != OrderType.Base) -1 else position
 
-        actualPosition = position
         handle({ interactor.cachedData() }) { list ->
             communication.update(
-                AudioListState.List(list.map { it.map(mapper) }, position)
+                AudioListState.List(list.map { it.map(mapper) }, actualPosition, false)
             )
         }
     }
@@ -94,7 +90,7 @@ class AudioListViewModel(
     override fun reload() {
         handle({ interactor.data().map { it.map(mapper) } }) { list ->
             communication.update(
-                AudioListState.List(list, actualPosition)
+                AudioListState.List(list, actualPosition, false)
             )
         }
     }

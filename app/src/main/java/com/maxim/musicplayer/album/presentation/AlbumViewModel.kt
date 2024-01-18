@@ -15,9 +15,9 @@ import com.maxim.musicplayer.core.presentation.Screen
 import com.maxim.musicplayer.core.sl.ClearViewModel
 import com.maxim.musicplayer.core.sl.GoBack
 import com.maxim.musicplayer.favoriteList.data.FavoriteListRepository
-import com.maxim.musicplayer.player.media.OrderType
 import com.maxim.musicplayer.player.media.ManageOrder
 import com.maxim.musicplayer.player.media.MediaService
+import com.maxim.musicplayer.player.media.OrderType
 import com.maxim.musicplayer.player.presentation.PlayerScreen
 import com.maxim.musicplayer.trackMore.presentation.MoreScreen
 import com.maxim.musicplayer.trackMore.presentation.MoreStorage
@@ -47,12 +47,11 @@ class AlbumViewModel(
     }
 
     fun setPosition(position: Int, orderType: OrderType) { //todo magic +1
-        if (orderType.same(storage.read())) {
-            actualPosition = position + 1
-            communication.update(
-                AlbumState.Base(storage.read(), actualPosition)
-            )
-        }
+        actualPosition = if (orderType.same(storage.read())) position + 1 else -1
+
+        communication.update(
+            AlbumState.Base(storage.read(), actualPosition)
+        )
     }
 
     fun more(audioUi: AudioUi) {

@@ -1,5 +1,6 @@
 package com.maxim.musicplayer.audioList.presentation
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
@@ -92,6 +93,15 @@ class AudioListAdapter(
         list.addAll(newList)
         result.dispatchUpdatesTo(this)
         notifyItemChanged(actualPosition + 1)
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    fun updateAll(newList: List<AudioUi>, actualPosition: Int) {
+        this.actualPosition = actualPosition + 1
+        list.clear()
+        list.addAll(newList)
+        notifyDataSetChanged()
+        return
     }
 
     interface Listener {

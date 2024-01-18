@@ -4,7 +4,6 @@ import android.media.MediaPlayer
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
-import com.maxim.musicplayer.albumList.presentation.AlbumUi
 import com.maxim.musicplayer.audioList.presentation.AudioUi
 import com.maxim.musicplayer.core.data.SimpleStorage
 
@@ -24,6 +23,7 @@ interface ManageOrder {
 
     fun canGoNext(): Boolean
     fun canGoPrevious(): Boolean
+    fun canAddToFavorites(): Boolean
 
     fun actualTrack(): AudioUi
     fun actualOrder(): List<AudioUi>
@@ -154,6 +154,8 @@ interface ManageOrder {
         override fun canGoPrevious() =
             actualPosition != 0 || loopState == LoopState.LoopOrder
 
+        override fun canAddToFavorites() = absolutePositionLiveData.value?.second != OrderType.Favorite
+
         override fun removeTrackFromActualOrder(id: Long) {
             val actualTrack = actualOrder[actualPosition]
             actualOrder.remove(id)
@@ -186,11 +188,6 @@ interface ManageOrder {
                 val removed = actualOrder.removeAt(actualPosition)
                 defaultOrder.removeAt(defaultOrder.indexOf(removed))
                 actualPosition--
-//                absolutePositionLiveData.value =
-//                    Pair(
-//                        defaultOrder.indexOf(actualOrder[actualPosition]),
-//                        absolutePositionLiveData.value!!.second
-//                    )
                 if (actualOrder.isEmpty()) {
                     playable.finish()
                     return true
@@ -216,10 +213,9 @@ interface ManageOrder {
                     } else if (id == actualTrack)
                         playable.next()
                 }
-                absolutePositionLiveData.value =
-                    Pair(
-                        defaultOrder.indexOf(actualOrder[actualPosition]),
-                        absolutePositionLiveData.value!!.second
+                absolutePositionLiveData.value = Pair(
+                        if (actualOrder.isNotEmpty()) defaultOrder.indexOf(actualOrder[actualPosition]) else -1,
+                        absolutePositionLiveData.value?.second ?: OrderType.Empty
                     )
             }
         }
@@ -228,16 +224,5 @@ interface ManageOrder {
             private const val RANDOM_KEY = "RANDOM_KEY"
             private const val LOOP_KEY = "LOOP_KEY"
         }
-    }
-}
-
-interface OrderType {
-    fun same(albumUi: AlbumUi) = false
-
-    object Empty : OrderType
-    object Base : OrderType
-    object Favorite : OrderType
-    data class Album(private val albumUi: AlbumUi) : OrderType {
-        override fun same(albumUi: AlbumUi) = this.albumUi == albumUi
     }
 }
