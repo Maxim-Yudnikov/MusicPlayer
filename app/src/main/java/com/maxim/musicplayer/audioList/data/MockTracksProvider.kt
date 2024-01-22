@@ -2,6 +2,7 @@ package com.maxim.musicplayer.audioList.data
 
 import android.net.Uri
 import com.maxim.musicplayer.details.data.DetailsData
+import java.lang.IllegalStateException
 
 class MockTracksProvider : TracksProvider {
 
@@ -19,6 +20,6 @@ class MockTracksProvider : TracksProvider {
     }
 
     override fun track(id: Long): DetailsData {
-        TODO("Not yet implemented")
+        throw IllegalStateException("Not used: MoreTracksMockProvider#track")
     }
 }

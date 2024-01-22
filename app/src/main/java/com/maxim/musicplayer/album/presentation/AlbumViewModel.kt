@@ -45,7 +45,7 @@ class AlbumViewModel(
         clearViewModel.clear(AlbumViewModel::class.java)
     }
 
-    fun setPosition(position: Int, orderType: OrderType) { //todo magic +1
+    fun setPosition(position: Int, orderType: OrderType) {
         actualPosition = if (orderType.same(storage.read())) position + 1 else -1
 
         communication.update(

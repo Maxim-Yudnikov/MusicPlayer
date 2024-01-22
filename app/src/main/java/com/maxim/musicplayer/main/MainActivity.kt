@@ -47,7 +47,8 @@ class MainActivity : AppCompatActivity(), ProvideViewModel {
         viewModel.observe(this) {
             it.show(supportFragmentManager, R.id.container, binding.tabLayout)
         }
-        binding.tabLayout.visibility = savedInstanceState?.getInt(DOWN_BAR_VISIBILITY) ?: View.VISIBLE
+        binding.tabLayout.visibility =
+            savedInstanceState?.getInt(DOWN_BAR_VISIBILITY) ?: View.VISIBLE
 
         viewModel.init(savedInstanceState == null)
     }
@@ -64,7 +65,7 @@ class MainActivity : AppCompatActivity(), ProvideViewModel {
         }
     }
 
-    override fun onResume() { //todo refactor
+    override fun onResume() {
         super.onResume()
 
         if (intent?.action == OPEN_PLAYER_ACTION) {
@@ -75,38 +76,20 @@ class MainActivity : AppCompatActivity(), ProvideViewModel {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             val readResult = ContextCompat.checkSelfPermission(
-                applicationContext,
-                android.Manifest.permission.READ_MEDIA_AUDIO
+                applicationContext, android.Manifest.permission.READ_MEDIA_AUDIO
             )
             val notificationResult = ContextCompat.checkSelfPermission(
-                applicationContext,
-                android.Manifest.permission.POST_NOTIFICATIONS
+                applicationContext, android.Manifest.permission.POST_NOTIFICATIONS
             )
-            if (readResult != PackageManager.PERMISSION_GRANTED && notificationResult != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(
-                    this,
-                    arrayOf(
-                        android.Manifest.permission.READ_MEDIA_AUDIO,
-                        android.Manifest.permission.POST_NOTIFICATIONS
-                    ),
-                    200
-                )
-            } else if (readResult != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(
-                    this,
-                    arrayOf(
-                        android.Manifest.permission.READ_MEDIA_AUDIO
-                    ),
-                    200
-                )
-            } else if (notificationResult != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(
-                    this,
-                    arrayOf(
-                        android.Manifest.permission.POST_NOTIFICATIONS
-                    ),
-                    200
-                )
+
+            val requiredPermissions = mutableListOf<String>()
+            if (readResult != PackageManager.PERMISSION_GRANTED)
+                requiredPermissions.add(android.Manifest.permission.READ_MEDIA_AUDIO)
+            if (notificationResult != PackageManager.PERMISSION_GRANTED)
+                requiredPermissions.add(android.Manifest.permission.POST_NOTIFICATIONS)
+
+            if (requiredPermissions.isNotEmpty()) {
+                ActivityCompat.requestPermissions(this, requiredPermissions.toTypedArray(), 200)
             }
         } else {
             val readResult = ContextCompat.checkSelfPermission(
@@ -115,11 +98,7 @@ class MainActivity : AppCompatActivity(), ProvideViewModel {
             )
             if (readResult != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(
-                    this,
-                    arrayOf(
-                        android.Manifest.permission.READ_EXTERNAL_STORAGE,
-                    ),
-                    200
+                    this, arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE), 200
                 )
             }
         }
@@ -142,7 +121,7 @@ class MainActivity : AppCompatActivity(), ProvideViewModel {
                     finish()
                 }
             }
-            viewModel(AudioListViewModel::class.java).init(true,)
+            viewModel(AudioListViewModel::class.java).init(true)
         }
     }
 
