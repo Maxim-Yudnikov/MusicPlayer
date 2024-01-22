@@ -9,9 +9,7 @@ interface AlbumState {
 
     data class Base(private val albumUi: AlbumUi, private val position: Int) : AlbumState {
         override fun show(adapter: AlbumAdapter) {
-            val list = mutableListOf<Any>(albumUi)
-            list.addAll((albumUi as AlbumUi.Base).tracks)
-            adapter.update(list, position)
+            albumUi.updateAdapter(adapter, position)
         }
     }
 }

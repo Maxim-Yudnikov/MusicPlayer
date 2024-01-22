@@ -3,7 +3,6 @@ package com.maxim.musicplayer.album.presentation
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import com.maxim.musicplayer.album.data.OpenAlbumStorage
-import com.maxim.musicplayer.albumList.presentation.AlbumUi
 import com.maxim.musicplayer.audioList.domain.AudioDomain
 import com.maxim.musicplayer.audioList.presentation.AudioUi
 import com.maxim.musicplayer.core.presentation.BaseViewModel
@@ -67,8 +66,7 @@ class AlbumViewModel(
     fun open(track: AudioUi, position: Int, mediaService: MediaService) {
         storage.saveActual(storage.read())
         actualPosition = position + 1
-        val list = (storage.read() as AlbumUi.Base).tracks
-        mediaService.open(list, track, position, OrderType.Album(storage.read()))
+        storage.read().open(mediaService, track, position, OrderType.Album(storage.read()))
         navigation.update(PlayerScreen)
     }
 

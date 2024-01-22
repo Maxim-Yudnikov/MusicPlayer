@@ -2,9 +2,12 @@ package com.maxim.musicplayer.albumList.presentation
 
 import android.widget.TextView
 import com.maxim.musicplayer.R
+import com.maxim.musicplayer.album.presentation.AlbumAdapter
 import com.maxim.musicplayer.audioList.presentation.ArtImageView
 import com.maxim.musicplayer.audioList.presentation.AudioListAdapter
 import com.maxim.musicplayer.audioList.presentation.AudioUi
+import com.maxim.musicplayer.media.MediaService
+import com.maxim.musicplayer.media.OrderType
 
 abstract class AlbumUi {
     abstract fun same(item: AlbumUi): Boolean
@@ -15,13 +18,14 @@ abstract class AlbumUi {
     open fun showCount(textView: TextView) = Unit
     open fun showTracks(adapter: AudioListAdapter) = Unit
     open fun updateTracks(list: List<AudioUi>): AlbumUi = Empty
+    open fun open(mediaService: MediaService, track: AudioUi, position: Int, orderType: OrderType) = Unit
+    open fun updateAdapter(adapter: AlbumAdapter, position: Int) = Unit
 
     data class Base(
         private val id: Long,
         private val title: String,
         private val artist: String,
-        //todo public field, use in viewModel
-        val tracks: List<AudioUi>
+        private val tracks: List<AudioUi>
     ) : AlbumUi() {
         override fun same(item: AlbumUi) = item is Base && item.id == id
         override fun showArt(artImageView: ArtImageView) {
@@ -67,6 +71,21 @@ abstract class AlbumUi {
                 newList[it.first] = it.second
             }
             return Base(id, title, artist, newList)
+        }
+
+        override fun open(
+            mediaService: MediaService,
+            track: AudioUi,
+            position: Int,
+            orderType: OrderType
+        ) {
+            mediaService.open(tracks, track, position, orderType)
+        }
+
+        override fun updateAdapter(adapter: AlbumAdapter, position: Int) {
+            val list = mutableListOf<Any>(this)
+            list.addAll(tracks)
+            adapter.update(list, position)
         }
     }
 
