@@ -149,12 +149,13 @@ interface ManageOrder {
         }
 
         override fun canGoNext() =
-            actualPosition != actualOrder.lastIndex || loopState == LoopState.LoopOrder
+            (actualPosition != actualOrder.lastIndex || loopState == LoopState.LoopOrder) && actualOrder.size > 1
 
         override fun canGoPrevious() =
-            actualPosition != 0 || loopState == LoopState.LoopOrder
+            (actualPosition != 0 || loopState == LoopState.LoopOrder) && actualOrder.size > 1
 
-        override fun canAddToFavorites() = absolutePositionLiveData.value?.second != OrderType.Favorite
+        override fun canAddToFavorites() =
+            absolutePositionLiveData.value?.second != OrderType.Favorite
 
         override fun removeTrackFromActualOrder(id: Long) {
             val actualTrack = actualOrder[actualPosition]
@@ -214,9 +215,9 @@ interface ManageOrder {
                         playable.next()
                 }
                 absolutePositionLiveData.value = Pair(
-                        if (actualOrder.isNotEmpty()) defaultOrder.indexOf(actualOrder[actualPosition]) else -1,
-                        absolutePositionLiveData.value?.second ?: OrderType.Empty
-                    )
+                    if (actualOrder.isNotEmpty()) defaultOrder.indexOf(actualOrder[actualPosition]) else -1,
+                    absolutePositionLiveData.value?.second ?: OrderType.Empty
+                )
             }
         }
 
