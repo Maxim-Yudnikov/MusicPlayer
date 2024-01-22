@@ -33,13 +33,12 @@ abstract class BaseFragment<B: ViewBinding, V: ViewModel>: Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        requireActivity().onBackPressedDispatcher.addCallback(onBackPressedCallback)
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, onBackPressedCallback)
         viewModel = (activity as ProvideViewModel).viewModel(viewModelClass())
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        onBackPressedCallback.remove()
         _binding = null
     }
 }

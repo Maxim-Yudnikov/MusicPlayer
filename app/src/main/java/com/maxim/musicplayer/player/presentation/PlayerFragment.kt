@@ -30,7 +30,6 @@ class PlayerFragment : BaseFragment<FragmentPlayerBinding, PlayerViewModel>() {
                 viewModel.goBack()
             }
         }
-
         super.onViewCreated(view, savedInstanceState)
 
         viewModel.observe(this) {

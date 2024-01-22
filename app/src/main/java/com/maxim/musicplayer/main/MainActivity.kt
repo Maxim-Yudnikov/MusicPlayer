@@ -4,6 +4,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -18,10 +19,11 @@ import com.maxim.musicplayer.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity(), ProvideViewModel {
     private lateinit var viewModel: MainViewModel
+    private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val binding = ActivityMainBinding.inflate(layoutInflater)
+        binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         binding.viewPager.adapter = ViewPagerAdapter(this)
@@ -45,8 +47,14 @@ class MainActivity : AppCompatActivity(), ProvideViewModel {
         viewModel.observe(this) {
             it.show(supportFragmentManager, R.id.container, binding.tabLayout)
         }
+        binding.tabLayout.visibility = savedInstanceState?.getInt(DOWN_BAR_VISIBILITY) ?: View.VISIBLE
 
         viewModel.init(savedInstanceState == null)
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putInt(DOWN_BAR_VISIBILITY, binding.tabLayout.visibility)
     }
 
     override fun onNewIntent(intent: Intent?) {
@@ -147,6 +155,7 @@ class MainActivity : AppCompatActivity(), ProvideViewModel {
         (application as ProvideViewModel).viewModel(clasz)
 
     companion object {
+        private const val DOWN_BAR_VISIBILITY = "DOWN_BAR_VISIBILITY"
         const val OPEN_PLAYER_ACTION = "OPEN_PLAYER_ACTION"
     }
 }
