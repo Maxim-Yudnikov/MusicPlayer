@@ -55,7 +55,7 @@ class AlbumAdapter(private val listener: AudioListAdapter.Listener) :
             }
             val color = ContextCompat.getColor(
                 binding.artImageView.context,
-                if (position == actualPosition) R.color.green else R.color.black
+                if (position == actualPosition) R.color.green else R.color.title_text
             )
             binding.titleTextView.setTextColor(color)
         }

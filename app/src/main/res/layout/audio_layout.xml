@@ -13,7 +13,7 @@
         android:layout_height="40dp"
         android:layout_gravity="center"
         android:layout_marginHorizontal="4dp"
-        android:background="@color/white"
+        android:background="@color/light_background"
         android:src="@drawable/baseline_audiotrack_24" />
 
     <LinearLayout
@@ -28,7 +28,9 @@
             android:layout_height="wrap_content"
             android:paddingHorizontal="8dp"
             android:paddingTop="4dp"
-            android:textAppearance="@style/TextAppearance.AppCompat.Title"
+            android:textColor="@color/title_text"
+            android:textSize="20sp"
+            android:textStyle="bold"
             tools:text="Some title" />
 
         <com.maxim.musicplayer.main.TimeTextView

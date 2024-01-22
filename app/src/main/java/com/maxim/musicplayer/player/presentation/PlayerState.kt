@@ -58,7 +58,7 @@ interface PlayerState {
             favoriteImageView.isEnabled = true
             playButton.setImageResource(if (onPause) R.drawable.play_24 else R.drawable.pause_24)
             val selectedColor = R.color.green
-            val unselectedColor = R.color.white
+            val unselectedColor = R.color.light_background
             randomButton.setBackgroundColor(
                 ContextCompat.getColor(
                     randomButton.context,

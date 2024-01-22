@@ -23,7 +23,7 @@ interface LoopState : Serializable {
         override fun show(imageButton: ImageButton) {
             imageButton.setImageResource(R.drawable.loop_24)
             imageButton.setBackgroundColor(
-                ContextCompat.getColor(imageButton.context, R.color.white)
+                ContextCompat.getColor(imageButton.context, R.color.light_background)
             )
         }
     }
