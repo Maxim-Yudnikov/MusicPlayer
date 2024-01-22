@@ -4,13 +4,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import com.maxim.musicplayer.core.presentation.ShowError
 import com.maxim.musicplayer.core.sl.ProvideViewModel
 import com.maxim.musicplayer.databinding.BottomFragmentMoreBinding
 
-class MoreBottomFragment : BottomSheetDialogFragment(), ShowError {
+class MoreBottomFragment : BottomSheetDialogFragment() {
     private var _binding: BottomFragmentMoreBinding? = null
     private val binding get() = _binding!!
     private lateinit var viewModel: MoreViewModel
@@ -30,7 +28,7 @@ class MoreBottomFragment : BottomSheetDialogFragment(), ShowError {
 
         binding.favoriteButton.setOnClickListener {
             binding.favoriteButton.isEnabled = false
-            viewModel.saveToFavorites(this)
+            viewModel.saveToFavorites()
             if (viewModel.fromFavorite())
                 dismiss()
         }
@@ -59,9 +57,5 @@ class MoreBottomFragment : BottomSheetDialogFragment(), ShowError {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-    }
-
-    override fun show(message: String) {
-        Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show()
     }
 }

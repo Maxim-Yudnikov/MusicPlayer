@@ -2,12 +2,10 @@ package com.maxim.musicplayer.trackMore.presentation
 
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
-import com.maxim.musicplayer.audioList.presentation.AudioUi
 import com.maxim.musicplayer.core.ProvideMediaService
 import com.maxim.musicplayer.core.presentation.BaseViewModel
 import com.maxim.musicplayer.core.presentation.Communication
 import com.maxim.musicplayer.core.presentation.Navigation
-import com.maxim.musicplayer.core.presentation.ShowError
 import com.maxim.musicplayer.details.presentation.DetailsScreen
 import com.maxim.musicplayer.details.presentation.DetailsStorage
 import com.maxim.musicplayer.favoriteList.data.FavoriteListRepository
@@ -38,14 +36,12 @@ class MoreViewModel( //todo clearViewModel
         navigation.update(DetailsScreen)
     }
 
-    fun saveToFavorites(showError: ShowError) {
-        if (storage.readAudio() is AudioUi.Base && !manageOrder.canAddToFavorites())
-            return showError.show("You can't save a track to favorites while listening to your favorite tracks")
-
+    fun saveToFavorites() {
         handle({
             storage.readAudio().changeFavorite(favoriteListRepository)
-        }) {
-            manageOrder.changeFavorite(storage.readAudio().id(), mediaServiceProvider.mediaService())
+            favoriteListRepository.singleDataIds()
+        }) { list ->
+            manageOrder.changeFavorite(storage.readAudio().id(), mediaServiceProvider.mediaService(), list)
             storage.saveAudio(storage.readAudio().changeFavorite())
             communication.update(MoreState.Base(storage.readAudio()))
         }

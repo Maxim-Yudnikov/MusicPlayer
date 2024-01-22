@@ -23,7 +23,6 @@ interface ManageOrder {
 
     fun canGoNext(): Boolean
     fun canGoPrevious(): Boolean
-    fun canAddToFavorites(): Boolean
 
     fun actualTrack(): AudioUi
     fun actualOrder(): List<AudioUi>
@@ -33,7 +32,7 @@ interface ManageOrder {
     fun observePosition(owner: LifecycleOwner, observer: Observer<Pair<Int, OrderType>>)
 
     fun changeActualFavorite(playable: Playable): Boolean
-    fun changeFavorite(id: Long, playable: Playable)
+    fun changeFavorite(id: Long, playable: Playable, tracks: List<Long>)
 
     fun playNext(audioUi: AudioUi)
 
@@ -45,6 +44,8 @@ interface ManageOrder {
         private val tracksMap = mutableMapOf<Long, AudioUi>()
         private val defaultOrder = mutableListOf<Long>()
         private val actualOrder = mutableListOf<Long>()
+        private val absoluteOrder = mutableListOf<Long>()
+        private val absolutePosition: Int get() = absoluteOrder.indexOf(actualOrder[actualPosition])
         private var actualPosition = 0
 
         private val absolutePositionLiveData = MutableLiveData<Pair<Int, OrderType>>()
@@ -87,6 +88,8 @@ interface ManageOrder {
         ) {
             defaultOrder.clear()
             defaultOrder.addAll(tracks.map { it.id() })
+            absoluteOrder.clear()
+            absoluteOrder.addAll(tracks.map { it.id() })
 
             actualOrder.clear()
             actualPosition = if (isRandom) {
@@ -127,10 +130,7 @@ interface ManageOrder {
                 actualPosition = 0
             }
             absolutePositionLiveData.value =
-                Pair(
-                    defaultOrder.indexOf(actualOrder[actualPosition]),
-                    absolutePositionLiveData.value!!.second
-                )
+                Pair(absolutePosition, absolutePositionLiveData.value!!.second)
             return tracksMap[actualOrder[actualPosition]]!!
         }
 
@@ -141,10 +141,7 @@ interface ManageOrder {
                 actualPosition = actualOrder.lastIndex
             }
             absolutePositionLiveData.value =
-                Pair(
-                    defaultOrder.indexOf(actualOrder[actualPosition]),
-                    absolutePositionLiveData.value!!.second
-                )
+                Pair(absolutePosition, absolutePositionLiveData.value!!.second)
             return tracksMap[actualOrder[actualPosition]]!!
         }
 
@@ -154,16 +151,13 @@ interface ManageOrder {
         override fun canGoPrevious() =
             (actualPosition != 0 || loopState == LoopState.LoopOrder) && actualOrder.size > 1
 
-        override fun canAddToFavorites() =
-            absolutePositionLiveData.value?.second != OrderType.Favorite
-
         override fun removeTrackFromActualOrder(id: Long) {
             val actualTrack = actualOrder[actualPosition]
             actualOrder.remove(id)
             defaultOrder.remove(id)
             actualPosition = actualOrder.indexOf(actualTrack)
             absolutePositionLiveData.value =
-                Pair(defaultOrder.indexOf(actualTrack), absolutePositionLiveData.value!!.second)
+                Pair(absolutePosition, absolutePositionLiveData.value!!.second)
         }
 
         override fun playNext(audioUi: AudioUi) {
@@ -202,24 +196,26 @@ interface ManageOrder {
             return false
         }
 
-        override fun changeFavorite(id: Long, playable: Playable) {
+        override fun changeFavorite(id: Long, playable: Playable, tracks: List<Long>) {
             val isFavoriteOrder = absolutePositionLiveData.value?.second == OrderType.Favorite
             tracksMap[id]?.let { track ->
                 val newTrack = track.changeFavorite()
                 tracksMap[id] = newTrack
                 if (isFavoriteOrder && newTrack is AudioUi.Base) {
                     val actualTrack = actualOrder[actualPosition]
-                    actualOrder.remove(id)
-                    defaultOrder.remove(id)
+                    absoluteOrder.remove(id)
                     actualPosition = actualOrder.indexOf(actualTrack)
                     if (actualOrder.isEmpty()) {
                         playable.finish()
                         absolutePositionLiveData.value = Pair(-1, OrderType.Empty)
                     } else if (id == actualTrack)
                         playable.next()
+                } else if (isFavoriteOrder) {
+                    absoluteOrder.clear()
+                    absoluteOrder.addAll(tracks)
                 }
                 absolutePositionLiveData.value = Pair(
-                    if (actualOrder.isNotEmpty()) defaultOrder.indexOf(actualOrder[actualPosition]) else -1,
+                    if (actualOrder.isNotEmpty()) absolutePosition else -1,
                     absolutePositionLiveData.value?.second ?: OrderType.Empty
                 )
             }
