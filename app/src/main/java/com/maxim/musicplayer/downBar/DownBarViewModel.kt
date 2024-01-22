@@ -1,5 +1,6 @@
 package com.maxim.musicplayer.downBar
 
+import android.util.Log
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
@@ -19,6 +20,7 @@ class DownBarViewModel(
     }
 
     override fun reload(track: AudioUi, isPlaying: Boolean) {
+        Log.d("MyLog", "$isPlaying")
         communication.update(if (isPlaying) DownBarState.IsPlaying(track) else DownBarState.IsSopped(track))
     }
 

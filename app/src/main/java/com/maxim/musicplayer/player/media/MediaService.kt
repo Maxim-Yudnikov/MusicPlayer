@@ -141,8 +141,8 @@ interface MediaService : StartAudio, Playable {
         override fun play() {
             isPlaying = !isPlaying
             val track = manageOrder.actualTrack()
+            downBarTrackCommunication.setTrack(track, this, isPlaying)
             if (isPlaying) {
-                downBarTrackCommunication.setTrack(track, this)
                 track.start(this, contentResolver)
                 playerCommunication.update(
                     PlayerState.Base(
@@ -188,7 +188,7 @@ interface MediaService : StartAudio, Playable {
                     )
                 )
 
-                downBarTrackCommunication.setTrack(track, this)
+                downBarTrackCommunication.setTrack(track, this, true)
             }
         }
 
@@ -201,7 +201,7 @@ interface MediaService : StartAudio, Playable {
                 isPlaying = true
                 val track = manageOrder.previous()
                 track.start(this, contentResolver)
-                downBarTrackCommunication.setTrack(track, this)
+                downBarTrackCommunication.setTrack(track, this, true)
                 playerCommunication.update(
                     PlayerState.Base(track, manageOrder.isRandom(), manageOrder.loopState(), false, 0)
                 )

@@ -28,7 +28,11 @@ class PlayerViewModel(
     fun init(isFirstRun: Boolean) {
         if (isFirstRun) {
             val track = manageOrder.actualTrack()
-            downBarTrackCommunication.setTrack(track, mediaServiceProvider.mediaService())
+            downBarTrackCommunication.setTrack(
+                track,
+                mediaServiceProvider.mediaService(),
+                mediaServiceProvider.mediaService().isPlaying()
+            )
             communication.update(
                 PlayerState.Base(
                     manageOrder.actualTrack(),

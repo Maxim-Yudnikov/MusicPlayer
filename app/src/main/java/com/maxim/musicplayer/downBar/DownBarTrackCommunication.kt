@@ -5,7 +5,7 @@ import com.maxim.musicplayer.player.media.Playable
 
 interface DownBarTrackCommunication {
     fun init(reload: ReloadDownBar)
-    fun setTrack(track: AudioUi, playable: Playable)
+    fun setTrack(track: AudioUi, playable: Playable, isPlaying: Boolean)
     fun close()
     fun play()
     fun stop()
@@ -20,8 +20,8 @@ interface DownBarTrackCommunication {
             cachedReload = reload
         }
 
-        override fun setTrack(track: AudioUi, playable: Playable) {
-            cachedReload.reload(track, true)
+        override fun setTrack(track: AudioUi, playable: Playable, isPlaying: Boolean) {
+            cachedReload.reload(track, isPlaying)
             cachedTrack = track
             cachedPlayable = playable
         }
