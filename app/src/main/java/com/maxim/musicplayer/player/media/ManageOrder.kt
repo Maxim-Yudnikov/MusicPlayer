@@ -160,6 +160,7 @@ interface ManageOrder {
         override fun removeTrackFromActualOrder(id: Long) {
             val actualTrack = actualOrder[actualPosition]
             actualOrder.remove(id)
+            defaultOrder.remove(id)
             actualPosition = actualOrder.indexOf(actualTrack)
             absolutePositionLiveData.value =
                 Pair(defaultOrder.indexOf(actualTrack), absolutePositionLiveData.value!!.second)

@@ -24,29 +24,29 @@ abstract class BaseTest {
     var activityScenarioRule = ActivityScenarioRule(MainActivity::class.java)
     private val devise = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
 
-    protected fun openTrackFromRecyclerview(index: Int) {
-        onView(RecyclerViewMatcher(R.id.audioRecyclerView).itemViewAtIndex(index))
+    protected fun openTrackFromRecyclerview(pos: Int) {
+        onView(RecyclerViewMatcher(R.id.audioRecyclerView).itemViewAtIndex(pos))
             .perform(click())
     }
 
-    protected fun openMoreFromRecyclerview(index: Int) {
+    protected fun openMoreFromRecyclerview(pos: Int) {
         onView(
             RecyclerViewMatcher(R.id.audioRecyclerView).viewHolderViewAtPosition(
-                index,
+                pos,
                 R.id.moreButton
             )
         ).perform(click())
     }
 
-    protected fun openTrackFromFavoriteRecyclerview(index: Int) {
-        onView(RecyclerViewMatcher(R.id.favoriteRecyclerView).itemViewAtIndex(index))
+    protected fun openTrackFromFavoriteRecyclerview(pos: Int) {
+        onView(RecyclerViewMatcher(R.id.favoriteRecyclerView).itemViewAtIndex(pos))
             .perform(click())
     }
 
-    protected fun openMoreFromFavoriteRecyclerview(index: Int) {
+    protected fun openMoreFromFavoriteRecyclerview(pos: Int) {
         onView(
             RecyclerViewMatcher(R.id.favoriteRecyclerView).viewHolderViewAtPosition(
-                index,
+                pos,
                 R.id.moreButton
             )
         )
@@ -121,9 +121,9 @@ abstract class BaseTest {
         Thread.sleep(1000)
     }
 
-    protected fun openAlbumAtPosition(index: Int) {
+    protected fun openAlbumAtPosition(pos: Int) {
         onView(
-            RecyclerViewMatcher.recyclerViewWithId(R.id.audioRecyclerView).itemViewAtIndex(index)
+            RecyclerViewMatcher.recyclerViewWithId(R.id.audioRecyclerView).itemViewAtIndex(pos)
         ).perform(
             click()
         )
@@ -131,6 +131,17 @@ abstract class BaseTest {
 
     protected fun checkAlbumTitle(expected: String) {
         onView(withId(R.id.albumTitleTextView)).check(matches(withText(expected)))
+    }
+
+    protected fun manageOrder() {
+        onView(withId(R.id.orderButton)).perform(click())
+    }
+
+    protected fun removeFromCurrentOrder(pos: Int) {
+        onView(
+            RecyclerViewMatcher.recyclerViewWithId(R.id.favoriteRecyclerView)
+                .viewHolderViewAtPosition(pos, R.id.removeFromOrderButton)
+        ).perform(click())
     }
 
     private fun withDrawable(resourceId: Int): Matcher<View?> {
