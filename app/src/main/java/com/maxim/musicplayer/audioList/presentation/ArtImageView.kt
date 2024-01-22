@@ -33,7 +33,6 @@ class ArtImageView : androidx.appcompat.widget.AppCompatImageView {
 
     private var actualUri: Uri = Uri.EMPTY
 
-    //todo need?
     fun notifyArtChanged() {
         actualUri = Uri.EMPTY
     }
