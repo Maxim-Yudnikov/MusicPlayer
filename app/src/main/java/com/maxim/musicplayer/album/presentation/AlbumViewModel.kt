@@ -7,7 +7,6 @@ import com.maxim.musicplayer.audioList.domain.AudioDomain
 import com.maxim.musicplayer.audioList.presentation.AudioUi
 import com.maxim.musicplayer.core.presentation.BaseViewModel
 import com.maxim.musicplayer.core.presentation.Communication
-import com.maxim.musicplayer.core.presentation.Init
 import com.maxim.musicplayer.core.presentation.Navigation
 import com.maxim.musicplayer.core.presentation.Reload
 import com.maxim.musicplayer.core.presentation.Screen
@@ -30,13 +29,13 @@ class AlbumViewModel(
     private val mapper: AudioDomain.Mapper<AudioUi>,
     private val navigation: Navigation.Update,
     private val clearViewModel: ClearViewModel,
-) : BaseViewModel(), GoBack, Init, Communication.Observe<AlbumState>, Reload {
+) : BaseViewModel(), GoBack, Communication.Observe<AlbumState>, Reload {
     private var actualPosition = -1
 
-    override fun init(isFirstRun: Boolean) {
+    fun init(isFirstRun: Boolean, owner: LifecycleOwner) {
         if (isFirstRun) {
             communication.update(AlbumState.Base(storage.read(), -1))
-            favoritesRepository.init(this)
+            favoritesRepository.init(this, owner)
         }
     }
 

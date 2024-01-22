@@ -9,7 +9,6 @@ import com.maxim.musicplayer.albumList.data.AlbumListRepository
 import com.maxim.musicplayer.audioList.presentation.RefreshFinish
 import com.maxim.musicplayer.core.presentation.BaseViewModel
 import com.maxim.musicplayer.core.presentation.Communication
-import com.maxim.musicplayer.core.presentation.Init
 import com.maxim.musicplayer.core.presentation.Navigation
 import com.maxim.musicplayer.core.presentation.Reload
 import com.maxim.musicplayer.favoriteList.data.FavoriteListRepository
@@ -21,12 +20,12 @@ class AlbumListViewModel(
     private val mapper: AlbumDomain.Mapper<AlbumUi>,
     private val favoritesRepository: FavoriteListRepository,
     private val navigation: Navigation.Update
-) : BaseViewModel(), Communication.Observe<AlbumListState>, Init, Reload {
+) : BaseViewModel(), Communication.Observe<AlbumListState>, Reload {
 
-    override fun init(isFirstRun: Boolean) {
+    fun init(isFirstRun: Boolean, owner: LifecycleOwner) {
         if (isFirstRun) {
             communication.update(AlbumListState.Base(repository.data().map { it.map(mapper) }))
-            favoritesRepository.init(this)
+            favoritesRepository.init(this, owner)
         }
     }
 

@@ -1,12 +1,13 @@
 package com.maxim.musicplayer.favoriteList.data
 
 import android.net.Uri
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import com.maxim.musicplayer.audioList.domain.AudioDomain
 import com.maxim.musicplayer.core.presentation.Reload
 
 interface FavoriteListRepository : FavoritesActions {
-    fun init(reload: Reload)
+    fun init(reload: Reload, owner: LifecycleOwner)
     fun data(): List<AudioDomain>
     suspend fun singleDataIds(): List<Long>
 
@@ -15,21 +16,23 @@ interface FavoriteListRepository : FavoritesActions {
         private val data = mutableListOf<AudioDomain>()
         private val reloads = mutableListOf<Reload>()
 
-        override fun init(reload: Reload) {
+        override fun init(reload: Reload, owner: LifecycleOwner) {
             livedata = dao.favoriteTracksLiveData()
             if (!reloads.contains(reload))
-                livedata.observeForever { list ->
-                    data.clear()
-                    data.addAll(list.sortedBy { it.title }.map {
-                        AudioDomain.Favorite(
-                            it.id, it.title, it.artist, it.duration, it.album, it.artUri, it.uri
-                        )
-                    })
-                    reload.reload()
+                livedata.observe(owner) { list ->
+                    synchronized(lock) {
+                        data.clear()
+                        data.addAll(list.sortedBy { it.title }.map {
+                            AudioDomain.Favorite(
+                                it.id, it.title, it.artist, it.duration, it.album, it.artUri, it.uri
+                            )
+                        })
+                        reload.reload()
+                    }
                 }
         }
 
-        override fun data(): List<AudioDomain> {
+        override fun data(): List<AudioDomain> = synchronized(lock) {
             val newList = ArrayList(data)
             newList.add(0, AudioDomain.Count(data.size))
             return newList
@@ -52,6 +55,10 @@ interface FavoriteListRepository : FavoritesActions {
 
         override suspend fun removeFromFavorites(id: Long) {
             dao.removeTrack(id)
+        }
+
+        companion object {
+            private val lock = Object()
         }
     }
 }

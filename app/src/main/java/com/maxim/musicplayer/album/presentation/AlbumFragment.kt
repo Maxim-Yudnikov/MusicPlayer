@@ -43,6 +43,6 @@ class AlbumFragment: BaseFragment<FragmentAlbumBinding, AlbumViewModel>() {
             viewModel.setPosition(it.first, it.second)
         }
 
-        viewModel.init(savedInstanceState == null)
+        viewModel.init(savedInstanceState == null, this)
     }
 }

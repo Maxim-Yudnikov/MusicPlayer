@@ -121,7 +121,7 @@ class MainActivity : AppCompatActivity(), ProvideViewModel {
                     finish()
                 }
             }
-            viewModel(AudioListViewModel::class.java).init(true)
+            viewModel(AudioListViewModel::class.java).init(true, this)
         }
     }
 

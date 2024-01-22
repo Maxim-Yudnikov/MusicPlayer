@@ -5,7 +5,6 @@ import androidx.lifecycle.Observer
 import com.maxim.musicplayer.audioList.domain.AudioDomain
 import com.maxim.musicplayer.audioList.domain.AudioListInteractor
 import com.maxim.musicplayer.core.presentation.Communication
-import com.maxim.musicplayer.core.presentation.Init
 import com.maxim.musicplayer.core.presentation.Navigation
 import com.maxim.musicplayer.core.presentation.Reload
 import com.maxim.musicplayer.core.presentation.RunAsync
@@ -25,10 +24,10 @@ class AudioListViewModel(
     moreStorage: MoreStorage.Save,
     private val favoriteListRepository: FavoriteListRepository,
     runAsync: RunAsync = RunAsync.Base()
-) : AbstractListViewModel(manageOrder, moreStorage, navigation, runAsync), Communication.Observe<AudioListState>, Init, Reload {
+) : AbstractListViewModel(manageOrder, moreStorage, navigation, runAsync), Communication.Observe<AudioListState>, Reload {
     private var actualPosition = -1
 
-    override fun init(isFirstRun: Boolean) {
+    fun init(isFirstRun: Boolean, owner: LifecycleOwner) {
         if (isFirstRun) {
             handle({ interactor.data() }) { list ->
                 communication.update(
@@ -36,7 +35,7 @@ class AudioListViewModel(
                 )
                 manageOrder.init(list.subList(1, list.size).map { it.map(mapper) })
             }
-            favoriteListRepository.init(this)
+            favoriteListRepository.init(this, owner)
         }
     }
 

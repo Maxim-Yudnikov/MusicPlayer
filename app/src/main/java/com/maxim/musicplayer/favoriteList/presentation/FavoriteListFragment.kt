@@ -36,6 +36,6 @@ class FavoriteListFragment: BaseFragment<FragmentFavoriteListBinding, FavoriteLi
             viewModel.setPosition(it.first, it.second)
         }
 
-        viewModel.init(savedInstanceState == null)
+        viewModel.init(savedInstanceState == null, this)
     }
 }

@@ -29,9 +29,9 @@ class FavoriteListViewModel(
 ) : AbstractListViewModel(manageOrder, moreStorage, navigation, runAsync), Communication.Observe<AudioListState>, Reload {
     private var actualPosition = -1
 
-    fun init(isFirstRun: Boolean) {
+    fun init(isFirstRun: Boolean, owner: LifecycleOwner) {
         if (isFirstRun)
-            repository.init(this)
+            repository.init(this, owner)
     }
 
     override fun observe(owner: LifecycleOwner, observer: Observer<AudioListState>) {

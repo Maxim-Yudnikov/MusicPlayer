@@ -12,6 +12,7 @@ interface AudioListInteractor {
         private val favoriteRepository: FavoriteListRepository
     ) : AudioListInteractor {
         private val cache = mutableListOf<AudioDomain>()
+
         override suspend fun data(): List<AudioDomain> {
             val data = repository.data().toMutableList()
             val favoritesIds = favoriteRepository.singleDataIds()

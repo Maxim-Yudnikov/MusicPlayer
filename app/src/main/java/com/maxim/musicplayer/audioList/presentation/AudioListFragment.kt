@@ -39,7 +39,7 @@ class AudioListFragment : BaseFragment<FragmentAudioListBinding, AudioListViewMo
             viewModel.setPosition(it.first, it.second)
         }
 
-        viewModel.init(savedInstanceState == null)
+        viewModel.init(savedInstanceState == null, this)
     }
 
     override fun finish() {

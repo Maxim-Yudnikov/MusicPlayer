@@ -35,7 +35,7 @@ class AlbumListFragment: BaseFragment<FragmentAudioListBinding, AlbumListViewMod
             viewModel.refresh(this)
         }
 
-        viewModel.init(savedInstanceState == null)
+        viewModel.init(savedInstanceState == null, this)
     }
 
     override fun finish() {

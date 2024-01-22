@@ -1,151 +1,157 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/light_background"
     android:clickable="true"
     android:focusable="true"
-    android:gravity="center"
     android:orientation="vertical">
-
-    <com.maxim.musicplayer.audioList.presentation.ArtImageView
-        android:id="@+id/artImageView"
-        android:layout_width="350dp"
-        android:layout_height="350dp"
-        android:layout_gravity="center"
-        tools:background="@drawable/baseline_audiotrack_24" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
-        android:orientation="horizontal">
+        android:layout_gravity="center"
+        android:orientation="vertical">
+
+        <com.maxim.musicplayer.audioList.presentation.ArtImageView
+            android:id="@+id/artImageView"
+            android:layout_width="350dp"
+            android:layout_height="350dp"
+            android:layout_gravity="center"
+            tools:background="@drawable/baseline_audiotrack_24" />
 
         <LinearLayout
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical">
+            android:layout_marginTop="40dp"
+            android:orientation="horizontal">
 
-            <TextView
-                android:id="@+id/playerTitleTextView"
-                style="@style/TextAppearance.AppCompat.Title"
-                android:layout_width="match_parent"
+            <LinearLayout
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:paddingHorizontal="24dp"
-                android:textSize="22sp"
-                android:textStyle="bold"
-                tools:text="Some name" />
+                android:layout_weight="1"
+                android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/artistTextView"
-                android:layout_width="match_parent"
+                <TextView
+                    android:id="@+id/playerTitleTextView"
+                    style="@style/TextAppearance.AppCompat.Title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingHorizontal="24dp"
+                    android:textSize="22sp"
+                    android:textStyle="bold"
+                    tools:text="Some name" />
+
+                <TextView
+                    android:id="@+id/artistTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingHorizontal="24dp"
+                    android:textSize="20sp"
+                    tools:text="Artist name" />
+
+            </LinearLayout>
+
+            <ImageButton
+                android:id="@+id/favoriteButton"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginHorizontal="10dp"
+                android:background="@null"
+                android:src="@drawable/favorite_24" />
+
+        </LinearLayout>
+
+        <SeekBar
+            android:id="@+id/seekBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="10dp"
+            android:layout_marginTop="19dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp">
+
+            <com.maxim.musicplayer.main.TimeTextView
+                android:id="@+id/actualTimeTextView"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingHorizontal="24dp"
-                android:textSize="20sp"
-                tools:text="Artist name" />
+                android:textSize="16sp"
+                tools:text="0:00" />
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <com.maxim.musicplayer.main.TimeTextView
+                android:id="@+id/durationTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                tools:text="1:23" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:id="@+id/randomOrderButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="30dp"
+                android:background="@null"
+                android:src="@drawable/random_24" />
+
+            <ImageButton
+                android:id="@+id/previousButton"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:background="@drawable/round_button"
+                android:src="@drawable/previous_24" />
+
+            <ImageButton
+                android:id="@+id/playButton"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:layout_marginHorizontal="14dp"
+                android:background="@drawable/round_button"
+                android:src="@drawable/play_24" />
+
+            <ImageButton
+                android:id="@+id/nextButton"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:background="@drawable/round_button"
+                android:src="@drawable/next_24" />
+
+            <ImageButton
+                android:id="@+id/loopOrderButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="30dp"
+                android:background="@null"
+                android:src="@drawable/loop_24" />
 
         </LinearLayout>
 
         <ImageButton
-            android:id="@+id/favoriteButton"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_marginHorizontal="10dp"
-            android:background="@null"
-            android:src="@drawable/favorite_24" />
+            android:id="@+id/orderButton"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_gravity="end"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="10dp"
+            android:background="@drawable/order_24" />
 
     </LinearLayout>
 
-    <SeekBar
-        android:id="@+id/seekBar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="10dp"
-        android:layout_marginTop="19dp" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="16dp">
-
-        <com.maxim.musicplayer.main.TimeTextView
-            android:id="@+id/actualTimeTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="16sp"
-            tools:text="0:00" />
-
-        <Space
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1" />
-
-        <com.maxim.musicplayer.main.TimeTextView
-            android:id="@+id/durationTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="16sp"
-            tools:text="1:23" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:gravity="center"
-        android:orientation="horizontal">
-
-        <ImageButton
-            android:id="@+id/randomOrderButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="30dp"
-            android:background="@null"
-            android:src="@drawable/random_24" />
-
-        <ImageButton
-            android:id="@+id/previousButton"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:background="@drawable/round_button"
-            android:src="@drawable/previous_24" />
-
-        <ImageButton
-            android:id="@+id/playButton"
-            android:layout_width="70dp"
-            android:layout_height="70dp"
-            android:layout_marginHorizontal="14dp"
-            android:background="@drawable/round_button"
-            android:src="@drawable/play_24" />
-
-        <ImageButton
-            android:id="@+id/nextButton"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:background="@drawable/round_button"
-            android:src="@drawable/next_24" />
-
-        <ImageButton
-            android:id="@+id/loopOrderButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="30dp"
-            android:background="@null"
-            android:src="@drawable/loop_24" />
-
-    </LinearLayout>
-
-    <ImageButton
-        android:id="@+id/orderButton"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_gravity="end"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="10dp"
-        android:background="@drawable/order_24" />
-
-
-</LinearLayout>
+</ScrollView>
