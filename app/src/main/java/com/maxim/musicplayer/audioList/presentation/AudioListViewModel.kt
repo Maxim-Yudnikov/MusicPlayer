@@ -28,13 +28,13 @@ class AudioListViewModel(
     private var actualPosition = -1
 
     fun init(isFirstRun: Boolean, owner: LifecycleOwner) {
+        handle({ interactor.data() }) { list ->
+            communication.update(
+                AudioListState.List(list.map { it.map(mapper) }, actualPosition, false)
+            )
+            manageOrder.init(list.subList(1, list.size).map { it.map(mapper) })
+        }
         if (isFirstRun) {
-            handle({ interactor.data() }) { list ->
-                communication.update(
-                    AudioListState.List(list.map { it.map(mapper) }, actualPosition, false)
-                )
-                manageOrder.init(list.subList(1, list.size).map { it.map(mapper) })
-            }
             favoriteListRepository.init(this, owner)
         }
     }

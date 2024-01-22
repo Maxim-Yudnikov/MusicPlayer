@@ -23,8 +23,8 @@ class AlbumListViewModel(
 ) : BaseViewModel(), Communication.Observe<AlbumListState>, Reload {
 
     fun init(isFirstRun: Boolean, owner: LifecycleOwner) {
+        communication.update(AlbumListState.Base(repository.data().map { it.map(mapper) }))
         if (isFirstRun) {
-            communication.update(AlbumListState.Base(repository.data().map { it.map(mapper) }))
             favoritesRepository.init(this, owner)
         }
     }
