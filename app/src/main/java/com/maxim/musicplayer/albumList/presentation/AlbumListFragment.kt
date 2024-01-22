@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.GridLayoutManager
+import com.maxim.musicplayer.R
 import com.maxim.musicplayer.audioList.presentation.RefreshFinish
 import com.maxim.musicplayer.core.presentation.BaseFragment
 import com.maxim.musicplayer.databinding.FragmentAudioListBinding
@@ -23,7 +24,8 @@ class AlbumListFragment: BaseFragment<FragmentAudioListBinding, AlbumListViewMod
             }
         })
         binding.audioRecyclerView.adapter = adapter
-        binding.audioRecyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
+        binding.audioRecyclerView.layoutManager = GridLayoutManager(requireContext(), resources.getInteger(
+            R.integer.albums_span_count))
 
         viewModel.observe(this) {
             it.show(adapter)

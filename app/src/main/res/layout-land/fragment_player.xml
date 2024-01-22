@@ -71,14 +71,6 @@
                 android:textSize="16sp"
                 tools:text="1:23" />
 
-            <ImageButton
-                android:id="@+id/favoriteButton"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_marginHorizontal="10dp"
-                android:background="@null"
-                android:src="@drawable/favorite_24" />
-
         </LinearLayout>
 
         <LinearLayout
@@ -128,14 +120,32 @@
 
         </LinearLayout>
 
-        <ImageButton
-            android:id="@+id/orderButton"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_gravity="end"
-            android:layout_marginTop="10dp"
-            android:layout_marginEnd="10dp"
-            android:background="@drawable/order_24" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageButton
+                android:id="@+id/favoriteButton"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginHorizontal="10dp"
+                android:background="@null"
+                android:src="@drawable/favorite_24" />
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1" />
+
+            <ImageButton
+                android:id="@+id/orderButton"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="10dp"
+                android:background="@drawable/order_24" />
+
+        </LinearLayout>
 
     </LinearLayout>
 
