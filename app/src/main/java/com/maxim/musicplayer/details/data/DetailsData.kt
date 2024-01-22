@@ -9,12 +9,11 @@ data class DetailsData(
     private val path: String,
     private val format: String,
     private val bitrate: String,
-    private val samplingRate: String,
     private val size: String,
     private val duration: Long,
     private val album: String,
     private val artist: String
 ) {
     fun toUi() =
-        DetailsUi(artUri, title, path, format, bitrate, samplingRate, size, duration, album, artist)
+        DetailsUi(artUri, title, path, format, bitrate, size, duration, album, artist)
 }

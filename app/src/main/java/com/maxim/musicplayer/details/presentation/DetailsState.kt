@@ -11,7 +11,6 @@ interface DetailsState {
         pathTextView: TextView,
         formatTextView: TextView,
         bitrateTextView: TextView,
-        samplingRateTextView: TextView,
         sizeTextView: TextView,
         durationTextView: TimeTextView,
         albumTextView: TextView,
@@ -25,7 +24,6 @@ interface DetailsState {
             pathTextView: TextView,
             formatTextView: TextView,
             bitrateTextView: TextView,
-            samplingRateTextView: TextView,
             sizeTextView: TextView,
             durationTextView: TimeTextView,
             albumTextView: TextView,
@@ -36,7 +34,6 @@ interface DetailsState {
             details.showPath(pathTextView)
             details.showFormat(formatTextView)
             details.showBitrate(bitrateTextView)
-            details.showSamplingRate(samplingRateTextView)
             details.showSize(sizeTextView)
             details.showDuration(durationTextView)
             details.showAlbum(albumTextView)

@@ -24,7 +24,6 @@ class DetailsFragment: DialogFragment() {
                 binding.filePathTextView,
                 binding.formatTextView,
                 binding.bitrateTextView,
-                binding.samplingRateTextView,
                 binding.sizeTextView,
                 binding.lengthTextView,
                 binding.albumTextView,

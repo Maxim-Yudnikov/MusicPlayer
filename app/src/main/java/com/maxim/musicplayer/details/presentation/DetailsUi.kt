@@ -11,7 +11,6 @@ data class DetailsUi(
     private val path: String,
     private val format: String,
     private val bitrate: String,
-    private val samplingRate: String,
     private val size: String,
     private val duration: Long,
     private val album: String,
@@ -35,10 +34,6 @@ data class DetailsUi(
 
     fun showBitrate(textView: TextView) {
         textView.text = bitrate
-    }
-
-    fun showSamplingRate(textView: TextView) {
-        textView.text = samplingRate
     }
 
     fun showSize(textView: TextView) {

@@ -71,7 +71,7 @@ interface TracksProvider {
 
                     val artUri = Uri.parse("content://media/external/audio/media/$id/albumart")
                     val title = cursor.getString(1)
-                    val data = cursor.getString(2)
+                    val path = cursor.getString(2)
                     val bitrate = cursor.getString(3)
                     val size = cursor.getString(4)
                     val duration = cursor.getLong(5)
@@ -82,11 +82,10 @@ interface TracksProvider {
                     return DetailsData(
                         artUri,
                         title,
-                        data,
-                        "todo",
+                        path,
+                        path.split(".").last(),
                         bitrate,
-                        "todo",
-                        size,
+                        "${size.toInt() / 1024} KB",
                         duration,
                         album,
                         artist
