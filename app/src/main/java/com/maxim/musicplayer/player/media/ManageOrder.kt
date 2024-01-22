@@ -166,6 +166,9 @@ interface ManageOrder {
         }
 
         override fun playNext(audioUi: AudioUi) {
+            if (actualOrder.isEmpty())
+                return
+
             val id = audioUi.id()
             if (id == actualOrder[actualPosition])
                 return

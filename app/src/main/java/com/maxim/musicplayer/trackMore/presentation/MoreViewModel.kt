@@ -44,7 +44,6 @@ class MoreViewModel( //todo clearViewModel
 
         handle({
             storage.readAudio().changeFavorite(favoriteListRepository)
-            //favoriteListRepository.data()
         }) {
             manageOrder.changeFavorite(storage.readAudio().id(), mediaServiceProvider.mediaService())
             storage.saveAudio(storage.readAudio().changeFavorite())

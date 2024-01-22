@@ -35,8 +35,7 @@ abstract class BaseTest {
                 index,
                 R.id.moreButton
             )
-        )
-            .perform(click())
+        ).perform(click())
     }
 
     protected fun openTrackFromFavoriteRecyclerview(index: Int) {
@@ -52,6 +51,14 @@ abstract class BaseTest {
             )
         )
             .perform(click())
+    }
+
+    protected fun playNext() {
+        onView(withId(R.id.playNextButton)).perform(click())
+    }
+
+    protected fun goToPlayerFromDownBar() {
+        onView(withId(R.id.downBarRoot)).perform(click())
     }
 
     protected fun checkPlayerIsOpened() {
