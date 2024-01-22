@@ -15,16 +15,20 @@ class TimeTextView : androidx.appcompat.widget.AppCompatTextView {
     //endregion
 
     fun showTime(seconds: Int) {
-        val minutes = seconds / 60
-        val second = seconds % 60
-        val timeUi = "$minutes:${if (second < 10) "0$second" else second}"
-        text = timeUi
+        text = time(seconds)
     }
 
     fun showStringAndTime(string: String, seconds: Int) {
-        val minutes = seconds / 60
-        val second = seconds % 60
-        val timeUi = "$string$minutes:${if (second < 10) "0$second" else second}"
+        val timeUi = "$string${time(seconds)}"
         text = timeUi
+    }
+
+    private fun time(s: Int): String {
+        val hours = s / 3600
+        val minutes = s % 3600 / 60
+        val seconds = s % 60
+        return (if (hours > 0) "$hours:" else "") +
+                (if (minutes < 10) "0$minutes" else minutes) + ":" +
+                (if (seconds < 10) "0$seconds" else seconds)
     }
 }
