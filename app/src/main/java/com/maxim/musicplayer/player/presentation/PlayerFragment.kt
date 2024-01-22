@@ -9,7 +9,7 @@ import androidx.activity.OnBackPressedCallback
 import com.maxim.musicplayer.core.ProvideMediaService
 import com.maxim.musicplayer.core.presentation.BaseFragment
 import com.maxim.musicplayer.databinding.FragmentPlayerBinding
-import com.maxim.musicplayer.player.media.MediaService
+import com.maxim.musicplayer.media.MediaService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job

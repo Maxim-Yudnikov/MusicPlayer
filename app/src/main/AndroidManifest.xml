@@ -23,7 +23,7 @@
         tools:targetApi="31">
 
         <receiver
-            android:name=".player.media.NotificationActionsBroadcastReceiver"
+            android:name=".media.NotificationActionsBroadcastReceiver"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MEDIA_BUTTON" />
@@ -42,7 +42,7 @@
             </intent-filter>
         </activity>
         <service
-            android:name="com.maxim.musicplayer.player.media.MediaService$Base"
+            android:name="com.maxim.musicplayer.media.MediaService$Base"
             android:foregroundServiceType="mediaPlayback" />
     </application>
 

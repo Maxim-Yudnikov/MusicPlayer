@@ -1,7 +1,7 @@
 package com.maxim.musicplayer.core.data
 
 import android.content.SharedPreferences
-import com.maxim.musicplayer.player.media.LoopState
+import com.maxim.musicplayer.media.LoopState
 import java.lang.IllegalStateException
 
 interface SimpleStorage {

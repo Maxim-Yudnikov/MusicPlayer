@@ -11,8 +11,8 @@ import com.maxim.musicplayer.core.presentation.Reload
 import com.maxim.musicplayer.core.presentation.Screen
 import com.maxim.musicplayer.core.sl.ClearViewModel
 import com.maxim.musicplayer.core.sl.GoBack
-import com.maxim.musicplayer.player.media.OrderType
-import com.maxim.musicplayer.player.media.ManageOrder
+import com.maxim.musicplayer.media.OrderType
+import com.maxim.musicplayer.media.ManageOrder
 
 class OrderViewModel(
     private val communication: OrderCommunication,

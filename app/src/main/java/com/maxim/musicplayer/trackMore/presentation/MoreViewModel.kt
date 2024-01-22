@@ -11,7 +11,7 @@ import com.maxim.musicplayer.core.presentation.ShowError
 import com.maxim.musicplayer.details.presentation.DetailsScreen
 import com.maxim.musicplayer.details.presentation.DetailsStorage
 import com.maxim.musicplayer.favoriteList.data.FavoriteListRepository
-import com.maxim.musicplayer.player.media.ManageOrder
+import com.maxim.musicplayer.media.ManageOrder
 
 class MoreViewModel( //todo clearViewModel
     private val communication: MoreCommunication,

@@ -8,7 +8,7 @@ import com.maxim.musicplayer.audioList.data.TracksProvider
 import com.maxim.musicplayer.core.data.MockSimpleStorage
 import com.maxim.musicplayer.core.data.SimpleStorage
 import com.maxim.musicplayer.favoriteList.data.FavoriteDatabase
-import com.maxim.musicplayer.player.media.ShuffleOrder
+import com.maxim.musicplayer.media.ShuffleOrder
 
 interface ProvideInstances {
     fun database(): FavoriteDatabase

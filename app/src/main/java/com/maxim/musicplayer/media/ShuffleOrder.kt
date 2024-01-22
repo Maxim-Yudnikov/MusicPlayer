@@ -1,4 +1,4 @@
-package com.maxim.musicplayer.player.media
+package com.maxim.musicplayer.media
 
 interface ShuffleOrder {
     fun shuffle(list: List<Long>): List<Long>

@@ -1,4 +1,4 @@
-package com.maxim.musicplayer.player.media
+package com.maxim.musicplayer.media
 
 import com.maxim.musicplayer.albumList.presentation.AlbumUi
 

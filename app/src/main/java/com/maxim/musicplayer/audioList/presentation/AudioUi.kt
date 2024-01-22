@@ -13,7 +13,7 @@ import com.maxim.musicplayer.R
 import com.maxim.musicplayer.favoriteList.data.FavoritesActions
 import com.maxim.musicplayer.main.TimeTextView
 import com.maxim.musicplayer.order.presentation.OrderAdapter
-import com.maxim.musicplayer.player.media.StartAudio
+import com.maxim.musicplayer.media.StartAudio
 import java.io.Serializable
 
 abstract class AudioUi : Serializable {

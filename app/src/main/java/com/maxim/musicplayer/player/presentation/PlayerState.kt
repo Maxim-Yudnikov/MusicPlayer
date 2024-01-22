@@ -10,7 +10,7 @@ import com.maxim.musicplayer.audioList.presentation.ArtImageView
 import com.maxim.musicplayer.audioList.presentation.AudioUi
 import com.maxim.musicplayer.core.sl.GoBack
 import com.maxim.musicplayer.main.TimeTextView
-import com.maxim.musicplayer.player.media.LoopState
+import com.maxim.musicplayer.media.LoopState
 
 interface PlayerState {
     fun show(

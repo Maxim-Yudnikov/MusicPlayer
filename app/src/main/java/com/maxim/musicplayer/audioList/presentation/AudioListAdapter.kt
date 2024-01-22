@@ -12,7 +12,7 @@ import com.maxim.musicplayer.R
 import com.maxim.musicplayer.core.ProvideMediaService
 import com.maxim.musicplayer.databinding.AudioLayoutBinding
 import com.maxim.musicplayer.databinding.CountLayoutBinding
-import com.maxim.musicplayer.player.media.MediaService
+import com.maxim.musicplayer.media.MediaService
 
 class AudioListAdapter(
     private val listener: Listener

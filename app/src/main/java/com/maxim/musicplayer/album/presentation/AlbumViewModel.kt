@@ -15,9 +15,9 @@ import com.maxim.musicplayer.core.presentation.Screen
 import com.maxim.musicplayer.core.sl.ClearViewModel
 import com.maxim.musicplayer.core.sl.GoBack
 import com.maxim.musicplayer.favoriteList.data.FavoriteListRepository
-import com.maxim.musicplayer.player.media.ManageOrder
-import com.maxim.musicplayer.player.media.MediaService
-import com.maxim.musicplayer.player.media.OrderType
+import com.maxim.musicplayer.media.ManageOrder
+import com.maxim.musicplayer.media.MediaService
+import com.maxim.musicplayer.media.OrderType
 import com.maxim.musicplayer.player.presentation.PlayerScreen
 import com.maxim.musicplayer.trackMore.presentation.MoreScreen
 import com.maxim.musicplayer.trackMore.presentation.MoreStorage

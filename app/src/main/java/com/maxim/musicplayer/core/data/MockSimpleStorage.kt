@@ -1,6 +1,6 @@
 package com.maxim.musicplayer.core.data
 
-import com.maxim.musicplayer.player.media.LoopState
+import com.maxim.musicplayer.media.LoopState
 
 class MockSimpleStorage: SimpleStorage {
     override fun save(key: String, value: Boolean) = Unit

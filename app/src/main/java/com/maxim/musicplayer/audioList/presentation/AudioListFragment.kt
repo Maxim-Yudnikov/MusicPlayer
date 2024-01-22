@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.maxim.musicplayer.core.presentation.BaseFragment
 import com.maxim.musicplayer.databinding.FragmentAudioListBinding
-import com.maxim.musicplayer.player.media.MediaService
+import com.maxim.musicplayer.media.MediaService
 
 class AudioListFragment : BaseFragment<FragmentAudioListBinding, AudioListViewModel>(), RefreshFinish {
     override fun viewModelClass() = AudioListViewModel::class.java

@@ -9,7 +9,7 @@ import com.maxim.musicplayer.audioList.presentation.AudioListAdapter
 import com.maxim.musicplayer.audioList.presentation.AudioUi
 import com.maxim.musicplayer.core.presentation.BaseFragment
 import com.maxim.musicplayer.databinding.FragmentAlbumBinding
-import com.maxim.musicplayer.player.media.MediaService
+import com.maxim.musicplayer.media.MediaService
 
 class AlbumFragment: BaseFragment<FragmentAlbumBinding, AlbumViewModel>() {
     override fun viewModelClass() = AlbumViewModel::class.java

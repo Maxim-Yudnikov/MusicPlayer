@@ -1,7 +1,7 @@
 package com.maxim.musicplayer.downBar
 
 import com.maxim.musicplayer.audioList.presentation.AudioUi
-import com.maxim.musicplayer.player.media.Playable
+import com.maxim.musicplayer.media.Playable
 
 interface DownBarTrackCommunication {
     fun init(reload: ReloadDownBar)

@@ -1,4 +1,4 @@
-package com.maxim.musicplayer.player.media
+package com.maxim.musicplayer.media
 
 import android.app.Notification
 import android.app.NotificationChannel

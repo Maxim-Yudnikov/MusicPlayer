@@ -12,8 +12,8 @@ import com.maxim.musicplayer.core.sl.GoBack
 import com.maxim.musicplayer.downBar.DownBarTrackCommunication
 import com.maxim.musicplayer.favoriteList.data.FavoriteListRepository
 import com.maxim.musicplayer.order.presentation.OrderScreen
-import com.maxim.musicplayer.player.media.ManageOrder
-import com.maxim.musicplayer.player.media.Playable
+import com.maxim.musicplayer.media.ManageOrder
+import com.maxim.musicplayer.media.Playable
 
 class PlayerViewModel(
     private val downBarTrackCommunication: DownBarTrackCommunication,

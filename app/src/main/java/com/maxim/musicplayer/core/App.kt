@@ -13,8 +13,8 @@ import com.maxim.musicplayer.core.sl.ProvideInstances
 import com.maxim.musicplayer.core.sl.ProvideViewModel
 import com.maxim.musicplayer.core.sl.ViewModelFactory
 import com.maxim.musicplayer.downBar.DownBarTrackCommunication
-import com.maxim.musicplayer.player.media.ManageOrder
-import com.maxim.musicplayer.player.media.MediaService
+import com.maxim.musicplayer.media.ManageOrder
+import com.maxim.musicplayer.media.MediaService
 import com.maxim.musicplayer.player.presentation.PlayerCommunication
 
 class App : Application(), ProvideViewModel, ProvideMediaService, ProvideManageOrder,

@@ -1,13 +1,13 @@
-package com.maxim.musicplayer.player.media
+package com.maxim.musicplayer.media
 
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import com.maxim.musicplayer.core.ProvideMediaService
-import com.maxim.musicplayer.player.media.MediaService.Base.Companion.NEXT_ACTION
-import com.maxim.musicplayer.player.media.MediaService.Base.Companion.PLAY_ACTION
-import com.maxim.musicplayer.player.media.MediaService.Base.Companion.PREVIOUS_ACTION
-import com.maxim.musicplayer.player.media.MediaService.Base.Companion.STOP_ACTION
+import com.maxim.musicplayer.media.MediaService.Base.Companion.NEXT_ACTION
+import com.maxim.musicplayer.media.MediaService.Base.Companion.PLAY_ACTION
+import com.maxim.musicplayer.media.MediaService.Base.Companion.PREVIOUS_ACTION
+import com.maxim.musicplayer.media.MediaService.Base.Companion.STOP_ACTION
 
 class NotificationActionsBroadcastReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {
