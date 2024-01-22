@@ -20,6 +20,7 @@ interface MoreState {
             audioUi.showTitle(titleTextView)
             audioUi.showDescription(descriptionTextView)
             audioUi.showFavorite(favoriteImageView)
+            favoriteImageView.isEnabled = true
         }
     }
 }

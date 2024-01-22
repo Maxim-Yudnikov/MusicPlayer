@@ -29,6 +29,7 @@ class MoreBottomFragment : BottomSheetDialogFragment(), ShowError {
         viewModel = (requireActivity() as ProvideViewModel).viewModel(MoreViewModel::class.java)
 
         binding.favoriteButton.setOnClickListener {
+            binding.favoriteButton.isEnabled = false
             viewModel.saveToFavorites(this)
             if (viewModel.fromFavorite())
                 dismiss()

@@ -88,6 +88,7 @@ class AudioListViewModel(
     }
 
     override fun reload() {
+        //todo data synchronized?
         handle({ interactor.data().map { it.map(mapper) } }) { list ->
             communication.update(
                 AudioListState.List(list, actualPosition, false)
