@@ -67,7 +67,7 @@ interface ProvideViewModel {
                 )
                 DownBarViewModel::class.java -> DownBarModule(core)
                 FavoriteListViewModel::class.java -> FavoriteModule(core)
-                MoreViewModel::class.java -> MoreModule(core)
+                MoreViewModel::class.java -> MoreModule(core, clearViewModel)
                 AlbumListViewModel::class.java -> AlbumListModule(core)
                 AlbumViewModel::class.java -> AlbumModule(core, clearViewModel)
                 OrderViewModel::class.java -> OrderModule(core, clearViewModel)

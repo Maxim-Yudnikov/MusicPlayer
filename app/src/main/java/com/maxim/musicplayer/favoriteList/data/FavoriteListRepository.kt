@@ -5,7 +5,6 @@ import androidx.lifecycle.LiveData
 import com.maxim.musicplayer.audioList.domain.AudioDomain
 import com.maxim.musicplayer.core.presentation.Reload
 
-//todo someday make interactor
 interface FavoriteListRepository : FavoritesActions {
     fun init(reload: Reload)
     fun data(): List<AudioDomain>

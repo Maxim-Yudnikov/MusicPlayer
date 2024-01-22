@@ -56,6 +56,7 @@ class MoreBottomFragment : BottomSheetDialogFragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        viewModel.goBack()
         _binding = null
     }
 }

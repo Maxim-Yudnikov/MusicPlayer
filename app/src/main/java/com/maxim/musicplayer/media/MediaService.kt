@@ -237,7 +237,6 @@ interface MediaService : StartAudio, Playable {
             audio.start(this, contentResolver)
         }
 
-        //todo strange, stopSelf doesn't call onDestroy
         override fun stop() {
             if (isPlaying) play()
             stopForeground(STOP_FOREGROUND_REMOVE)
