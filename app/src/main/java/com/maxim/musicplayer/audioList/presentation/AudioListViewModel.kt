@@ -4,7 +4,6 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import com.maxim.musicplayer.audioList.domain.AudioDomain
 import com.maxim.musicplayer.audioList.domain.AudioListInteractor
-import com.maxim.musicplayer.core.presentation.BaseViewModel
 import com.maxim.musicplayer.core.presentation.Communication
 import com.maxim.musicplayer.core.presentation.Init
 import com.maxim.musicplayer.core.presentation.Navigation
@@ -15,7 +14,6 @@ import com.maxim.musicplayer.media.ManageOrder
 import com.maxim.musicplayer.media.MediaService
 import com.maxim.musicplayer.media.OrderType
 import com.maxim.musicplayer.player.presentation.PlayerScreen
-import com.maxim.musicplayer.trackMore.presentation.MoreScreen
 import com.maxim.musicplayer.trackMore.presentation.MoreStorage
 
 class AudioListViewModel(
@@ -24,10 +22,10 @@ class AudioListViewModel(
     private val mapper: AudioDomain.Mapper<AudioUi>,
     private val navigation: Navigation.Update,
     private val manageOrder: ManageOrder,
-    private val moreStorage: MoreStorage.Save,
+    moreStorage: MoreStorage.Save,
     private val favoriteListRepository: FavoriteListRepository,
     runAsync: RunAsync = RunAsync.Base()
-) : BaseViewModel(runAsync), Communication.Observe<AudioListState>, Init, Reload {
+) : AbstractListViewModel(manageOrder, moreStorage, navigation, runAsync), Communication.Observe<AudioListState>, Init, Reload {
     private var actualPosition = -1
 
     override fun init(isFirstRun: Boolean) {
@@ -61,17 +59,6 @@ class AudioListViewModel(
                 AudioListState.List(list.map { it.map(mapper) }, actualPosition, false)
             )
         }
-    }
-
-    //todo make abstract list viewmodel
-    fun more(audioUi: AudioUi) {
-        moreStorage.saveAudio(audioUi)
-        moreStorage.saveFromFavorite(false)
-        navigation.update(MoreScreen)
-    }
-
-    fun observePosition(owner: LifecycleOwner, observer: Observer<Pair<Int, OrderType>>) {
-        manageOrder.observePosition(owner, observer)
     }
 
     fun open(track: AudioUi, position: Int, mediaService: MediaService) {

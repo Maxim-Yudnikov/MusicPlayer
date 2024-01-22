@@ -3,10 +3,10 @@ package com.maxim.musicplayer.favoriteList.presentation
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import com.maxim.musicplayer.audioList.domain.AudioDomain
+import com.maxim.musicplayer.audioList.presentation.AbstractListViewModel
 import com.maxim.musicplayer.audioList.presentation.AudioListCommunication
 import com.maxim.musicplayer.audioList.presentation.AudioListState
 import com.maxim.musicplayer.audioList.presentation.AudioUi
-import com.maxim.musicplayer.core.presentation.BaseViewModel
 import com.maxim.musicplayer.core.presentation.Communication
 import com.maxim.musicplayer.core.presentation.Navigation
 import com.maxim.musicplayer.core.presentation.Reload
@@ -16,18 +16,17 @@ import com.maxim.musicplayer.media.ManageOrder
 import com.maxim.musicplayer.media.MediaService
 import com.maxim.musicplayer.media.OrderType
 import com.maxim.musicplayer.player.presentation.PlayerScreen
-import com.maxim.musicplayer.trackMore.presentation.MoreScreen
 import com.maxim.musicplayer.trackMore.presentation.MoreStorage
 
 class FavoriteListViewModel(
     private val repository: FavoriteListRepository,
     private val mapper: AudioDomain.Mapper<AudioUi>,
     private val audioListCommunication: AudioListCommunication,
-    private val manageOrder: ManageOrder,
+    manageOrder: ManageOrder,
     private val navigation: Navigation.Update,
-    private val moreStorage: MoreStorage.Save,
+    moreStorage: MoreStorage.Save,
     runAsync: RunAsync = RunAsync.Base()
-) : BaseViewModel(runAsync), Communication.Observe<AudioListState>, Reload {
+) : AbstractListViewModel(manageOrder, moreStorage, navigation, runAsync), Communication.Observe<AudioListState>, Reload {
     private var actualPosition = -1
 
     fun init(isFirstRun: Boolean) {
@@ -39,10 +38,6 @@ class FavoriteListViewModel(
         audioListCommunication.observe(owner, observer)
     }
 
-    fun observePosition(owner: LifecycleOwner, observer: Observer<Pair<Int, OrderType>>) {
-        manageOrder.observePosition(owner, observer)
-    }
-
     fun setPosition(position: Int, orderType: OrderType) {
         actualPosition = if (orderType != OrderType.Favorite) -1 else position
 
@@ -52,12 +47,6 @@ class FavoriteListViewModel(
                 actualPosition, false
             )
         )
-    }
-
-    fun more(audioUi: AudioUi) {
-        moreStorage.saveAudio(audioUi)
-        moreStorage.saveFromFavorite(true)
-        navigation.update(MoreScreen)
     }
 
     fun open(track: AudioUi, position: Int, mediaService: MediaService) {
