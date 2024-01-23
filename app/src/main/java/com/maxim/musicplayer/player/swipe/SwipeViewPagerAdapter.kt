@@ -3,9 +3,8 @@ package com.maxim.musicplayer.player.swipe
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.maxim.musicplayer.player.swipe.left.LeftSwipeFragment
-import com.maxim.musicplayer.player.swipe.middle.MiddleSwipeFragment
-import com.maxim.musicplayer.player.swipe.right.RightSwipeFragment
+import androidx.viewpager2.widget.ViewPager2
+import com.maxim.musicplayer.audioList.presentation.AudioUi
 
 class SwipeViewPagerAdapter(fragment: FragmentActivity, private val swipeState: SwipeState) :
     FragmentStateAdapter(fragment) {
@@ -17,41 +16,70 @@ class SwipeViewPagerAdapter(fragment: FragmentActivity, private val swipeState: 
 interface SwipeState {
     fun getItemCount(): Int
     fun createFragment(position: Int): Fragment
+    fun setCurrentItem(viewPager2: ViewPager2)
 
-    class All : SwipeState {
+    class All(
+        private val previous: AudioUi,
+        private val current: AudioUi,
+        private val next: AudioUi
+    ) : SwipeState {
         override fun getItemCount() = 3
 
         override fun createFragment(position: Int) =
             when (position) {
-                0 -> LeftSwipeFragment()
-                1 -> MiddleSwipeFragment()
-                else -> RightSwipeFragment()
+                0 -> SwipeFragment.newInstance(previous)
+                1 -> SwipeFragment.newInstance(current)
+                else -> SwipeFragment.newInstance(next)
             }
+
+        override fun setCurrentItem(viewPager2: ViewPager2) {
+            viewPager2.setCurrentItem(1, false)
+        }
     }
 
-    class Start: SwipeState {
+    class Start(
+        private val current: AudioUi,
+        private val next: AudioUi
+    ) : SwipeState {
         override fun getItemCount() = 2
 
         override fun createFragment(position: Int) =
             when (position) {
-                0 -> MiddleSwipeFragment()
-                else -> RightSwipeFragment()
+                0 -> SwipeFragment.newInstance(current)
+                else -> SwipeFragment.newInstance(next)
             }
+
+        override fun setCurrentItem(viewPager2: ViewPager2) {
+            viewPager2.setCurrentItem(0, false)
+        }
     }
 
-    class End: SwipeState {
+    class End(
+        private val previous: AudioUi,
+        private val current: AudioUi
+    ) : SwipeState {
         override fun getItemCount() = 2
 
         override fun createFragment(position: Int) =
             when (position) {
-                0 -> LeftSwipeFragment()
-                else -> MiddleSwipeFragment()
+                0 -> SwipeFragment.newInstance(previous)
+                else -> SwipeFragment.newInstance(current)
             }
+
+        override fun setCurrentItem(viewPager2: ViewPager2) {
+            viewPager2.setCurrentItem(1, false)
+        }
     }
 
-    class Single: SwipeState {
+    class Single(
+        private val current: AudioUi
+    ) : SwipeState {
         override fun getItemCount() = 1
 
-        override fun createFragment(position: Int) = MiddleSwipeFragment()
+        override fun createFragment(position: Int) = SwipeFragment.newInstance(current)
+
+        override fun setCurrentItem(viewPager2: ViewPager2) {
+            viewPager2.setCurrentItem(0, false)
+        }
     }
 }

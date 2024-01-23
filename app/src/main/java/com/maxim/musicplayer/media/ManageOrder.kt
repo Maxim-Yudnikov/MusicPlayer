@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import com.maxim.musicplayer.audioList.presentation.AudioUi
 import com.maxim.musicplayer.core.data.SimpleStorage
+import com.maxim.musicplayer.player.swipe.SwipeState
 
 interface ManageOrder {
     fun init(allTracks: List<AudioUi>)
@@ -20,6 +21,7 @@ interface ManageOrder {
     fun loopState(): LoopState
     fun changeRandom()
     fun isRandom(): Boolean
+    fun swipeState(): SwipeState
 
     fun canGoNext(): Boolean
     fun canGoPrevious(): Boolean
@@ -52,6 +54,23 @@ interface ManageOrder {
 
         override fun loopState() = loopState
         override fun isRandom() = isRandom
+        override fun swipeState(): SwipeState {
+            return if (actualOrder.size == 1) SwipeState.Single(tracksMap[actualOrder[actualPosition]]!!)
+            else if (actualPosition == actualOrder.lastIndex) SwipeState.End(
+                tracksMap[actualOrder[actualPosition - 1]]!!,
+                tracksMap[actualOrder[actualPosition]]!!
+            )
+            else if (actualPosition == 0) SwipeState.Start(
+                tracksMap[actualOrder[actualPosition]]!!,
+                tracksMap[actualOrder[actualPosition + 1]]!!
+            )
+            else SwipeState.All(
+                tracksMap[actualOrder[actualPosition - 1]]!!,
+                tracksMap[actualOrder[actualPosition]]!!,
+                tracksMap[actualOrder[actualPosition + 1]]!!
+            )
+        }
+
         override fun actualOrder() = actualOrder.map { tracksMap[it]!! }
         override fun actualPosition() = actualPosition
         override fun actualTrack() = tracksMap[actualOrder[actualPosition]]!!

@@ -39,7 +39,8 @@ class PlayerViewModel(
                     manageOrder.isRandom(),
                     manageOrder.loopState(),
                     !mediaServiceProvider.mediaService().isPlaying(),
-                    mediaServiceProvider.mediaService().currentPosition()
+                    mediaServiceProvider.mediaService().currentPosition(),
+                    manageOrder.swipeState()
                 )
             )
         }
@@ -61,7 +62,8 @@ class PlayerViewModel(
                         manageOrder.isRandom(),
                         manageOrder.loopState(),
                         !mediaServiceProvider.mediaService().isPlaying(),
-                        mediaServiceProvider.mediaService().currentPosition()
+                        mediaServiceProvider.mediaService().currentPosition(),
+                        manageOrder.swipeState()
                     )
                 )
         }

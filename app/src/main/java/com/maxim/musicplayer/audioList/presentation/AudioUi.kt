@@ -5,6 +5,7 @@ import android.graphics.Bitmap
 import android.graphics.ImageDecoder
 import android.net.Uri
 import android.os.Build
+import android.os.Bundle
 import android.provider.MediaStore
 import android.widget.ImageView
 import android.widget.SeekBar
@@ -12,8 +13,8 @@ import android.widget.TextView
 import com.maxim.musicplayer.R
 import com.maxim.musicplayer.favoriteList.data.FavoritesActions
 import com.maxim.musicplayer.main.TimeTextView
-import com.maxim.musicplayer.order.presentation.OrderAdapter
 import com.maxim.musicplayer.media.StartAudio
+import com.maxim.musicplayer.order.presentation.OrderAdapter
 import java.io.Serializable
 
 abstract class AudioUi : Serializable {
@@ -33,6 +34,7 @@ abstract class AudioUi : Serializable {
     open fun changeFavorite(): AudioUi = Empty
     open fun toBase(): AudioUi = Empty
     open fun removeListener(listener: OrderAdapter.Listener) = Unit
+    open fun putArt(key: String, bundle: Bundle) = Unit
 
     open fun duration(): Long = 0
 
@@ -94,6 +96,10 @@ abstract class AudioUi : Serializable {
 
         override fun removeListener(listener: OrderAdapter.Listener) {
             listener.remove(id)
+        }
+
+        override fun putArt(key: String, bundle: Bundle) {
+            bundle.putParcelable(key, artUri)
         }
 
         override fun duration() = duration

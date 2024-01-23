@@ -150,7 +150,8 @@ interface MediaService : StartAudio, Playable {
                         manageOrder.isRandom(),
                         manageOrder.loopState(),
                         false,
-                        mediaPlayer!!.currentPosition
+                        mediaPlayer!!.currentPosition,
+                        manageOrder.swipeState()
                     )
                 )
             } else {
@@ -161,7 +162,8 @@ interface MediaService : StartAudio, Playable {
                         manageOrder.isRandom(),
                         manageOrder.loopState(),
                         true,
-                        mediaPlayer!!.currentPosition
+                        mediaPlayer!!.currentPosition,
+                        manageOrder.swipeState()
                     )
                 )
                 notificationManager.notify(
@@ -184,7 +186,8 @@ interface MediaService : StartAudio, Playable {
                     PlayerState.Base(
                         track,
                         manageOrder.isRandom(),
-                        manageOrder.loopState(), false, -1
+                        manageOrder.loopState(), false, -1,
+                        manageOrder.swipeState()
                     )
                 )
 
@@ -203,13 +206,15 @@ interface MediaService : StartAudio, Playable {
                 track.start(this, contentResolver)
                 downBarTrackCommunication.setTrack(track, this, true)
                 playerCommunication.update(
-                    PlayerState.Base(track, manageOrder.isRandom(), manageOrder.loopState(), false, 0)
+                    PlayerState.Base(track, manageOrder.isRandom(), manageOrder.loopState(), false, 0,
+                        manageOrder.swipeState())
                 )
             } else {
                 val track = manageOrder.actualTrack()
                 track.startAgain(this, contentResolver)
                 playerCommunication.update(
-                    PlayerState.Base(track, manageOrder.isRandom(), manageOrder.loopState(), false, 0)
+                    PlayerState.Base(track, manageOrder.isRandom(), manageOrder.loopState(), false, 0,
+                        manageOrder.swipeState())
                 )
             }
         }
@@ -253,7 +258,8 @@ interface MediaService : StartAudio, Playable {
                     manageOrder.isRandom(),
                     manageOrder.loopState(),
                     !(mediaPlayer?.isPlaying ?: false),
-                    mediaPlayer?.currentPosition ?: 0
+                    mediaPlayer?.currentPosition ?: 0,
+                    manageOrder.swipeState()
                 )
             )
         }
@@ -266,7 +272,8 @@ interface MediaService : StartAudio, Playable {
                     manageOrder.isRandom(),
                     manageOrder.loopState(),
                     !(mediaPlayer?.isPlaying ?: false),
-                    mediaPlayer?.currentPosition ?: 0
+                    mediaPlayer?.currentPosition ?: 0,
+                    manageOrder.swipeState()
                 )
             )
         }
@@ -358,7 +365,8 @@ interface MediaService : StartAudio, Playable {
                             manageOrder.isRandom(),
                             manageOrder.loopState(),
                             isPause,
-                            mediaPlayer!!.currentPosition
+                            mediaPlayer!!.currentPosition,
+                            manageOrder.swipeState()
                         )
                     )
                 }

@@ -56,6 +56,7 @@ interface PlayerState {
             actualTimeTextView.showTime(currentPosition / 1000)
             audio.showDuration(durationTextView)
             swipeViewPager.adapter = SwipeViewPagerAdapter(swipeViewPager.context as MainActivity, swipeState)
+            swipeState.setCurrentItem(swipeViewPager)
             audio.showTitle(titleTextView)
             audio.showArtist(artistTextView)
             audio.showFavorite(favoriteImageView)
