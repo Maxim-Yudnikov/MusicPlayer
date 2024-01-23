@@ -11,6 +11,7 @@ import com.maxim.musicplayer.core.ProvideMediaService
 import com.maxim.musicplayer.core.presentation.BaseFragment
 import com.maxim.musicplayer.databinding.FragmentPlayerBinding
 import com.maxim.musicplayer.media.MediaService
+import com.maxim.musicplayer.player.swipe.SwipeAdapter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -50,6 +51,8 @@ class PlayerFragment : BaseFragment<FragmentPlayerBinding, PlayerViewModel>(),
             )
             it.finish(viewModel)
         }
+
+        binding.trackViewPager!!.adapter = SwipeAdapter()
 
         binding.favoriteButton.setOnClickListener {
             binding.favoriteButton.isEnabled = false
