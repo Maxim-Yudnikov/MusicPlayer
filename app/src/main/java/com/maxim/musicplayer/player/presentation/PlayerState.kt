@@ -57,11 +57,11 @@ interface PlayerState {
             seekBar.progress = currentPosition
             actualTimeTextView.showTime(currentPosition / 1000)
             audio.showDuration(durationTextView)
-            swipeState.show(swipeViewPager.adapter as SwipeAdapter)
             val mediaService = (swipeViewPager.context.applicationContext as App).mediaService()
             setViewPagerListener.remove()
+            swipeState.show(swipeViewPager.adapter as SwipeAdapter)
             swipeState.setCurrentItem(swipeViewPager)
-            setViewPagerListener.set(swipeState.swipeListener(mediaService))
+            setViewPagerListener.set(swipeState.swipeListener(swipeViewPager, mediaService))
             audio.showTitle(titleTextView)
             audio.showArtist(artistTextView)
             audio.showFavorite(favoriteImageView)

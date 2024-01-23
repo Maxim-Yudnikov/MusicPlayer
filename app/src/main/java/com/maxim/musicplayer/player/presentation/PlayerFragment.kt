@@ -52,7 +52,8 @@ class PlayerFragment : BaseFragment<FragmentPlayerBinding, PlayerViewModel>(),
             it.finish(viewModel)
         }
 
-        binding.trackViewPager!!.adapter = SwipeAdapter()
+        val adapter = SwipeAdapter()
+        binding.trackViewPager!!.adapter = adapter
 
         binding.favoriteButton.setOnClickListener {
             binding.favoriteButton.isEnabled = false
@@ -135,6 +136,7 @@ class PlayerFragment : BaseFragment<FragmentPlayerBinding, PlayerViewModel>(),
         cachedCallback?.let {
             binding.trackViewPager!!.unregisterOnPageChangeCallback(it)
         }
+        cachedCallback = null
     }
 }
 

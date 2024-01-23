@@ -1,5 +1,6 @@
 package com.maxim.musicplayer.player.swipe
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -27,11 +28,23 @@ class SwipeAdapter : RecyclerView.Adapter<SwipeAdapter.ItemViewHolder>() {
         holder.bind(list[position])
     }
 
+    private var updateAll = true
+    @SuppressLint("NotifyDataSetChanged")
     fun update(newList: List<AudioUi>) {
-        val diff = AudioDiffUtil(list, newList)
-        val result = DiffUtil.calculateDiff(diff)
-        list.clear()
-        list.addAll(newList)
-        result.dispatchUpdatesTo(this)
+        if (updateAll) {
+            list.clear()
+            list.addAll(newList)
+            notifyDataSetChanged()
+        } else {
+            val diff = AudioDiffUtil(list, newList)
+            val result = DiffUtil.calculateDiff(diff)
+            list.clear()
+            list.addAll(newList)
+            result.dispatchUpdatesTo(this)
+        }
+    }
+
+    fun setUpdateAll(value: Boolean) {
+        updateAll = value
     }
 }
