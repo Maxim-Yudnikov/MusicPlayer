@@ -56,14 +56,26 @@ interface ManageOrder {
         override fun isRandom() = isRandom
         override fun swipeState(): SwipeState {
             return if (actualOrder.size == 1) SwipeState.Single(tracksMap[actualOrder[actualPosition]]!!)
-            else if (actualPosition == actualOrder.lastIndex) SwipeState.End(
+            else if (actualPosition == actualOrder.lastIndex && loopState != LoopState.LoopOrder) SwipeState.End(
                 tracksMap[actualOrder[actualPosition - 1]]!!,
                 tracksMap[actualOrder[actualPosition]]!!
-            )
-            else if (actualPosition == 0) SwipeState.Start(
+            ) else if (actualPosition == actualOrder.lastIndex) {
+                SwipeState.All(
+                    tracksMap[actualOrder[actualPosition - 1]]!!,
+                    tracksMap[actualOrder[actualPosition]]!!,
+                    tracksMap[actualOrder.first()]!!
+                )
+            }
+            else if (actualPosition == 0 && loopState != LoopState.LoopOrder) SwipeState.Start(
                 tracksMap[actualOrder[actualPosition]]!!,
                 tracksMap[actualOrder[actualPosition + 1]]!!
-            )
+            ) else if (actualPosition == 0) {
+                SwipeState.All(
+                    tracksMap[actualOrder.last()]!!,
+                    tracksMap[actualOrder[actualPosition]]!!,
+                    tracksMap[actualOrder[actualPosition + 1]]!!
+                )
+            }
             else SwipeState.All(
                 tracksMap[actualOrder[actualPosition - 1]]!!,
                 tracksMap[actualOrder[actualPosition]]!!,

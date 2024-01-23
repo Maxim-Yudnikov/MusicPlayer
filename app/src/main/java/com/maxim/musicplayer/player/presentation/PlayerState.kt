@@ -8,6 +8,7 @@ import androidx.core.content.ContextCompat
 import androidx.viewpager2.widget.ViewPager2
 import com.maxim.musicplayer.R
 import com.maxim.musicplayer.audioList.presentation.AudioUi
+import com.maxim.musicplayer.core.App
 import com.maxim.musicplayer.core.sl.GoBack
 import com.maxim.musicplayer.main.MainActivity
 import com.maxim.musicplayer.main.TimeTextView
@@ -18,6 +19,7 @@ import com.maxim.musicplayer.player.swipe.SwipeViewPagerAdapter
 interface PlayerState {
     fun show(
         swipeViewPager: ViewPager2,
+        setViewPagerListener: SetViewPagerListener,
         titleTextView: TextView,
         artistTextView: TextView,
         playButton: ImageButton,
@@ -41,6 +43,7 @@ interface PlayerState {
         @SuppressLint("SetTextI18n")
         override fun show(
             swipeViewPager: ViewPager2,
+            setViewPagerListener: SetViewPagerListener,
             titleTextView: TextView,
             artistTextView: TextView,
             playButton: ImageButton,
@@ -56,7 +59,10 @@ interface PlayerState {
             actualTimeTextView.showTime(currentPosition / 1000)
             audio.showDuration(durationTextView)
             swipeViewPager.adapter = SwipeViewPagerAdapter(swipeViewPager.context as MainActivity, swipeState)
+            val mediaService = (swipeViewPager.context.applicationContext as App).mediaService()
+            setViewPagerListener.remove()
             swipeState.setCurrentItem(swipeViewPager)
+            setViewPagerListener.set(swipeState.swipeListener(swipeViewPager, mediaService))
             audio.showTitle(titleTextView)
             audio.showArtist(artistTextView)
             audio.showFavorite(favoriteImageView)

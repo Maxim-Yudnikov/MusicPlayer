@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.SeekBar
 import androidx.activity.OnBackPressedCallback
+import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import com.maxim.musicplayer.core.ProvideMediaService
 import com.maxim.musicplayer.core.presentation.BaseFragment
 import com.maxim.musicplayer.databinding.FragmentPlayerBinding
@@ -17,7 +18,8 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class PlayerFragment : BaseFragment<FragmentPlayerBinding, PlayerViewModel>() {
+class PlayerFragment : BaseFragment<FragmentPlayerBinding, PlayerViewModel>(),
+    SetViewPagerListener {
     override fun viewModelClass() = PlayerViewModel::class.java
     override fun bind(inflater: LayoutInflater, container: ViewGroup?) =
         FragmentPlayerBinding.inflate(inflater, container, false)
@@ -35,6 +37,7 @@ class PlayerFragment : BaseFragment<FragmentPlayerBinding, PlayerViewModel>() {
         viewModel.observe(this) {
             it.show(
                 binding.trackViewPager!!, //todo
+                this,
                 binding.playerTitleTextView,
                 binding.artistTextView,
                 binding.playButton,
@@ -118,4 +121,21 @@ class PlayerFragment : BaseFragment<FragmentPlayerBinding, PlayerViewModel>() {
         job?.cancel()
         job = null
     }
+
+    private var cachedCallback: OnPageChangeCallback? = null
+    override fun set(callback: OnPageChangeCallback) {
+        cachedCallback = callback
+        binding.trackViewPager!!.registerOnPageChangeCallback(callback)
+    }
+
+    override fun remove() {
+        cachedCallback?.let {
+            binding.trackViewPager!!.unregisterOnPageChangeCallback(it)
+        }
+    }
+}
+
+interface SetViewPagerListener {
+    fun set(callback: OnPageChangeCallback)
+    fun remove()
 }
