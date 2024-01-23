@@ -37,7 +37,7 @@ class PlayerFragment : BaseFragment<FragmentPlayerBinding, PlayerViewModel>(),
 
         viewModel.observe(this) {
             it.show(
-                binding.trackViewPager!!, //todo
+                binding.trackViewPager,
                 this,
                 binding.playerTitleTextView,
                 binding.artistTextView,
@@ -53,7 +53,7 @@ class PlayerFragment : BaseFragment<FragmentPlayerBinding, PlayerViewModel>(),
         }
 
         val adapter = SwipeAdapter()
-        binding.trackViewPager!!.adapter = adapter
+        binding.trackViewPager.adapter = adapter
 
         binding.favoriteButton.setOnClickListener {
             binding.favoriteButton.isEnabled = false
@@ -67,14 +67,14 @@ class PlayerFragment : BaseFragment<FragmentPlayerBinding, PlayerViewModel>(),
         binding.nextButton.setOnClickListener {
             remove()
             adapter.setUpdateAll(false)
-            binding.trackViewPager!!.currentItem = binding.trackViewPager!!.currentItem + 1
+            binding.trackViewPager.currentItem = binding.trackViewPager.currentItem + 1
             viewModel.next()
         }
 
         binding.previousButton.setOnClickListener {
             remove()
             adapter.setUpdateAll(false)
-            binding.trackViewPager!!.currentItem = binding.trackViewPager!!.currentItem - 1
+            binding.trackViewPager.currentItem = binding.trackViewPager.currentItem - 1
             viewModel.previous()
         }
 
@@ -135,12 +135,12 @@ class PlayerFragment : BaseFragment<FragmentPlayerBinding, PlayerViewModel>(),
     private var cachedCallback: OnPageChangeCallback? = null
     override fun set(callback: OnPageChangeCallback) {
         cachedCallback = callback
-        binding.trackViewPager!!.registerOnPageChangeCallback(cachedCallback!!)
+        binding.trackViewPager.registerOnPageChangeCallback(cachedCallback!!)
     }
 
     override fun remove() {
         cachedCallback?.let {
-            binding.trackViewPager!!.unregisterOnPageChangeCallback(it)
+            binding.trackViewPager.unregisterOnPageChangeCallback(it)
         }
         cachedCallback = null
     }
