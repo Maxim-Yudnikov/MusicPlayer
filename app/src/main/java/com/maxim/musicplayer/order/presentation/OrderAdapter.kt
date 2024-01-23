@@ -41,7 +41,7 @@ class OrderAdapter(
                 binding.artImageView.context,
                 if (position < actualPosition) R.color.gray
                 else if (position == actualPosition) R.color.green
-                else R.color.black
+                else R.color.title_text
             )
             binding.titleTextView.setTextColor(color)
         }
