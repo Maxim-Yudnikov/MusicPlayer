@@ -5,16 +5,19 @@ import android.widget.ImageButton
 import android.widget.SeekBar
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import androidx.viewpager2.widget.ViewPager2
 import com.maxim.musicplayer.R
-import com.maxim.musicplayer.audioList.presentation.ArtImageView
 import com.maxim.musicplayer.audioList.presentation.AudioUi
 import com.maxim.musicplayer.core.sl.GoBack
+import com.maxim.musicplayer.main.MainActivity
 import com.maxim.musicplayer.main.TimeTextView
 import com.maxim.musicplayer.media.LoopState
+import com.maxim.musicplayer.player.swipe.SwipeState
+import com.maxim.musicplayer.player.swipe.SwipeViewPagerAdapter
 
 interface PlayerState {
     fun show(
-        artImageView: ArtImageView,
+        swipeViewPager: ViewPager2,
         titleTextView: TextView,
         artistTextView: TextView,
         playButton: ImageButton,
@@ -33,10 +36,11 @@ interface PlayerState {
         private val loopState: LoopState,
         private val onPause: Boolean,
         private val currentPosition: Int,
+        private val swipeState: SwipeState
     ) : PlayerState {
         @SuppressLint("SetTextI18n")
         override fun show(
-            artImageView: ArtImageView,
+            swipeViewPager: ViewPager2,
             titleTextView: TextView,
             artistTextView: TextView,
             playButton: ImageButton,
@@ -51,7 +55,7 @@ interface PlayerState {
             seekBar.progress = currentPosition
             actualTimeTextView.showTime(currentPosition / 1000)
             audio.showDuration(durationTextView)
-            audio.showArt(artImageView, true)
+            swipeViewPager.adapter = SwipeViewPagerAdapter(swipeViewPager.context as MainActivity, swipeState)
             audio.showTitle(titleTextView)
             audio.showArtist(artistTextView)
             audio.showFavorite(favoriteImageView)

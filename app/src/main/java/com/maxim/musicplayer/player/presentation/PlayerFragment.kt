@@ -34,7 +34,7 @@ class PlayerFragment : BaseFragment<FragmentPlayerBinding, PlayerViewModel>() {
 
         viewModel.observe(this) {
             it.show(
-                binding.artImageView,
+                binding.trackViewPager!!, //todo
                 binding.playerTitleTextView,
                 binding.artistTextView,
                 binding.playButton,

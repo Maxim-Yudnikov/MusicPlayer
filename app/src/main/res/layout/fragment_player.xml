@@ -14,12 +14,10 @@
         android:layout_gravity="center"
         android:orientation="vertical">
 
-        <com.maxim.musicplayer.audioList.presentation.ArtImageView
-            android:id="@+id/artImageView"
-            android:layout_width="350dp"
-            android:layout_height="350dp"
-            android:layout_gravity="center"
-            tools:background="@drawable/baseline_audiotrack_24" />
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/trackViewPager"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
         <LinearLayout
             android:layout_width="match_parent"
