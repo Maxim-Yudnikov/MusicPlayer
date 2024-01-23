@@ -1,13 +1,10 @@
 package com.maxim.musicplayer.player.swipe
 
-import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
 import com.maxim.musicplayer.audioList.presentation.AudioUi
 import com.maxim.musicplayer.media.MediaService
 
 interface SwipeState {
-    fun getItemCount(): Int
-    fun createFragment(position: Int): Fragment
     fun setCurrentItem(viewPager: ViewPager2)
     fun swipeListener(mediaService: MediaService): ViewPager2.OnPageChangeCallback
     fun show(swipeAdapter: SwipeAdapter)
@@ -17,15 +14,6 @@ interface SwipeState {
         private val current: AudioUi,
         private val next: AudioUi
     ) : SwipeState {
-        override fun getItemCount() = 3
-
-        override fun createFragment(position: Int) =
-            when (position) {
-                0 -> SwipeFragment.newInstance(previous)
-                1 -> SwipeFragment.newInstance(current)
-                else -> SwipeFragment.newInstance(next)
-            }
-
         override fun setCurrentItem(viewPager: ViewPager2) {
             viewPager.setCurrentItem(1, false)
         }
@@ -50,14 +38,6 @@ interface SwipeState {
         private val current: AudioUi,
         private val next: AudioUi
     ) : SwipeState {
-        override fun getItemCount() = 2
-
-        override fun createFragment(position: Int) =
-            when (position) {
-                0 -> SwipeFragment.newInstance(current)
-                else -> SwipeFragment.newInstance(next)
-            }
-
         override fun setCurrentItem(viewPager: ViewPager2) {
             viewPager.setCurrentItem(0, false)
         }
@@ -79,14 +59,6 @@ interface SwipeState {
         private val previous: AudioUi,
         private val current: AudioUi
     ) : SwipeState {
-        override fun getItemCount() = 2
-
-        override fun createFragment(position: Int) =
-            when (position) {
-                0 -> SwipeFragment.newInstance(previous)
-                else -> SwipeFragment.newInstance(current)
-            }
-
         override fun setCurrentItem(viewPager: ViewPager2) {
             viewPager.setCurrentItem(1, false)
         }
@@ -108,10 +80,6 @@ interface SwipeState {
     class Single(
         private val current: AudioUi
     ) : SwipeState {
-        override fun getItemCount() = 1
-
-        override fun createFragment(position: Int) = SwipeFragment.newInstance(current)
-
         override fun setCurrentItem(viewPager: ViewPager2) {
             viewPager.setCurrentItem(0, false)
         }
