@@ -32,6 +32,7 @@ import com.maxim.musicplayer.main.MainActivity
 import com.maxim.musicplayer.main.MainActivity.Companion.OPEN_PLAYER_ACTION
 import com.maxim.musicplayer.player.presentation.PlayerCommunication
 import com.maxim.musicplayer.player.presentation.PlayerState
+import java.lang.NullPointerException
 
 
 interface MediaService : StartAudio, Playable {
@@ -120,14 +121,20 @@ interface MediaService : StartAudio, Playable {
                     mediaPlayer?.reset()
                     mediaPlayer?.release()
                     mediaPlayer = MediaPlayer.create(this, uri)
-                    mediaPlayer!!.setOnCompletionListener { next() }
+                    mediaPlayer?.setOnCompletionListener { next() }
                 }
             }
             if (mediaPlayer == null) {
                 mediaPlayer = MediaPlayer.create(this, uri)
-                mediaPlayer!!.setOnCompletionListener { if (manageOrder.loopState() != LoopState.LoopTrack) next() }
+                mediaPlayer?.setOnCompletionListener { if (manageOrder.loopState() != LoopState.LoopTrack) next() }
             }
-            mediaPlayer!!.start()
+            try {
+                mediaPlayer!!.start()
+            } catch (e: NullPointerException) {
+                next()
+                return
+            }
+
             actualUri = uri
 
             cachedTitle = title

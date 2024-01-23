@@ -13,6 +13,7 @@ interface ManageOrder {
 
     fun generate(tracks: List<AudioUi>, position: Int, orderType: OrderType)
     fun regenerate()
+    fun checkOrderAfterRefresh(list: List<AudioUi>)
     fun next(): AudioUi
     fun previous(): AudioUi
     fun initLoop(mediaPlayer: MediaPlayer)
@@ -57,35 +58,33 @@ interface ManageOrder {
         override fun swipeState(): SwipeState {
             return if (actualOrder.size == 1) SwipeState.Single(tracksMap[actualOrder[actualPosition]]!!)
             else if (actualPosition == actualOrder.lastIndex && loopState != LoopState.LoopOrder) SwipeState.End(
-                tracksMap[actualOrder[actualPosition - 1]]!!,
-                tracksMap[actualOrder[actualPosition]]!!
+                tracksMap[actualOrder[actualPosition - 1]] ?: AudioUi.Empty,
+                tracksMap[actualOrder[actualPosition]] ?: AudioUi.Empty
             ) else if (actualPosition == actualOrder.lastIndex) {
                 SwipeState.All(
-                    tracksMap[actualOrder[actualPosition - 1]]!!,
-                    tracksMap[actualOrder[actualPosition]]!!,
-                    tracksMap[actualOrder.first()]!!
+                    tracksMap[actualOrder[actualPosition - 1]] ?: AudioUi.Empty,
+                    tracksMap[actualOrder[actualPosition]] ?: AudioUi.Empty,
+                    tracksMap[actualOrder.first()] ?: AudioUi.Empty
                 )
-            }
-            else if (actualPosition == 0 && loopState != LoopState.LoopOrder) SwipeState.Start(
-                tracksMap[actualOrder[actualPosition]]!!,
-                tracksMap[actualOrder[actualPosition + 1]]!!
+            } else if (actualPosition == 0 && loopState != LoopState.LoopOrder) SwipeState.Start(
+                tracksMap[actualOrder[actualPosition]] ?: AudioUi.Empty,
+                tracksMap[actualOrder[actualPosition + 1]] ?: AudioUi.Empty
             ) else if (actualPosition == 0) {
                 SwipeState.All(
-                    tracksMap[actualOrder.last()]!!,
-                    tracksMap[actualOrder[actualPosition]]!!,
-                    tracksMap[actualOrder[actualPosition + 1]]!!
+                    tracksMap[actualOrder.last()] ?: AudioUi.Empty,
+                    tracksMap[actualOrder[actualPosition]] ?: AudioUi.Empty,
+                    tracksMap[actualOrder[actualPosition + 1]] ?: AudioUi.Empty
                 )
-            }
-            else SwipeState.All(
-                tracksMap[actualOrder[actualPosition - 1]]!!,
-                tracksMap[actualOrder[actualPosition]]!!,
-                tracksMap[actualOrder[actualPosition + 1]]!!
+            } else SwipeState.All(
+                tracksMap[actualOrder[actualPosition - 1]] ?: AudioUi.Empty,
+                tracksMap[actualOrder[actualPosition]] ?: AudioUi.Empty,
+                tracksMap[actualOrder[actualPosition + 1]] ?: AudioUi.Empty
             )
         }
 
-        override fun actualOrder() = actualOrder.map { tracksMap[it]!! }
+        override fun actualOrder() = actualOrder.map { tracksMap[it] ?: AudioUi.Empty }
         override fun actualPosition() = actualPosition
-        override fun actualTrack() = tracksMap[actualOrder[actualPosition]]!!
+        override fun actualTrack() = tracksMap[actualOrder[actualPosition]] ?: AudioUi.Empty
 
         override fun changeLoop(mediaPlayer: MediaPlayer?) {
             loopState = loopState().next()
@@ -154,6 +153,11 @@ interface ManageOrder {
             }
         }
 
+        override fun checkOrderAfterRefresh(list: List<AudioUi>) {
+            if (absoluteOrder != list)
+                absolutePositionLiveData.value = Pair(-1, OrderType.Empty)
+        }
+
         override fun next(): AudioUi {
             if (actualPosition != actualOrder.lastIndex) {
                 actualPosition++
@@ -162,7 +166,7 @@ interface ManageOrder {
             }
             absolutePositionLiveData.value =
                 Pair(absolutePosition, absolutePositionLiveData.value!!.second)
-            return tracksMap[actualOrder[actualPosition]]!!
+            return tracksMap[actualOrder[actualPosition]] ?: AudioUi.Empty
         }
 
         override fun previous(): AudioUi {
@@ -173,7 +177,7 @@ interface ManageOrder {
             }
             absolutePositionLiveData.value =
                 Pair(absolutePosition, absolutePositionLiveData.value!!.second)
-            return tracksMap[actualOrder[actualPosition]]!!
+            return tracksMap[actualOrder[actualPosition]] ?: AudioUi.Empty
         }
 
         override fun canGoNext() =
@@ -212,7 +216,7 @@ interface ManageOrder {
 
         override fun changeActualFavorite(playable: Playable): Boolean {
             val isFavoriteOrder = absolutePositionLiveData.value?.second == OrderType.Favorite
-            val newTrack = tracksMap[actualOrder[actualPosition]]!!.changeFavorite()
+            val newTrack = tracksMap[actualOrder[actualPosition]]?.changeFavorite() ?: AudioUi.Empty
             tracksMap[actualOrder[actualPosition]] = newTrack
             if (isFavoriteOrder && newTrack is AudioUi.Base) {
                 val removed = actualOrder.removeAt(actualPosition)

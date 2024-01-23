@@ -41,7 +41,9 @@ class AudioListViewModel(
 
     fun refresh(refreshFinish: RefreshFinish) {
         handle({ interactor.data() }) { list ->
-            communication.update(AudioListState.List(list.map { it.map(mapper) }, actualPosition, false))
+            val uiList = list.map { it.map(mapper) }
+            communication.update(AudioListState.List(uiList, actualPosition, false))
+            manageOrder.checkOrderAfterRefresh(uiList)
             refreshFinish.finish()
         }
     }
