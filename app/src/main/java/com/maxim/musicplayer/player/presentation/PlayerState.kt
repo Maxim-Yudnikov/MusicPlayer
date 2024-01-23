@@ -62,7 +62,7 @@ interface PlayerState {
             val mediaService = (swipeViewPager.context.applicationContext as App).mediaService()
             setViewPagerListener.remove()
             swipeState.setCurrentItem(swipeViewPager)
-            setViewPagerListener.set(swipeState.swipeListener(swipeViewPager, mediaService))
+            setViewPagerListener.set(swipeState.swipeListener(mediaService))
             audio.showTitle(titleTextView)
             audio.showArtist(artistTextView)
             audio.showFavorite(favoriteImageView)

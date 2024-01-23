@@ -19,7 +19,7 @@ interface SwipeState {
     fun getItemCount(): Int
     fun createFragment(position: Int): Fragment
     fun setCurrentItem(viewPager: ViewPager2)
-    fun swipeListener(swipeViewPager: ViewPager2, mediaService: MediaService): OnPageChangeCallback
+    fun swipeListener(mediaService: MediaService): OnPageChangeCallback
 
     class All(
         private val previous: AudioUi,
@@ -39,11 +39,10 @@ interface SwipeState {
             viewPager.setCurrentItem(1, false)
         }
 
-        override fun swipeListener(swipeViewPager: ViewPager2, mediaService: MediaService) =
+        override fun swipeListener(mediaService: MediaService): OnPageChangeCallback =
             object : OnPageChangeCallback() {
                 override fun onPageSelected(position: Int) {
                     super.onPageSelected(position)
-                    swipeViewPager.unregisterOnPageChangeCallback(this)
                     when (position) {
                         0 -> mediaService.previous()
                         2 -> mediaService.next()
@@ -68,12 +67,12 @@ interface SwipeState {
             viewPager.setCurrentItem(0, false)
         }
 
-        override fun swipeListener(swipeViewPager: ViewPager2, mediaService: MediaService) =
+        override fun swipeListener(mediaService: MediaService): OnPageChangeCallback =
             object : OnPageChangeCallback() {
                 override fun onPageSelected(position: Int) {
                     super.onPageSelected(position)
-                    swipeViewPager.unregisterOnPageChangeCallback(this)
-                    mediaService.next()
+                    if (position == 1)
+                        mediaService.next()
                 }
             }
     }
@@ -94,12 +93,12 @@ interface SwipeState {
             viewPager.setCurrentItem(1, false)
         }
 
-        override fun swipeListener(swipeViewPager: ViewPager2, mediaService: MediaService) =
+        override fun swipeListener(mediaService: MediaService) =
             object : OnPageChangeCallback() {
                 override fun onPageSelected(position: Int) {
                     super.onPageSelected(position)
-                    swipeViewPager.unregisterOnPageChangeCallback(this)
-                    mediaService.previous()
+                    if (position == 0)
+                        mediaService.previous()
                 }
             }
     }
@@ -115,7 +114,7 @@ interface SwipeState {
             viewPager.setCurrentItem(0, false)
         }
 
-        override fun swipeListener(swipeViewPager: ViewPager2, mediaService: MediaService) =
+        override fun swipeListener(mediaService: MediaService): OnPageChangeCallback =
             object : OnPageChangeCallback() {}
     }
 }

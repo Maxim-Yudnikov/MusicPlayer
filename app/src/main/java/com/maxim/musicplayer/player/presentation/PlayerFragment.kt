@@ -125,7 +125,7 @@ class PlayerFragment : BaseFragment<FragmentPlayerBinding, PlayerViewModel>(),
     private var cachedCallback: OnPageChangeCallback? = null
     override fun set(callback: OnPageChangeCallback) {
         cachedCallback = callback
-        binding.trackViewPager!!.registerOnPageChangeCallback(callback)
+        binding.trackViewPager!!.registerOnPageChangeCallback(cachedCallback!!)
     }
 
     override fun remove() {
