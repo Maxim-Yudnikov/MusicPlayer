@@ -65,10 +65,16 @@ class PlayerFragment : BaseFragment<FragmentPlayerBinding, PlayerViewModel>(),
         }
 
         binding.nextButton.setOnClickListener {
+            remove()
+            adapter.setUpdateAll(false)
+            binding.trackViewPager!!.currentItem = binding.trackViewPager!!.currentItem + 1
             viewModel.next()
         }
 
         binding.previousButton.setOnClickListener {
+            remove()
+            adapter.setUpdateAll(false)
+            binding.trackViewPager!!.currentItem = binding.trackViewPager!!.currentItem - 1
             viewModel.previous()
         }
 
